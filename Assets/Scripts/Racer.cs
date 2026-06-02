@@ -6,9 +6,17 @@ namespace Battrail
     /// プレイヤー機の移動本体。スプライン相対の (s, t) を内部状態として持ち、
     /// 入力に応じて s を加減速、t を左右移動させる。ワールド変換はコース（CourseSpline）から計算する。
     /// 物理体は kinematic Rigidbody。衝突は別系統（後続でトリガーコライダ等で取る想定）。
+    ///
+    /// 入力ソースは playerIndex で決定:
+    ///   0 → Gamepad.all[0] があればそれ、無ければ Keyboard WASD
+    ///   1 → Gamepad.all[1] があればそれ、無ければ Keyboard 矢印キー
+    /// オンライン対応時はこのメソッドだけ差し替える想定。
     [RequireComponent(typeof(Rigidbody))]
     public class Racer : MonoBehaviour
     {
+        [Header("Player")]
+        [SerializeField] int playerIndex = 0;
+
         [Header("Forward (s)")]
         [SerializeField] float maxSpeed = 18f;
         [SerializeField] float acceleration = 14f;
@@ -21,6 +29,7 @@ namespace Battrail
         [Header("Course")]
         [SerializeField] CourseSpline course;
 
+        public int PlayerIndex => playerIndex;
         public float DistanceAlongCourse { get; private set; }
         public float LateralOffset { get; private set; }
         public float ForwardSpeed { get; private set; }
@@ -28,8 +37,6 @@ namespace Battrail
         public CourseSpline Course => course;
 
         Rigidbody _rigidbody;
-        InputSystem_Actions _input;
-        InputAction _moveAction;
 
         void Awake()
         {
@@ -41,26 +48,21 @@ namespace Battrail
 
             if (course == null)
                 course = FindAnyObjectByType<CourseSpline>();
-
-            _input = new InputSystem_Actions();
-            _moveAction = _input.Player.Move;
         }
 
         void Start()
         {
+            // Spread starting positions so players don't overlap at the start line.
+            LateralOffset = playerIndex == 0 ? -1.5f : 1.5f;
             SnapToCourse();
         }
-
-        void OnEnable() => _input?.Player.Enable();
-        void OnDisable() => _input?.Player.Disable();
-        void OnDestroy() => _input?.Dispose();
 
         void FixedUpdate()
         {
             if (course == null || HasFinished)
                 return;
 
-            var move = _moveAction.ReadValue<Vector2>();
+            var move = ReadMove();
             var dt = Time.fixedDeltaTime;
 
             ForwardSpeed = StepForward(ForwardSpeed, move.y, dt);
@@ -77,6 +79,31 @@ namespace Battrail
             }
 
             SnapToCourse();
+        }
+
+        Vector2 ReadMove()
+        {
+            if (playerIndex < Gamepad.all.Count)
+            {
+                var gamepad = Gamepad.all[playerIndex];
+                if (gamepad != null)
+                    return gamepad.leftStick.ReadValue();
+            }
+
+            var keyboard = Keyboard.current;
+            if (keyboard == null)
+                return Vector2.zero;
+
+            if (playerIndex == 0)
+            {
+                return new Vector2(
+                    (keyboard.dKey.isPressed ? 1f : 0f) - (keyboard.aKey.isPressed ? 1f : 0f),
+                    (keyboard.wKey.isPressed ? 1f : 0f) - (keyboard.sKey.isPressed ? 1f : 0f));
+            }
+
+            return new Vector2(
+                (keyboard.rightArrowKey.isPressed ? 1f : 0f) - (keyboard.leftArrowKey.isPressed ? 1f : 0f),
+                (keyboard.upArrowKey.isPressed ? 1f : 0f) - (keyboard.downArrowKey.isPressed ? 1f : 0f));
         }
 
         void SnapToCourse()
