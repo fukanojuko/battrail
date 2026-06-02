@@ -277,8 +277,17 @@ MonoBehaviour:
   acceleration: 14
   brakeDeceleration: 26
   coastDeceleration: 7
+  boostSpeed: 28
+  boostAcceleration: 24
+  overspeedDecay: 12
+  maxGauge: 100
+  gaugeDrainPerSecond: 35
+  gaugeRegenPerSecond: 12
   strafeSpeed: 9
   startLateralOffset: -1.5
+  wallBounce: 6
+  wallBounceDecay: 20
+  wallSpeedRetain: 0.8
   course: {fileID: 0}
 --- !u!1 &2000020
 GameObject:
@@ -645,7 +654,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3000001}
-  m_Mesh: {fileID: 1137875231}
+  m_Mesh: {fileID: 1814776336}
 --- !u!23 &3000006
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -897,8 +906,17 @@ MonoBehaviour:
   acceleration: 14
   brakeDeceleration: 26
   coastDeceleration: 7
+  boostSpeed: 28
+  boostAcceleration: 24
+  overspeedDecay: 12
+  maxGauge: 100
+  gaugeDrainPerSecond: 35
+  gaugeRegenPerSecond: 12
   strafeSpeed: 9
   startLateralOffset: 1.5
+  wallBounce: 6
+  wallBounceDecay: 20
+  wallSpeedRetain: 0.8
   course: {fileID: 0}
 --- !u!1 &4000020
 GameObject:
@@ -1156,6 +1174,21 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!115 &77774720
+MonoScript:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 7
+  m_DefaultReferences: {}
+  m_Icon: {fileID: 0}
+  m_Type: 0
+  m_ExecutionOrder: 0
+  m_ClassName: CombatManager
+  m_Namespace: Battrail
+  m_AssemblyName: Assembly-CSharp
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,7 +1503,76 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &1137875231
+--- !u!1 &1813655288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1813655290}
+  - component: {fileID: 1813655289}
+  - component: {fileID: 1813655291}
+  m_Layer: 0
+  m_Name: CombatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1813655289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813655288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 77774720}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battrail.CombatManager
+  hitRangeS: 1.2
+  hitRangeT: 1.2
+  hitCooldown: 0.4
+  victimForwardSpeedFactor: 0.5
+  victimLateralImpulse: 9
+  separationSpeed: 4
+  trailSeconds: 3
+  trailRecordInterval: 0.05
+  trailHitRangeS: 1
+  trailHitRangeT: 1.2
+  trailRecoverPerSecond: 60
+  trailWidth: 0.6
+--- !u!4 &1813655290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813655288}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1813655291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813655288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2968a02296fc4d9e85bfbbd67ac59d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battrail.DebugHud
+--- !u!43 &1814776336
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1662,3 +1764,4 @@ SceneRoots:
   - {fileID: 4000011}
   - {fileID: 4000021}
   - {fileID: 4000031}
+  - {fileID: 1813655290}
