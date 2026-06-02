@@ -141,8 +141,8 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **ブースト＋ゲージ** — 押下中持続で boostSpeed まで、消費／時間回復、ブースト中=攻撃判定（Racer）
 - [x] **壁** — t が ±halfWidth で跳ね返り＋減速（Racer.StepLateral）
 - [x] **トレイル（判定）** — (s,t) 履歴を CombatManager が保持、他機通過でゲージ回復。見た目は仮 LineRenderer（VFX 差替待ち）
-- [x] **プレイヤー衝突** — (s,t) 近接判定。片ブースト=攻撃側が相手を減速＋横はじき、それ以外は左右分離。HitContext/IHitReaction で差替可能
-- [~] **HUD** — 検証用 DebugHud（OnGUI）のみ。viewport 別の本実装は未
+- [x] **プレイヤー衝突** — (s,t) 近接判定。片ブースト=攻撃側が相手を減速＋横はじき＋短スタン、それ以外は左右分離。HitContext/IHitReaction で差替可能
+- [x] **HUD** — UI Toolkit (UXML/USS)。viewport 別（左=P1 / 右=P2）に速度・順位・ゲージバー（`Assets/UI/`, PlayerHudUI）
 - [ ] **トレイル見た目（VFX Graph）** — デザイナーが VFX を制作 → 仮 LineRenderer と差替
 - [ ] **順位** — s 順で順位算出＋表示
 - [ ] **左右の挙動差替** — 平行移動からコース引っ張り＋ブレ挙動へ

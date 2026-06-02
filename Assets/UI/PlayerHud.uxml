@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/PlayerHud.uss" />
+    <ui:VisualElement name="root" picking-mode="Ignore" class="root">
+        <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
+            <ui:Label name="p0-info" text="P1" class="info" />
+            <ui:VisualElement class="gauge-bg">
+                <ui:VisualElement name="p0-fill" class="gauge-fill" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="right" picking-mode="Ignore" class="player-panel">
+            <ui:Label name="p1-info" text="P2" class="info" />
+            <ui:VisualElement class="gauge-bg">
+                <ui:VisualElement name="p1-fill" class="gauge-fill" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

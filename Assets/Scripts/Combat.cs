@@ -28,16 +28,18 @@ namespace Battrail
         void OnHit(in HitContext ctx);
     }
 
-    /// 既定リアクション: 被弾側を減速させ、攻撃側から離れる方向（近い壁側）へ弾く。
+    /// 既定リアクション: 被弾側を減速＋攻撃側から離れる方向（横）へ弾き、短時間スタンさせる。
     public sealed class DefaultHitReaction : IHitReaction
     {
         readonly float _forwardSpeedFactor;
         readonly float _lateralImpulse;
+        readonly float _stunSeconds;
 
-        public DefaultHitReaction(float forwardSpeedFactor, float lateralImpulse)
+        public DefaultHitReaction(float forwardSpeedFactor, float lateralImpulse, float stunSeconds)
         {
             _forwardSpeedFactor = forwardSpeedFactor;
             _lateralImpulse = lateralImpulse;
+            _stunSeconds = stunSeconds;
         }
 
         public void OnHit(in HitContext ctx)
@@ -46,6 +48,8 @@ namespace Battrail
             if (Mathf.Approximately(dir, 0f))
                 dir = 1f;
             ctx.Victim.ApplyKnockback(_forwardSpeedFactor, dir * _lateralImpulse);
+            if (_stunSeconds > 0f)
+                ctx.Victim.Stun(_stunSeconds);
         }
     }
 
@@ -62,6 +66,8 @@ namespace Battrail
         [SerializeField] float hitCooldown = 0.4f;
         [SerializeField] float victimForwardSpeedFactor = 0.5f;
         [SerializeField] float victimLateralImpulse = 9f;
+        [Tooltip("被弾側を操作不能にする時間")]
+        [SerializeField] float victimStunSeconds = 0.35f;
         [Tooltip("攻撃でない接触時に左右へ押し離す速さ")]
         [SerializeField] float separationSpeed = 4f;
 
@@ -97,7 +103,7 @@ namespace Battrail
 
         void Start()
         {
-            _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse);
+            _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
 
             foreach (var racer in FindObjectsByType<Racer>(FindObjectsSortMode.None))
                 _trails.Add(new RacerTrail { Racer = racer, Line = CreateTrailLine(racer) });

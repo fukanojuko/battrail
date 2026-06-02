@@ -56,6 +56,7 @@ namespace Battrail
         public bool IsBoosting { get; private set; }
         /// ブースト中は攻撃判定が有効。
         public bool IsAttacking => IsBoosting;
+        public bool IsStunned => _stunTimer > 0f;
         public float Gauge { get; private set; }
         public float MaxGauge => maxGauge;
         public float GaugeRatio => maxGauge > 0f ? Gauge / maxGauge : 0f;
@@ -63,6 +64,7 @@ namespace Battrail
 
         Rigidbody _rigidbody;
         float _lateralBounce;
+        float _stunTimer;
 
         void Awake()
         {
@@ -93,6 +95,14 @@ namespace Battrail
             var move = ReadMove();
             bool boostHeld = ReadBoost();
             var dt = Time.fixedDeltaTime;
+
+            // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。
+            if (_stunTimer > 0f)
+            {
+                _stunTimer -= dt;
+                move = Vector2.zero;
+                boostHeld = false;
+            }
 
             IsBoosting = boostHeld && Gauge > 0f;
             Gauge = Mathf.Clamp(
@@ -151,6 +161,12 @@ namespace Battrail
         public void RecoverGauge(float amount)
         {
             Gauge = Mathf.Clamp(Gauge + amount, 0f, maxGauge);
+        }
+
+        /// 一定時間操作不能にする（被弾時など）。複数回呼ばれたら長い方を採用。
+        public void Stun(float seconds)
+        {
+            _stunTimer = Mathf.Max(_stunTimer, seconds);
         }
 
         Vector2 ReadMove()

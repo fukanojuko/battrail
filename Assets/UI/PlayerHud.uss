@@ -1,0 +1,36 @@
+.root {
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.player-panel {
+    width: 50%;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 24px;
+}
+
+.info {
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.gauge-bg {
+    width: 240px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.gauge-fill {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(64, 178, 255);
+    border-radius: 3px;
+}
