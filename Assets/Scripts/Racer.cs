@@ -25,6 +25,8 @@ namespace Battrail
 
         [Header("Lateral (t)")]
         [SerializeField] float strafeSpeed = 9f;
+        [Tooltip("スタート時の横オフセット。2 機が重ならないよう P1/P2 で符号を変える")]
+        [SerializeField] float startLateralOffset = 0f;
 
         [Header("Course")]
         [SerializeField] CourseSpline course;
@@ -53,7 +55,7 @@ namespace Battrail
         void Start()
         {
             // Spread starting positions so players don't overlap at the start line.
-            LateralOffset = playerIndex == 0 ? -1.5f : 1.5f;
+            LateralOffset = startLateralOffset;
             SnapToCourse();
         }
 

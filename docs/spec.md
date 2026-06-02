@@ -109,11 +109,12 @@ Racer (ゲームロジック・(s,t) 管理)
 ## ローカルマルチ（中間ステップ ＝ 開発中の基準形）
 
 - **1 台 PC ／ コントローラー 2 個 ／ 画面分割** で 1v1 対戦。
-- 入力ペアリング: Player1 = Gamepad #0、Player2 = Gamepad #1（不足時 Player2 は Keyboard 矢印キーへフォールバック）。
+- 入力ペアリング: playerIndex で分岐。`Gamepad.all[index]` があればそれ、無ければ Keyboard（P1=WASD / P2=矢印）。Racer.ReadMove() に集約（オンライン化時はここだけ差替）。
 - カメラ: Cinemachine v3 の `OutputChannel` / `ChannelMask` で 2 個の Unity Camera にそれぞれの追従 vcam を割り振る。
-- 画面分割の向き: **上下分割**（前方視界を優先、Mario Kart 系）。横分割でも可。
+- 画面分割の向き: **左右分割**（実装済み）。Main Camera が左半分（viewport 0,0,0.5,1）、Camera 2 が右半分（0.5,0,0.5,1）。
 - HUD: 各プレイヤーのビューポート内に独立表示。
 - 衝突・トレイル・ブースト等のゲームルールは **2 機体前提**で実装する。AI は当面入れない（必要になったらダミー入力で代用）。
+- 既知の課題: `Gamepad.all` の順序依存（抜き差しで P1/P2 が入れ替わりうる）。本番前に明示ペアリングが要る。
 
 ## ネットワーク (最終形: 1v1, 専用サーバーなし)
 
@@ -134,8 +135,9 @@ Racer (ゲームロジック・(s,t) 管理)
 
 ## 実装ロードマップ（進捗チェックリスト）
 
-- [x] **基盤** — Input System Move アクション経由の加速度移動、Cinemachine 追従カメラ、Boot シーン実体配置（Ground / Player / CM Camera）
-- [ ] **ローカル2人＋画面分割** — Player2 追加、デバイス別ペアリング（Gamepad #0 / #1）、Cinemachine の OutputChannel で 2 viewport へ振り分け
+- [x] **基盤** — 加速度移動、Cinemachine 追従カメラ、Boot シーン実体配置
+- [x] **スプライン追従** — (s, t) モデル、CourseSpline、ゴール判定、道路メッシュ可視化
+- [x] **ローカル2人＋画面分割（左右）** — Player2 追加、playerIndex デバイス分岐、Cinemachine OutputChannel で 2 viewport へ振り分け
 - [ ] **ブースト＋ゲージ** — 速度限界超え、消費／時間回復、攻撃判定
 - [ ] **HUD** — 各 viewport 内に速度・ゲージ・順位
 - [ ] **コース／壁** — 壁の当たり判定、接触時の跳ね返り＋減速
