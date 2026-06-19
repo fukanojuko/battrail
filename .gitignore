@@ -104,3 +104,10 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# JetBrains Rider IDE (machine-specific)
+/.idea/
+
+# Unity AI Assistant / MCP gateway (machine-specific)
+/[Pp]roject[Ss]ettings/AI.Assistant/
+/[Pp]roject[Ss]ettings/[Pp]ackages/com.unity.ai.assistant/
