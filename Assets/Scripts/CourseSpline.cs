@@ -120,7 +120,9 @@ namespace Battrail
                 }
             }
 
-            var mesh = new Mesh { name = "CourseRoad" };
+            // 手続き生成メッシュをシーンに焼き込まない（保存のたびに差分が出るのを防ぐ）。
+            // OnEnable でロード時に再生成される。
+            var mesh = new Mesh { name = "CourseRoad", hideFlags = HideFlags.DontSave };
             mesh.indexFormat = vertCount > 65000
                 ? UnityEngine.Rendering.IndexFormat.UInt32
                 : UnityEngine.Rendering.IndexFormat.UInt16;
