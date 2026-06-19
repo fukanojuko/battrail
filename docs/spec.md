@@ -150,6 +150,15 @@ Racer (ゲームロジック・(s,t) 管理)
 
 ---
 
+## プロジェクト運用 / チーム
+
+- **作業ブランチ**: `develop`（main は安定版。機能は `feature/*` → `develop`、区切りで `develop` → `main`）。
+- **プレイヤーのプレハブ化**: `Assets/Prefabs/Player.prefab`。P1/P2 はこのプレハブのインスタンスで、`playerIndex` / マテリアル / `startLateralOffset` をインスタンス override。モデル差し替え・パラメータ調整はプレハブ側で一括反映。
+- **デザイン作業領域**: `Assets/Contents/Artist/`（例: `TestMech/`＝ロボ機体 FBX＋マテリアル）。デザイナーがここで素材を管理。
+- 機体モデルの差し替え（cube → `TestMech` の FBX）は Player プレハブの MeshFilter/Renderer を差し替えれば両プレイヤーに反映される。
+
+---
+
 ## 仕様判断ログ
 
 セッション中に確定した解釈・選択を記録（後でひっくり返すかも前提）。
