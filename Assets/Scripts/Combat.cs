@@ -73,19 +73,21 @@ namespace Battrail
 
         [Header("Trail")]
         [SerializeField] float trailSeconds = 3f;
-        [SerializeField] float trailRecordInterval = 0.05f;
         [SerializeField] float trailHitRangeS = 1.0f;
         [SerializeField] float trailHitRangeT = 1.2f;
         [Tooltip("他機トレイル上を通過中のゲージ回復速度（毎秒）")]
         [SerializeField] float trailRecoverPerSecond = 60f;
+        [Tooltip("トレイル先端を機体中心から後方へずらす距離（機体の最後尾に合わせる）")]
+        [SerializeField] float trailRearOffset = 0.6f;
 
         [Header("Trail visual (仮 / 後で VFX に差替)")]
         [SerializeField] float trailWidth = 0.6f;
 
         struct TrailPoint
         {
-            public float S;
-            public float T;
+            public float S;        // ゲージ判定用（スプライン進行距離）
+            public float T;        // ゲージ判定用（横オフセット）
+            public Vector3 World;  // 描画用（機体後方のワールド位置）
             public float ExpireTime;
         }
 
@@ -93,7 +95,6 @@ namespace Battrail
         {
             public Racer Racer;
             public readonly List<TrailPoint> Points = new();
-            public float RecordTimer;
             public LineRenderer Line;
         }
 
@@ -119,6 +120,14 @@ namespace Battrail
             ResolvePlayerCollisions(now);
         }
 
+        // 線の描画は LateUpdate で更新し、先端を機体の描画位置（Rigidbody 補間後）に合わせる。
+        // FixedUpdate の物理位置で描くと、補間で遅れて見える機体より先端が前に出てしまう。
+        void LateUpdate()
+        {
+            foreach (var trail in _trails)
+                UpdateTrailLine(trail);
+        }
+
         void RecordTrails(float now, float dt)
         {
             foreach (var trail in _trails)
@@ -127,20 +136,17 @@ namespace Battrail
                 if (racer == null)
                     continue;
 
-                trail.RecordTimer -= dt;
-                if (trail.RecordTimer <= 0f)
+                // 毎物理ステップ、機体後方のワールド位置を記録（密にして描画のカクつきを防ぐ）。
+                var t = racer.transform;
+                trail.Points.Add(new TrailPoint
                 {
-                    trail.RecordTimer = trailRecordInterval;
-                    trail.Points.Add(new TrailPoint
-                    {
-                        S = racer.DistanceAlongCourse,
-                        T = racer.LateralOffset,
-                        ExpireTime = now + trailSeconds,
-                    });
-                }
+                    S = racer.DistanceAlongCourse,
+                    T = racer.LateralOffset,
+                    World = t.position - t.forward * trailRearOffset,
+                    ExpireTime = now + trailSeconds,
+                });
 
                 trail.Points.RemoveAll(p => p.ExpireTime <= now);
-                UpdateTrailLine(trail);
             }
         }
 
@@ -268,16 +274,13 @@ namespace Battrail
             if (trail.Line == null || trail.Racer == null)
                 return;
 
-            var course = trail.Racer.Course;
-            if (course == null)
-                return;
-
-            trail.Line.positionCount = trail.Points.Count;
-            for (int i = 0; i < trail.Points.Count; i++)
-            {
-                var p = trail.Points[i];
-                trail.Line.SetPosition(i, course.GetWorldPosition(p.S, p.T));
-            }
+            // 記録点（密・機体後方のワールド位置）に加え、先頭へ補間後の後方位置を継ぎ足す。
+            int n = trail.Points.Count;
+            trail.Line.positionCount = n + 1;
+            for (int i = 0; i < n; i++)
+                trail.Line.SetPosition(i, trail.Points[i].World);
+            var t = trail.Racer.transform;
+            trail.Line.SetPosition(n, t.position - t.forward * trailRearOffset);
         }
 
         static Color ReadRacerColor(Racer racer)
