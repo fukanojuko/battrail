@@ -13,5 +13,8 @@
                 <ui:VisualElement name="p1-fill" class="gauge-fill" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="result" picking-mode="Ignore" class="result-overlay hidden">
+            <ui:Label name="result-text" text="" class="result-text" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

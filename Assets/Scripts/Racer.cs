@@ -65,6 +65,7 @@ namespace Battrail
         Rigidbody _rigidbody;
         float _lateralBounce;
         float _stunTimer;
+        bool _raceOver;
 
         void Awake()
         {
@@ -89,7 +90,7 @@ namespace Battrail
 
         void FixedUpdate()
         {
-            if (course == null || HasFinished)
+            if (course == null || HasFinished || _raceOver)
                 return;
 
             var move = ReadMove();
@@ -168,6 +169,13 @@ namespace Battrail
         {
             _stunTimer = Mathf.Max(_stunTimer, seconds);
         }
+
+        /// 決着がついたら RaceManager から呼ばれ、以後の入力・移動を止める。
+        public void EndRace()
+        {
+            _raceOver = true;
+        }
+
 
         Vector2 ReadMove()
         {

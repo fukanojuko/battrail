@@ -143,9 +143,10 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **トレイル（判定）** — (s,t) 履歴を CombatManager が保持、他機通過でゲージ回復。見た目は仮 LineRenderer（VFX 差替待ち）
 - [x] **プレイヤー衝突** — (s,t) 近接判定。片ブースト=攻撃側が相手を減速＋横はじき＋短スタン、それ以外は左右分離。HitContext/IHitReaction で差替可能
 - [x] **HUD** — UI Toolkit (UXML/USS)。viewport 別（左=P1 / 右=P2）に速度・順位・ゲージバー（`Assets/UI/`, PlayerHudUI）
-- [ ] **トレイル見た目（VFX Graph）** — デザイナーが VFX を制作 → 仮 LineRenderer と差替
-- [ ] **順位** — s 順で順位算出＋表示
-- [ ] **左右の挙動差替** — 平行移動からコース引っ張り＋ブレ挙動へ
+- [x] **順位** — s 順で順位算出＋表示（PlayerHudUI.Rank）
+- [x] **勝敗UI** — RaceManager が決着で全 Racer を停止（Racer.EndRace）、HUD に "PX WIN" オーバーレイ表示
+- [ ] **トレイル見た目（VFX Graph）** — `feature/trail-vfx` でデザイナーが素材フォルダのみ作成済み（実体未着手）。VFX ができ次第、仮 LineRenderer と差替
+- [ ] **左右の挙動差替** — 平行移動からコース引っ張り＋ブレ挙動へ（プレイ感の調整が要るため実機確認しながら着手）
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 
 ---

@@ -29,6 +29,9 @@ namespace Battrail
                 {
                     _winner = racer;
                     Debug.Log($"[RaceManager] Winner: {racer.name}");
+                    foreach (var r in _racers)
+                        if (r != null)
+                            r.EndRace();
                     return;
                 }
             }
