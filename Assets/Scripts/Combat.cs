@@ -69,8 +69,12 @@ namespace Battrail
         [SerializeField] float victimLateralImpulse = 9f;
         [Tooltip("被弾側を操作不能にする時間")]
         [SerializeField] float victimStunSeconds = 0.35f;
-        [Tooltip("攻撃でない接触時に左右へ押し離す速さ")]
-        [SerializeField] float separationSpeed = 4f;
+        [Tooltip("攻撃でない接触時に左右へ押し離す基本の速さ")]
+        [SerializeField] float separationSpeed = 6f;
+        [Tooltip("相対速度に応じて跳ね返りを強める係数（速い者同士の接触ほど大きく弾く）")]
+        [SerializeField] float separationSpeedFactor = 0.5f;
+        [Tooltip("攻撃でない接触時に残す前進速度の割合（1 未満で軽い減速を出す）")]
+        [SerializeField] float separationForwardFactor = 0.9f;
 
         [Header("Trail")]
         [SerializeField] float trailSeconds = 3f;
@@ -218,23 +222,30 @@ namespace Battrail
 
         void Resolve(Racer a, Racer b)
         {
-            // ブースト中の機だけが攻撃判定を持つ。一方だけブースト中ならそれが attacker。
-            if (a.IsAttacking ^ b.IsAttacking)
+            // 前方/後方は s の位置関係で決める（仕様: ブースト中の衝突は「前方プレイヤーが減速+弾き」）。
+            // attacker は「後方にいてブースト中」の機体のみ。前方側のブースト有無は問わない
+            // （XOR で判定すると両者ブースト中に何も起きなくなるバグがあったため）。
+            var front = a.DistanceAlongCourse >= b.DistanceAlongCourse ? a : b;
+            var rear = front == a ? b : a;
+
+            if (rear.IsAttacking)
             {
-                var attacker = a.IsAttacking ? a : b;
-                var victim = a.IsAttacking ? b : a;
-                var ctx = new HitContext(attacker, victim,
-                    attacker.ForwardSpeed - victim.ForwardSpeed, headOn: false);
+                var ctx = new HitContext(rear, front,
+                    rear.ForwardSpeed - front.ForwardSpeed, headOn: false);
                 _hitReaction.OnHit(ctx);
             }
             else
             {
-                // 攻撃でない接触: 左右に軽く押し離すだけ（仕様: 通常衝突は軽い物理反応のみ）。
+                // 攻撃でない接触: スタンは無しだが、相対速度が大きいほど強く弾かれる
+                // （固定値だけだと「当たった感」が薄いため。ぶつかった者同士は少し前進速度も落ちる）。
+                float relativeSpeed = Mathf.Abs(a.ForwardSpeed - b.ForwardSpeed);
+                float bounce = separationSpeed + relativeSpeed * separationSpeedFactor;
+
                 float dir = Mathf.Sign(a.LateralOffset - b.LateralOffset);
                 if (Mathf.Approximately(dir, 0f))
                     dir = 1f;
-                a.ApplyKnockback(1f, dir * separationSpeed);
-                b.ApplyKnockback(1f, -dir * separationSpeed);
+                a.ApplyKnockback(separationForwardFactor, dir * bounce);
+                b.ApplyKnockback(separationForwardFactor, -dir * bounce);
             }
         }
 
