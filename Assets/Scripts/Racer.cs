@@ -34,14 +34,19 @@ namespace Battrail
         [SerializeField] float gaugeRegenPerSecond = 12f;
 
         [Header("Lateral (t)")]
-        [SerializeField] float strafeSpeed = 9f;
+        [Tooltip("左右入力による横加速度（速度ではなく加速度で反応させ、慣性で切り返しにブレを出す）")]
+        [SerializeField] float strafeAcceleration = 26f;
+        [Tooltip("横速度の摩擦減衰。無入力時にブレを収束させる")]
+        [SerializeField] float lateralDamping = 10f;
+        [Tooltip("コース中央 (t=0) へ戻ろうとする引力の強さ（オフセットに比例した加速度）")]
+        [SerializeField] float centerPullStrength = 1.2f;
+        [SerializeField] float maxLateralSpeed = 9f;
         [Tooltip("スタート時の横オフセット。2 機が重ならないよう P1/P2 で符号を変える")]
         [SerializeField] float startLateralOffset = 0f;
 
         [Header("Wall")]
         [Tooltip("壁接触時に発生する横方向の跳ね返り初速")]
         [SerializeField] float wallBounce = 6f;
-        [SerializeField] float wallBounceDecay = 20f;
         [Tooltip("壁接触時に残す前進速度の割合（0.8 = 20% 減速）")]
         [SerializeField] float wallSpeedRetain = 0.8f;
 
@@ -63,7 +68,7 @@ namespace Battrail
         public CourseSpline Course => course;
 
         Rigidbody _rigidbody;
-        float _lateralBounce;
+        float _lateralVelocity;
         float _stunTimer;
         bool _raceOver;
 
@@ -127,27 +132,31 @@ namespace Battrail
 
         void StepLateral(float input, float dt)
         {
-            float desired = input * strafeSpeed;
-            _lateralBounce = Mathf.MoveTowards(_lateralBounce, 0f, wallBounceDecay * dt);
-            float velocity = desired + _lateralBounce;
-            LateralOffset += velocity * dt;
+            // 入力による加速 + コース中央への弱い引力。速度に摩擦をかけて自然に収束させる
+            // （ばね＋減衰のような挙動。中央保持ではなく慣性でブレを出す）。
+            float accel = input * strafeAcceleration - LateralOffset * centerPullStrength;
+            _lateralVelocity += accel * dt;
+            _lateralVelocity = Mathf.MoveTowards(_lateralVelocity, 0f, lateralDamping * dt);
+            _lateralVelocity = Mathf.Clamp(_lateralVelocity, -maxLateralSpeed, maxLateralSpeed);
+
+            LateralOffset += _lateralVelocity * dt;
 
             float halfWidth = course.HalfWidth;
             if (LateralOffset > halfWidth)
             {
                 LateralOffset = halfWidth;
-                if (velocity > 0f) HitWall(-1f);
+                if (_lateralVelocity > 0f) HitWall(-1f);
             }
             else if (LateralOffset < -halfWidth)
             {
                 LateralOffset = -halfWidth;
-                if (velocity < 0f) HitWall(1f);
+                if (_lateralVelocity < 0f) HitWall(1f);
             }
         }
 
         void HitWall(float inwardSign)
         {
-            _lateralBounce = inwardSign * wallBounce;
+            _lateralVelocity = inwardSign * wallBounce;
             ForwardSpeed *= wallSpeedRetain;
         }
 
@@ -155,7 +164,7 @@ namespace Battrail
         public void ApplyKnockback(float forwardSpeedFactor, float lateralImpulse)
         {
             ForwardSpeed *= forwardSpeedFactor;
-            _lateralBounce += lateralImpulse;
+            _lateralVelocity += lateralImpulse;
         }
 
         /// トレイル通過などでゲージを回復する。
