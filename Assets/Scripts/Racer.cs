@@ -44,6 +44,12 @@ namespace Battrail
         [Tooltip("スタート時の横オフセット。2 機が重ならないよう P1/P2 で符号を変える")]
         [SerializeField] float startLateralOffset = 0f;
 
+        [Header("Start Dash")]
+        [Tooltip("スタン解除直後、自動でこの速度まで加速する時間（秒）。被弾で離された側の追い上げを助ける")]
+        [SerializeField] float startDashDuration = 1.5f;
+        [SerializeField] float startDashSpeed = 28f;
+        [SerializeField] float startDashAcceleration = 30f;
+
         [Header("Wall")]
         [Tooltip("壁接触時に発生する横方向の跳ね返り初速")]
         [SerializeField] float wallBounce = 6f;
@@ -70,6 +76,7 @@ namespace Battrail
         Rigidbody _rigidbody;
         float _lateralVelocity;
         float _stunTimer;
+        float _startDashTimer;
         bool _raceOver;
 
         void Awake()
@@ -102,12 +109,14 @@ namespace Battrail
             bool boostHeld = ReadBoost();
             var dt = Time.fixedDeltaTime;
 
-            // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。
+            // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。解除の瞬間にスタートダッシュを付与する。
             if (_stunTimer > 0f)
             {
                 _stunTimer -= dt;
                 move = Vector2.zero;
                 boostHeld = false;
+                if (_stunTimer <= 0f)
+                    _startDashTimer = startDashDuration;
             }
 
             IsBoosting = boostHeld && Gauge > 0f;
@@ -116,6 +125,14 @@ namespace Battrail
                 0f, maxGauge);
 
             ForwardSpeed = StepForward(ForwardSpeed, move.y, IsBoosting, dt);
+
+            // スタートダッシュ中は攻撃判定を持たせず（IsBoosting はそのまま）、速度だけ強制的に持ち上げる。
+            if (_startDashTimer > 0f)
+            {
+                _startDashTimer -= dt;
+                ForwardSpeed = Mathf.MoveTowards(ForwardSpeed, startDashSpeed, startDashAcceleration * dt);
+            }
+
             DistanceAlongCourse += ForwardSpeed * dt;
 
             StepLateral(move.x, dt);
