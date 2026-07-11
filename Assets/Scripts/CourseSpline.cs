@@ -27,7 +27,7 @@ namespace Battrail
         public float Length => _length;
         public float HalfWidth => halfWidth;
 
-        void OnEnable()
+        private void OnEnable()
         {
             EnsureContainer();
             if (_container.Spline == null || _container.Spline.Count == 0)
@@ -135,7 +135,7 @@ namespace Battrail
         }
 
 #if UNITY_EDITOR
-        void OnValidate()
+        private void OnValidate()
         {
             if (!isActiveAndEnabled)
                 return;

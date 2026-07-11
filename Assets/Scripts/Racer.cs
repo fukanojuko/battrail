@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Battrail
 {
@@ -8,10 +8,7 @@ namespace Battrail
     /// 物理体は kinematic Rigidbody。プレイヤー同士・トレイルとの当たり判定は (s, t) 空間で
     /// CombatManager がまとめて行い、結果は ApplyKnockback / RecoverGauge で受け取る。
     ///
-    /// 入力ソースは playerIndex で決定:
-    ///   0 → Gamepad.all[0] があればそれ、無ければ Keyboard WASD + LeftShift
-    ///   1 → Gamepad.all[1] があればそれ、無ければ Keyboard 矢印 + RightShift
-    /// オンライン対応時は入力読み取りメソッドだけ差し替える想定。
+    /// 入力読み取りは RacerInput に分離（オンライン対応時はそちらだけ差し替える想定）。
     [RequireComponent(typeof(Rigidbody))]
     public class Racer : MonoBehaviour
     {
@@ -73,13 +70,17 @@ namespace Battrail
         public float GaugeRatio => maxGauge > 0f ? Gauge / maxGauge : 0f;
         public CourseSpline Course => course;
 
+        /// ゴール到達の瞬間に一度だけ発火（RaceManager が毎フレーム HasFinished をポーリングしなくて済むように）。
+        public event Action<Racer> Finished;
+
         Rigidbody _rigidbody;
+        RacerInput _input;
         float _lateralVelocity;
         float _stunTimer;
         float _startDashTimer;
         bool _raceOver;
 
-        void Awake()
+        private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _rigidbody.isKinematic = true;
@@ -87,26 +88,28 @@ namespace Battrail
             _rigidbody.constraints = RigidbodyConstraints.None;
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
+            _input = new RacerInput(playerIndex);
+
             if (course == null)
                 course = FindAnyObjectByType<CourseSpline>();
 
             Gauge = maxGauge;
         }
 
-        void Start()
+        private void Start()
         {
             // Spread starting positions so players don't overlap at the start line.
             LateralOffset = startLateralOffset;
             SnapToCourse();
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             if (course == null || HasFinished || _raceOver)
                 return;
 
-            var move = ReadMove();
-            bool boostHeld = ReadBoost();
+            var move = _input.ReadMove();
+            bool boostHeld = _input.ReadBoost();
             var dt = Time.fixedDeltaTime;
 
             // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。解除の瞬間にスタートダッシュを付与する。
@@ -142,6 +145,7 @@ namespace Battrail
                 DistanceAlongCourse = course.Length;
                 HasFinished = true;
                 ForwardSpeed = 0f;
+                Finished?.Invoke(this);
             }
 
             SnapToCourse();
@@ -200,47 +204,6 @@ namespace Battrail
         public void EndRace()
         {
             _raceOver = true;
-        }
-
-
-        Vector2 ReadMove()
-        {
-            var gamepad = GetGamepad();
-            if (gamepad != null)
-                return gamepad.leftStick.ReadValue();
-
-            var keyboard = Keyboard.current;
-            if (keyboard == null)
-                return Vector2.zero;
-
-            if (playerIndex == 0)
-            {
-                return new Vector2(
-                    (keyboard.dKey.isPressed ? 1f : 0f) - (keyboard.aKey.isPressed ? 1f : 0f),
-                    (keyboard.wKey.isPressed ? 1f : 0f) - (keyboard.sKey.isPressed ? 1f : 0f));
-            }
-
-            return new Vector2(
-                (keyboard.rightArrowKey.isPressed ? 1f : 0f) - (keyboard.leftArrowKey.isPressed ? 1f : 0f),
-                (keyboard.upArrowKey.isPressed ? 1f : 0f) - (keyboard.downArrowKey.isPressed ? 1f : 0f));
-        }
-
-        bool ReadBoost()
-        {
-            var gamepad = GetGamepad();
-            if (gamepad != null)
-                return gamepad.rightTrigger.isPressed || gamepad.buttonSouth.isPressed;
-
-            var keyboard = Keyboard.current;
-            if (keyboard == null)
-                return false;
-
-            return playerIndex == 0 ? keyboard.leftShiftKey.isPressed : keyboard.rightShiftKey.isPressed;
-        }
-
-        Gamepad GetGamepad()
-        {
-            return playerIndex < Gamepad.all.Count ? Gamepad.all[playerIndex] : null;
         }
 
         void SnapToCourse()

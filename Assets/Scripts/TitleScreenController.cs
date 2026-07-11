@@ -14,13 +14,13 @@ namespace Battrail
 
         Label _prompt;
 
-        void OnEnable()
+        private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
             _prompt = root.Q<Label>("prompt");
         }
 
-        void Update()
+        private void Update()
         {
             if (_prompt != null)
                 _prompt.style.opacity = 0.5f + 0.5f * Mathf.Sin(Time.time * promptPulseSpeed);
