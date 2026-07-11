@@ -210,11 +210,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 1
-    PositionDamping: {x: 2, y: 1, z: 1}
+    PositionDamping: {x: 4, y: 1.5, z: 1.5}
     AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
+    RotationDamping: {x: 2, y: 2, z: 2}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -8}
+  FollowOffset: {x: 0, y: 3.2, z: -10}
 --- !u!114 &2000024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,14 +231,14 @@ MonoBehaviour:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.15, y: 0.1}
+      Size: {x: 0.35, y: 0.2}
     HardLimits:
       Enabled: 0
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 1.5, y: 1}
+  Damping: {x: 3, y: 1.5}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -714,11 +714,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 1
-    PositionDamping: {x: 2, y: 1, z: 1}
+    PositionDamping: {x: 4, y: 1.5, z: 1.5}
     AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
+    RotationDamping: {x: 2, y: 2, z: 2}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -8}
+  FollowOffset: {x: 0, y: 3.2, z: -10}
 --- !u!114 &4000024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -735,14 +735,14 @@ MonoBehaviour:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.15, y: 0.1}
+      Size: {x: 0.35, y: 0.2}
     HardLimits:
       Enabled: 0
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 1.5, y: 1}
+  Damping: {x: 3, y: 1.5}
   Lookahead:
     Enabled: 0
     Time: 0
