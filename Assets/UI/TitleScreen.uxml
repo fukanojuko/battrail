@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/TitleScreen.uss" />
+    <ui:VisualElement name="root" class="title-root">
+        <ui:Label name="game-title" text="BATTRAIL" class="game-title" />
+        <ui:Label name="prompt" text="PRESS START" class="prompt" />
+        <ui:VisualElement class="controls-hint">
+            <ui:Label text="P1: WASD + LeftShift" class="hint" />
+            <ui:Label text="P2: Arrow Keys + RightShift" class="hint" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
