@@ -198,9 +198,17 @@ Racer (ゲームロジック・(s,t) 管理)
 ## 関連ファイル
 
 - `Assets/Scripts/Racer.cs` — 移動ロジック本体（前進・後退・左右）
+- `Assets/Scripts/RacerInput.cs` — デバイス入力読み取り（Racer から分離。オンライン対応時はここだけ差替）
+- `Assets/Scripts/TrailVisual.cs` — トレイルの見た目（CombatManager から分離。VFX Graph 差替時はここを差し替える）
 - `Assets/InputSystem_Actions.inputactions` + 自動生成 `.cs` — 入力アセット
 - `Assets/Scenes/Boot.unity` — メインシーン
 - `Assets/Materials/{Ground,Player}.mat` — URP/Lit マテリアル
+
+## アーキテクチャ方針
+
+- **Update() ポーリングより event / Awaitable**: 「状態変化を検知して一度だけ何かする」類の処理（決着検知、決着後の入力待ち等）は Update() で毎フレーム条件を見るのではなく、C# event（`Racer.Finished` 等）や Unity 6 の `Awaitable`（`PostRaceController` 等）で書く。ただし物理シミュレーション（`Racer.FixedUpdate`, `CombatManager.FixedUpdate`）や継続的な値の毎フレーム反映（`PlayerHudUI.Update` の速度/ゲージ表示、`TitleScreenController.Update` の点滅演出）は本来的に毎フレーム処理が必要なため対象外
+- **新規の外部依存は入れない**: 上記は R3 等の Reactive ライブラリを追加せず、C# 標準の `event`/`Awaitable` のみで実現する方針（「依存は負債」）
+- **単一責任でクラスを分ける**: `Racer`＝移動物理、`RacerInput`＝デバイス入力、`CombatManager`＝衝突・トレイル判定ロジック、`TrailVisual`＝トレイルの見た目、という形で責務を分離
 
 ---
 

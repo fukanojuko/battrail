@@ -20,14 +20,14 @@ namespace Battrail
         Label _resultText;
         bool _bound;
 
-        void OnEnable()
+        private void OnEnable()
         {
             _racers = FindObjectsByType<Racer>(FindObjectsSortMode.None);
             _raceManager = FindAnyObjectByType<RaceManager>();
             _bound = false;
         }
 
-        void Update()
+        private void Update()
         {
             if (!_bound && !TryBind())
                 return;

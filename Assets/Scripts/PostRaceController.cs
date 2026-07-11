@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 namespace Battrail
 {
     /// レース終了後、「もう一度」「タイトルへ戻る」の入力を受け付ける。
+    /// RaceManager.RaceFinished をトリガーに一度だけ起動する Awaitable フロー（Update() ポーリングはしない）。
     /// 決着直後の残り入力での誤反応を避けるため、少し待ってから受け付ける。
     [RequireComponent(typeof(RaceManager))]
     public class PostRaceController : MonoBehaviour
@@ -13,28 +14,35 @@ namespace Battrail
         [SerializeField] float inputDelay = 1f;
 
         RaceManager _raceManager;
-        float _finishedAt = -1f;
 
-        void Awake()
+        private void Awake()
         {
             _raceManager = GetComponent<RaceManager>();
+            _raceManager.RaceFinished += OnRaceFinished;
         }
 
-        void Update()
+        // Awaitable は MonoBehaviour の破棄／シーン遷移で自動キャンセルされるため、
+        // async void で起動しっぱなしにして問題ない（Unity 推奨パターン）。
+        async void OnRaceFinished(Racer winner)
         {
-            if (!_raceManager.IsFinished)
-                return;
+            await Awaitable.WaitForSecondsAsync(inputDelay);
 
-            if (_finishedAt < 0f)
-                _finishedAt = Time.time;
+            while (true)
+            {
+                if (RetryPressed())
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    return;
+                }
 
-            if (Time.time - _finishedAt < inputDelay)
-                return;
+                if (TitlePressed())
+                {
+                    SceneManager.LoadScene(titleScene);
+                    return;
+                }
 
-            if (RetryPressed())
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            else if (TitlePressed())
-                SceneManager.LoadScene(titleScene);
+                await Awaitable.NextFrameAsync();
+            }
         }
 
         bool RetryPressed()

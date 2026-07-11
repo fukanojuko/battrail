@@ -100,22 +100,22 @@ namespace Battrail
         {
             public Racer Racer;
             public readonly List<TrailPoint> Points = new();
-            public LineRenderer Line;
+            public TrailVisual Visual;
         }
 
         readonly List<RacerTrail> _trails = new();
         readonly Dictionary<long, float> _pairCooldown = new();
         IHitReaction _hitReaction;
 
-        void Start()
+        private void Start()
         {
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
 
             foreach (var racer in FindObjectsByType<Racer>(FindObjectsSortMode.None))
-                _trails.Add(new RacerTrail { Racer = racer, Line = CreateTrailLine(racer) });
+                _trails.Add(new RacerTrail { Racer = racer, Visual = CreateTrailVisual(racer) });
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             float now = Time.time;
             float dt = Time.fixedDeltaTime;
@@ -127,7 +127,7 @@ namespace Battrail
 
         // 線の描画は LateUpdate で更新し、先端を機体の描画位置（Rigidbody 補間後）に合わせる。
         // FixedUpdate の物理位置で描くと、補間で遅れて見える機体より先端が前に出てしまう。
-        void LateUpdate()
+        private void LateUpdate()
         {
             foreach (var trail in _trails)
                 UpdateTrailLine(trail);
@@ -257,42 +257,27 @@ namespace Battrail
             return ((long)ia << 32) ^ (uint)ib;
         }
 
-        LineRenderer CreateTrailLine(Racer racer)
+        TrailVisual CreateTrailVisual(Racer racer)
         {
             var go = new GameObject($"Trail_{racer.name}");
             go.transform.SetParent(transform, false);
-            var line = go.AddComponent<LineRenderer>();
-            line.widthMultiplier = trailWidth;
-            line.numCornerVertices = 2;
-            line.numCapVertices = 2;
-            line.useWorldSpace = true;
-            line.positionCount = 0;
-
-            var shader = Shader.Find("Universal Render Pipeline/Unlit");
-            var material = new Material(shader != null ? shader : Shader.Find("Sprites/Default"));
-            var color = ReadRacerColor(racer);
-            if (material.HasProperty("_BaseColor"))
-                material.SetColor("_BaseColor", color);
-            else
-                material.color = color;
-            line.material = material;
-            line.startColor = color;
-            line.endColor = new Color(color.r, color.g, color.b, 0f);
-            return line;
+            var visual = go.AddComponent<TrailVisual>();
+            visual.Initialize(ReadRacerColor(racer), trailWidth);
+            return visual;
         }
 
         void UpdateTrailLine(RacerTrail trail)
         {
-            if (trail.Line == null || trail.Racer == null)
+            if (trail.Visual == null || trail.Racer == null)
                 return;
 
             // 記録点（密・機体後方のワールド位置）に加え、先頭へ補間後の後方位置を継ぎ足す。
             int n = trail.Points.Count;
-            trail.Line.positionCount = n + 1;
+            trail.Visual.BeginUpdate(n);
             for (int i = 0; i < n; i++)
-                trail.Line.SetPosition(i, trail.Points[i].World);
+                trail.Visual.SetPoint(i, trail.Points[i].World);
             var t = trail.Racer.transform;
-            trail.Line.SetPosition(n, t.position - t.forward * trailRearOffset);
+            trail.Visual.SetPoint(n, t.position - t.forward * trailRearOffset);
         }
 
         static Color ReadRacerColor(Racer racer)
