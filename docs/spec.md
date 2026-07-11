@@ -119,7 +119,7 @@ Racer (ゲームロジック・(s,t) 管理)
 
 - **1 台 PC ／ コントローラー 2 個 ／ 画面分割** で 1v1 対戦。
 - 入力ペアリング: playerIndex で分岐。`Gamepad.all[index]` があればそれ、無ければ Keyboard（P1=WASD / P2=矢印）。Racer.ReadMove() に集約（オンライン化時はここだけ差替）。
-- カメラ: Cinemachine v3 の `OutputChannel` / `ChannelMask` で 2 個の Unity Camera にそれぞれの追従 vcam を割り振る。
+- カメラ: Cinemachine v3 の `OutputChannel` / `ChannelMask` で 2 個の Unity Camera にそれぞれの追従 vcam を割り振る。3人称チェイスカム（機体の斜め後方・低め、`FollowOffset`(0, 2.2, -8)）。`CinemachineFollow`（Body: `LockToTargetWithWorldUp` で機体の向きに追従）＋`CinemachineRotationComposer`（Aim: 機体を実際に見る）の組み合わせが必須。`CinemachineFollow`単体だとBindingModeを変えても実際の向き（Aim）が更新されない不具合があった。
 - 画面分割の向き: **左右分割**（実装済み）。Main Camera が左半分（viewport 0,0,0.5,1）、Camera 2 が右半分（0.5,0,0.5,1）。
 - HUD: 各プレイヤーのビューポート内に独立表示。
 - 衝突・トレイル・ブースト等のゲームルールは **2 機体前提**で実装する。AI は当面入れない（必要になったらダミー入力で代用）。
