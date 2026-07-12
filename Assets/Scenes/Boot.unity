@@ -575,6 +575,8 @@ GameObject:
   - component: {fileID: 3000011}
   - component: {fileID: 3000012}
   - component: {fileID: 3000013}
+  - component: {fileID: 3000014}
+  - component: {fileID: 3000015}
   m_Layer: 0
   m_Name: RaceManager
   m_TagString: Untagged
@@ -623,6 +625,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Battrail.PostRaceController
   titleScene: Title
   inputDelay: 1
+--- !u!114 &3000014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9acb50d080451cbc2a576024e75ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battrail.RaceQuitController
+  titleScene: Title
+  _raceManager: {fileID: 0}
+--- !u!114 &3000015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67120672d4b134dc8ab3a187a66b42a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battrail.PauseController
+  titleScene: Title
 --- !u!1 &4000020
 GameObject:
   m_ObjectHideFlags: 0

@@ -157,6 +157,7 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **左右の挙動差替** — 平行移動から加速度＋慣性＋中央への弱い引力（ばね＋減衰モデル）へ差替（Racer.StepLateral）。数値は暫定、実機プレイで要調整
 - [x] **タイトル画面** — `Assets/Scenes/Title.unity`。ゲームタイトル＋"PRESS START"（点滅）＋操作説明。いずれかのキー/ゲームパッドボタンで Boot へ遷移（TitleScreenController）。Build Settings で Title(0) → Boot(1)
 - [x] **決着後のフロー** — 決着後 1 秒待ってから、SPACE/Enter/Start ボタンで同シーンをリトライ、ESC/Select ボタンでタイトルへ戻る（PostRaceController）。HUD の勝敗オーバーレイに操作ヒントを表示
+- [x] **outgame の見た目・導線改善** — タイトル画面に宇宙背景（Boot と同じ Skybox）を適用し世界観を統一。レース中は ESC/Start でポーズ（`Time.timeScale = 0`、Resume/Quitオーバーレイ）、ポーズ中に Q/Select でタイトルへ（PauseController）。HUD 上部に常時ヒント表示
 - [ ] **トレイル見た目（VFX Graph）** — `feature/trail-vfx` でデザイナーが素材フォルダのみ作成済み（実体未着手）。VFX ができ次第、仮 LineRenderer と差替
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 

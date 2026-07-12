@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/PlayerHud.uss" />
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
+        <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" />
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
             <ui:Label name="p0-info" text="P1" class="info" />
             <ui:VisualElement class="gauge-bg">
@@ -16,6 +17,10 @@
         <ui:VisualElement name="result" picking-mode="Ignore" class="result-overlay hidden">
             <ui:Label name="result-text" text="" class="result-text" />
             <ui:Label name="result-hint" text="SPACE / Start ボタン: もう一度　　ESC / Select ボタン: タイトルへ" class="result-hint" />
+        </ui:VisualElement>
+        <ui:VisualElement name="pause" picking-mode="Ignore" class="pause-overlay hidden">
+            <ui:Label text="PAUSED" class="pause-title" />
+            <ui:Label text="ESC / Start ボタン: 再開　　Q / Select ボタン: タイトルへ" class="pause-hint" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
