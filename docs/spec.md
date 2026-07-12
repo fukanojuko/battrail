@@ -165,9 +165,9 @@ Racer (ゲームロジック・(s,t) 管理)
 ## プロジェクト運用 / チーム
 
 - **作業ブランチ**: `develop`（main は安定版。機能は `feature/*` → `develop`、区切りで `develop` → `main`）。
-- **プレイヤーのプレハブ化**: `Assets/Prefabs/Player.prefab`。P1/P2 はこのプレハブのインスタンスで、`playerIndex` / マテリアル / `startLateralOffset` をインスタンス override。モデル差し替え・パラメータ調整はプレハブ側で一括反映。
+- **プレイヤーのプレハブ構成**: `Assets/Prefabs/Players/Player.prefab` がロジック・共通構造を持つ base。`Player1.prefab` / `Player2.prefab` はその **Prefab Variant** で、見た目（マテリアル）だけを差し替えている。モデル・共通ロジックの変更は base の `Player.prefab` を編集すれば両方に伝播する。`playerIndex` / `startLateralOffset` はシーン（Boot.unity）側のインスタンス override（ゲームプレイ上のデータなので見た目の差分＝Variantには含めない）。
 - **デザイン作業領域**: `Assets/Contents/Artist/`（例: `TestMech/`＝ロボ機体 FBX＋マテリアル）。デザイナーがここで素材を管理。
-- 機体モデルの差し替え（cube → `TestMech` の FBX）は Player プレハブの MeshFilter/Renderer を差し替えれば両プレイヤーに反映される。
+- 機体モデルの差し替え（cube → `TestMech` の FBX）は base `Player.prefab` の MeshFilter/Renderer を差し替えれば両プレイヤーに反映される。プレイヤーごとの色だけ変えたい場合は各 Variant（`Player1.prefab` / `Player2.prefab`）側で差し替える。
 
 ---
 

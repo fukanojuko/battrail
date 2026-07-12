@@ -174,8 +174,8 @@ MonoBehaviour:
   m_LegacyPriority: 0
   Target:
     TrackingTarget: {fileID: 2016759729}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
+    LookAtTarget: {fileID: 2016759729}
+    CustomLookAtTarget: 1
   Lens:
     FieldOfView: 55
     OrthographicSize: 10
@@ -678,8 +678,8 @@ MonoBehaviour:
   m_LegacyPriority: 0
   Target:
     TrackingTarget: {fileID: 870404904}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
+    LookAtTarget: {fileID: 870404904}
+    CustomLookAtTarget: 1
   Lens:
     FieldOfView: 55
     OrthographicSize: 10
@@ -815,7 +815,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 65
+  field of view: 55
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -1053,7 +1053,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 65
+  field of view: 55
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -1257,6 +1257,19 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!134 &673956132
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1331,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2
       objectReference: {fileID: 0}
+    - target: {fileID: 2602569436801115603, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 673956132}
     - target: {fileID: 4102034055367155269, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: playerIndex
       value: 1
@@ -1370,6 +1387,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: playerIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: startLateralOffset
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1377,9 +1402,22 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
 --- !u!4 &870404904 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4215692539141614569, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
   m_PrefabInstance: {fileID: 870404903}
   m_PrefabAsset: {fileID: 0}
+--- !u!134 &1796524133
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &1813655288
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,6 +1489,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2602569436801115603, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 1796524133}
     - target: {fileID: 7512903532273188937, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1498,7 +1540,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
 --- !u!4 &2016759729 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7512903532273188937, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4215692539141614569, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
   m_PrefabInstance: {fileID: 2016759728}
   m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
