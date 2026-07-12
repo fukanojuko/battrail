@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/PlayerHud.uss" />
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
+        <ui:Label name="quit-hint" text="ESC / Select ボタン: タイトルへ" class="quit-hint" />
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
             <ui:Label name="p0-info" text="P1" class="info" />
             <ui:VisualElement class="gauge-bg">
