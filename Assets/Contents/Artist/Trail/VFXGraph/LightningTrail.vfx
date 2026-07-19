@@ -44,8 +44,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: -173
     y: -645
-    width: 4263
-    height: 3189
+    width: 4262
+    height: 3172
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6066,7 +6066,7 @@ MonoBehaviour:
   particlePerStripCount: 128
   needsComputeBounds: 0
   boundsMode: 1
-  m_Space: 0
+  m_Space: 1
 --- !u!114 &8926484042661617865
 MonoBehaviour:
   m_ObjectHideFlags: 0
