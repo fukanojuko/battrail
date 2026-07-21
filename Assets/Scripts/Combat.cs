@@ -55,7 +55,7 @@ namespace Battrail
 
     /// プレイヤー同士／トレイルの当たり判定を (s, t) 空間でまとめて解決する。
     /// 各 Racer の (s, t) 履歴をトレイルとして保持し、他機の近接通過でゲージを回復させる。
-    /// トレイルの見た目は仮で LineRenderer を出す（後で VFX Graph に差し替える）。
+    /// トレイルの見た目は各 Racer に付いた VFX Graph（MasterTrail 等）が担当。ここでは判定用の位置履歴のみ扱う。
     [DefaultExecutionOrder(100)]
     public class CombatManager : MonoBehaviour
     {
@@ -82,17 +82,11 @@ namespace Battrail
         [SerializeField] float trailHitRangeT = 1.2f;
         [Tooltip("他機トレイル上を通過中のゲージ回復速度（毎秒）")]
         [SerializeField] float trailRecoverPerSecond = 60f;
-        [Tooltip("トレイル先端を機体中心から後方へずらす距離（機体の最後尾に合わせる）")]
-        [SerializeField] float trailRearOffset = 0.6f;
-
-        [Header("Trail visual (仮 / 後で VFX に差替)")]
-        [SerializeField] float trailWidth = 0.6f;
 
         struct TrailPoint
         {
-            public float S;        // ゲージ判定用（スプライン進行距離）
-            public float T;        // ゲージ判定用（横オフセット）
-            public Vector3 World;  // 描画用（機体後方のワールド位置）
+            public float S;
+            public float T;
             public float ExpireTime;
         }
 
@@ -100,7 +94,6 @@ namespace Battrail
         {
             public Racer Racer;
             public readonly List<TrailPoint> Points = new();
-            public TrailVisual Visual;
         }
 
         readonly List<RacerTrail> _trails = new();
@@ -112,7 +105,7 @@ namespace Battrail
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
 
             foreach (var racer in FindObjectsByType<Racer>(FindObjectsSortMode.None))
-                _trails.Add(new RacerTrail { Racer = racer, Visual = CreateTrailVisual(racer) });
+                _trails.Add(new RacerTrail { Racer = racer });
         }
 
         private void FixedUpdate()
@@ -125,14 +118,6 @@ namespace Battrail
             ResolvePlayerCollisions(now);
         }
 
-        // 線の描画は LateUpdate で更新し、先端を機体の描画位置（Rigidbody 補間後）に合わせる。
-        // FixedUpdate の物理位置で描くと、補間で遅れて見える機体より先端が前に出てしまう。
-        private void LateUpdate()
-        {
-            foreach (var trail in _trails)
-                UpdateTrailLine(trail);
-        }
-
         void RecordTrails(float now, float dt)
         {
             foreach (var trail in _trails)
@@ -141,13 +126,10 @@ namespace Battrail
                 if (racer == null)
                     continue;
 
-                // 毎物理ステップ、機体後方のワールド位置を記録（密にして描画のカクつきを防ぐ）。
-                var t = racer.transform;
                 trail.Points.Add(new TrailPoint
                 {
                     S = racer.DistanceAlongCourse,
                     T = racer.LateralOffset,
-                    World = t.position - t.forward * trailRearOffset,
                     ExpireTime = now + trailSeconds,
                 });
 
@@ -255,42 +237,6 @@ namespace Battrail
             int ib = b.GetInstanceID();
             if (ia > ib) (ia, ib) = (ib, ia);
             return ((long)ia << 32) ^ (uint)ib;
-        }
-
-        TrailVisual CreateTrailVisual(Racer racer)
-        {
-            var go = new GameObject($"Trail_{racer.name}");
-            go.transform.SetParent(transform, false);
-            var visual = go.AddComponent<TrailVisual>();
-            visual.Initialize(ReadRacerColor(racer), trailWidth);
-            return visual;
-        }
-
-        void UpdateTrailLine(RacerTrail trail)
-        {
-            if (trail.Visual == null || trail.Racer == null)
-                return;
-
-            // 記録点（密・機体後方のワールド位置）に加え、先頭へ補間後の後方位置を継ぎ足す。
-            int n = trail.Points.Count;
-            trail.Visual.BeginUpdate(n);
-            for (int i = 0; i < n; i++)
-                trail.Visual.SetPoint(i, trail.Points[i].World);
-            var t = trail.Racer.transform;
-            trail.Visual.SetPoint(n, t.position - t.forward * trailRearOffset);
-        }
-
-        static Color ReadRacerColor(Racer racer)
-        {
-            var renderer = racer.GetComponent<Renderer>();
-            if (renderer != null && renderer.sharedMaterial != null)
-            {
-                var mat = renderer.sharedMaterial;
-                if (mat.HasProperty("_BaseColor"))
-                    return mat.GetColor("_BaseColor");
-                return mat.color;
-            }
-            return Color.cyan;
         }
     }
 }
