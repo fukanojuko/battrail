@@ -22,7 +22,7 @@ namespace Battrail
 
         private void OnEnable()
         {
-            _racers = FindObjectsByType<Racer>(FindObjectsSortMode.None);
+            _racers = FindObjectsByType<Racer>();
             _raceManager = FindAnyObjectByType<RaceManager>();
             _bound = false;
         }

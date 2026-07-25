@@ -104,7 +104,7 @@ namespace Battrail
         {
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
 
-            foreach (var racer in FindObjectsByType<Racer>(FindObjectsSortMode.None))
+            foreach (var racer in FindObjectsByType<Racer>())
                 _trails.Add(new RacerTrail { Racer = racer });
         }
 
@@ -233,8 +233,8 @@ namespace Battrail
 
         static long PairKey(Racer a, Racer b)
         {
-            int ia = a.GetInstanceID();
-            int ib = b.GetInstanceID();
+            int ia = a.GetEntityId();
+            int ib = b.GetEntityId();
             if (ia > ib) (ia, ib) = (ib, ia);
             return ((long)ia << 32) ^ (uint)ib;
         }
