@@ -21,7 +21,7 @@ namespace Battrail
 
         private void Awake()
         {
-            _racers.AddRange(FindObjectsByType<Racer>(FindObjectsSortMode.None));
+            _racers.AddRange(FindObjectsByType<Racer>());
             foreach (var racer in _racers)
                 racer.Finished += OnRacerFinished;
         }
