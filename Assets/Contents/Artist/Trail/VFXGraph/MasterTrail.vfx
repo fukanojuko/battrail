@@ -2106,7 +2106,7 @@ MonoBehaviour:
   - {fileID: 8926484042661618340}
   m_Disabled: 0
   m_ActivationSlot: {fileID: 8926484042661618341}
-  mode: 1
+  mode: 2
   clampToOne: 1
 --- !u!114 &8926484042661618339
 MonoBehaviour:
