@@ -50,6 +50,7 @@ namespace Battrail
             ctx.Victim.ApplyKnockback(_forwardSpeedFactor, dir * _lateralImpulse);
             if (_stunSeconds > 0f)
                 ctx.Victim.Stun(_stunSeconds);
+            ctx.Victim.PlayHitEffect();
         }
     }
 
@@ -98,7 +99,7 @@ namespace Battrail
         }
 
         readonly List<RacerTrail> _trails = new();
-        readonly Dictionary<long, float> _pairCooldown = new();
+        readonly Dictionary<(EntityId, EntityId), float> _pairCooldown = new();
         IHitReaction _hitReaction;
 
         private void Start()
@@ -187,7 +188,7 @@ namespace Battrail
                         Mathf.Abs(a.DistanceAlongCourse - b.DistanceAlongCourse) < hitRangeS &&
                         Mathf.Abs(a.LateralOffset - b.LateralOffset) < hitRangeT;
 
-                    long key = PairKey(a, b);
+                    var key = PairKey(a, b);
                     if (!overlapping)
                     {
                         _pairCooldown.Remove(key);
@@ -229,15 +230,21 @@ namespace Battrail
                     dir = 1f;
                 a.ApplyKnockback(separationForwardFactor, dir * bounce);
                 b.ApplyKnockback(separationForwardFactor, -dir * bounce);
+
+                // 攻撃でなくても接触した以上は「当たった感」を出す。攻撃ヒットと違い
+                // 一方的な被弾ではないので、両者から鳴らす。
+                a.PlayHitEffect();
+                b.PlayHitEffect();
             }
         }
 
-        static long PairKey(Racer a, Racer b)
+        // 順序を揃えてから組にすることで、(a, b) と (b, a) が同じキーになる。
+        // EntityId から int への暗黙変換は非推奨なので、EntityId のまま扱う。
+        static (EntityId, EntityId) PairKey(Racer a, Racer b)
         {
-            int ia = a.GetEntityId();
-            int ib = b.GetEntityId();
-            if (ia > ib) (ia, ib) = (ib, ia);
-            return ((long)ia << 32) ^ (uint)ib;
+            var ia = a.GetEntityId();
+            var ib = b.GetEntityId();
+            return ia.CompareTo(ib) <= 0 ? (ia, ib) : (ib, ia);
         }
     }
 }
