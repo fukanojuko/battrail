@@ -23,7 +23,7 @@ jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           # PR 本文にリリース内容を載せるため main との差分を辿れる深さが要る
           fetch-depth: 0
