@@ -24,6 +24,8 @@ jobs:
           TARGET: ${{ github.event.client_payload.target }}
           PLATFORM: ${{ github.event.client_payload.platform }}
           REVISION: ${{ github.event.client_payload.revision }}
+          ASSET_NAME: ${{ github.event.client_payload.asset_name }}
+          ASSET_URL: ${{ github.event.client_payload.asset_url }}
         run: |
           set -euo pipefail
 
@@ -47,7 +49,14 @@ jobs:
           if [ ${#revision} -gt 12 ]; then
             revision=${revision:0:7}
           fi
-          row="| $platform | $target | #$build | \`$revision\` |"
+
+          # zip はビルドマシンが添付済み。ここではその Release アセットを指すだけ
+          download="—"
+          if [[ "$ASSET_URL" =~ ^https://github\.com/[A-Za-z0-9._/-]+$ ]]; then
+            download="[$(sanitize "$ASSET_NAME")]($ASSET_URL)"
+          fi
+
+          row="| $platform | $target | #$build | \`$revision\` | $download |"
 
           body=$(gh release view "$tag" --json body -q .body)
 
@@ -62,8 +71,8 @@ jobs:
           else
             {
               printf '%s\n\n## Builds\n\n' "$body"
-              printf '| Platform | Target | Build | Revision |\n'
-              printf '| --- | --- | --- | --- |\n'
+              printf '| Platform | Target | Build | Revision | Download |\n'
+              printf '| --- | --- | --- | --- | --- |\n'
               printf '%s\n' "$row"
             } > notes.md
           fi
