@@ -50,7 +50,6 @@ jobs:
             revision=${revision:0:7}
           fi
 
-          # zip はビルドマシンが添付済み。ここではその Release アセットを指すだけ
           download="—"
           if [[ "$ASSET_URL" =~ ^https://github\.com/[A-Za-z0-9._/-]+$ ]]; then
             download="[$(sanitize "$ASSET_NAME")]($ASSET_URL)"
@@ -60,7 +59,6 @@ jobs:
 
           body=$(gh release view "$tag" --json body -q .body)
 
-          # 同じビルドが二度通知されても行を増やさない
           if grep -qF -- "$row" <<< "$body"; then
             echo "$row is already in $tag" >> "$GITHUB_STEP_SUMMARY"
             exit 0

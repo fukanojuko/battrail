@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          # PR 本文にリリース内容を載せるため main との差分を辿れる深さが要る
+          # PR 本文の変更一覧で origin/main を参照する
           fetch-depth: 0
 
       - name: Compute next version
@@ -84,6 +84,8 @@ jobs:
             echo
             git log --oneline --merges --grep='Merge pull request' origin/main..HEAD \
               | sed -E 's/^[0-9a-f]+ Merge pull request (#[0-9]+) from [^ ]*\/(.*)$/- \1 \2/'
+            echo
+            echo "マージすると \`v$NEXT\` のタグと Release が作られ、main を develop に戻す追従 PR が立ちます。"
           } > pr-body.md
           gh pr create \
             --base main \

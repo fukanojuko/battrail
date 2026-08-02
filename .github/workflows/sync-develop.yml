@@ -1,0 +1,53 @@
+name: Sync develop with main
+
+on:
+  push:
+    branches: [main]
+
+concurrency: sync-develop
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # main と develop の分岐を見るため全ブランチが要る
+          fetch-depth: 0
+
+      - name: Open a follow-up PR into develop
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # コミット数で見ると、develop -> main のマージコミットの分だけ main が
+          # 進んで見え、中身が同じでも毎回空の PR が立つ。ツリーの差分で判定する
+          if git diff --quiet origin/develop origin/main; then
+            echo "develop and main have the same tree" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # 追従 PR が開いたままなら、新しい push はそこに乗るので作り直さない
+          existing=$(gh pr list --base develop --head main --state open --json number -q '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "PR #$existing is already open" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          {
+            echo "main に入った変更を develop に戻します。"
+            echo
+            git log --oneline --no-merges origin/develop..origin/main | sed -E 's/^[0-9a-f]+ /- /'
+          } > pr-body.md
+
+          gh pr create \
+            --base develop \
+            --head main \
+            --title "Sync develop with main" \
+            --body-file pr-body.md
+          echo "Opened a sync PR into develop" >> "$GITHUB_STEP_SUMMARY"

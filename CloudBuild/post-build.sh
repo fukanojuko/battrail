@@ -43,7 +43,6 @@ for cmd in curl python3; do
   fi
 done
 
-# 成果物の場所。OUTPUT_DIRECTORY が本命で、無ければ player の親を使う
 build_dir=${OUTPUT_DIRECTORY:-}
 if [ -z "$build_dir" ] && [ -n "${UNITY_PLAYER_PATH:-}" ]; then
   build_dir=$(dirname "$UNITY_PLAYER_PATH")
@@ -53,7 +52,6 @@ if [ -z "$build_dir" ] || [ ! -d "$build_dir" ]; then
   exit 0
 fi
 
-# どの Release に添付するかは、ビルドされた実際のリビジョンの bundleVersion で決まる
 version=$(grep -E '^  bundleVersion: ' "$SETTINGS" 2> /dev/null | head -1 | awk '{print $2}')
 if [ -z "$version" ]; then
   log "could not read bundleVersion from $SETTINGS, skipping"
@@ -66,7 +64,6 @@ build_number=${UCB_BUILD_NUMBER:-unknown}
 asset_name="battrail-$version-$platform-build$build_number.zip"
 
 api() {
-  # $1: method, $2: url, 残りは curl に渡す。標準出力に body、失敗時は空
   local method=$1 url=$2
   shift 2
   curl -sSf -X "$method" \
