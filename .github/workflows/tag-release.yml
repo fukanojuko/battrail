@@ -1,0 +1,57 @@
+name: Tag release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: tag-release
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # 既存タグの有無を見るのと Release ノート生成に履歴が要る
+          fetch-depth: 0
+
+      - name: Read version
+        id: version
+        run: |
+          set -euo pipefail
+          settings=ProjectSettings/ProjectSettings.asset
+          version=$(grep -E '^  bundleVersion: ' "$settings" | head -1 | awk '{print $2}')
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "bundleVersion '$version' is not in major.minor.patch form" >&2
+            exit 1
+          fi
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      # bump を伴わない main への push でも走るため、既存タグなら何もせず終える
+      - name: Check whether the tag already exists
+        id: check
+        run: |
+          set -euo pipefail
+          if git rev-parse -q --verify 'refs/tags/${{ steps.version.outputs.tag }}' > /dev/null; then
+            echo "${{ steps.version.outputs.tag }} already exists, nothing to do" >> "$GITHUB_STEP_SUMMARY"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create tag and release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" --title "$TAG" --generate-notes
+          echo "Released $TAG" >> "$GITHUB_STEP_SUMMARY"

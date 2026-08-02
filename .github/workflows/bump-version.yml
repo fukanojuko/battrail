@@ -1,0 +1,92 @@
+name: Bump version
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: Which part of the version to bump
+        type: choice
+        required: true
+        default: minor
+        options:
+          - patch
+          - minor
+          - major
+
+concurrency: bump-version
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # PR 本文にリリース内容を載せるため main との差分を辿れる深さが要る
+          fetch-depth: 0
+
+      - name: Compute next version
+        id: version
+        run: |
+          set -euo pipefail
+          settings=ProjectSettings/ProjectSettings.asset
+          current=$(grep -E '^  bundleVersion: ' "$settings" | head -1 | awk '{print $2}')
+          if [[ ! "$current" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "bundleVersion '$current' is not in major.minor.patch form" >&2
+            exit 1
+          fi
+          IFS=. read -r major minor patch <<< "$current"
+          case "${{ inputs.level }}" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+          esac
+          next="$major.$minor.$patch"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "next=$next" >> "$GITHUB_OUTPUT"
+          echo "branch=chore/bump-v$next" >> "$GITHUB_OUTPUT"
+          echo "$current -> $next" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Apply bump
+        run: |
+          set -euo pipefail
+          sed -i -E 's/^  bundleVersion: .*/  bundleVersion: ${{ steps.version.outputs.next }}/' \
+            ProjectSettings/ProjectSettings.asset
+          if git diff --exit-code --quiet; then
+            echo "bundleVersion unchanged" >&2
+            exit 1
+          fi
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c '${{ steps.version.outputs.branch }}'
+          git commit -am 'Bump version to ${{ steps.version.outputs.next }}'
+          git push origin '${{ steps.version.outputs.branch }}'
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ steps.version.outputs.next }}
+          CURRENT: ${{ steps.version.outputs.current }}
+          BRANCH: ${{ steps.version.outputs.branch }}
+        run: |
+          set -euo pipefail
+          {
+            echo "\`bundleVersion\` を $CURRENT から $NEXT に更新し、\`${{ github.ref_name }}\` を main に取り込みます。"
+            echo
+            echo "## 含まれる変更"
+            echo
+            git log --oneline --merges --grep='Merge pull request' origin/main..HEAD \
+              | sed -E 's/^[0-9a-f]+ Merge pull request (#[0-9]+) from [^ ]*\/(.*)$/- \1 \2/'
+          } > pr-body.md
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Bump version to $NEXT" \
+            --body-file pr-body.md
