@@ -111,3 +111,6 @@ InitTestScene*.unity*
 # Unity AI Assistant / MCP gateway (machine-specific)
 /[Pp]roject[Ss]ettings/AI.Assistant/
 /[Pp]roject[Ss]ettings/[Pp]ackages/com.unity.ai.assistant/
+
+# Unity crash-recovery scene backups (created when the Editor closes without saving)
+/[Aa]ssets/_Recovery/

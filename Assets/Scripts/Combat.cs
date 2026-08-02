@@ -50,37 +50,40 @@ namespace Battrail
             ctx.Victim.ApplyKnockback(_forwardSpeedFactor, dir * _lateralImpulse);
             if (_stunSeconds > 0f)
                 ctx.Victim.Stun(_stunSeconds);
+            ctx.Victim.PlayHitEffect();
         }
     }
 
     /// プレイヤー同士／トレイルの当たり判定を (s, t) 空間でまとめて解決する。
     /// 各 Racer の (s, t) 履歴をトレイルとして保持し、他機の近接通過でゲージを回復させる。
-    /// トレイルの見た目は仮で LineRenderer を出す（後で VFX Graph に差し替える）。
+    /// トレイルの見た目は各 Racer に付いた VFX Graph（MasterTrail 等）が担当。ここでは判定用の位置履歴のみ扱う。
     [DefaultExecutionOrder(100)]
     public class CombatManager : MonoBehaviour
     {
         [Header("Player collision (s, t 空間)")]
-        [SerializeField] float hitRangeS = 1.2f;
-        [SerializeField] float hitRangeT = 1.2f;
+        [Tooltip("見た目の接触距離（前後 1.09 / 横 0.68）の 1.3 倍程度。" +
+                 "広げすぎると相手の占有ゾーンが増えてコースが狭く感じる")]
+        [SerializeField] float hitRangeS = 1.4f;
+        [SerializeField] float hitRangeT = 0.9f;
         [Tooltip("同一ペアを連続ヒットさせない再判定クールダウン")]
         [SerializeField] float hitCooldown = 0.4f;
         [SerializeField] float victimForwardSpeedFactor = 0.5f;
         [SerializeField] float victimLateralImpulse = 9f;
         [Tooltip("被弾側を操作不能にする時間")]
         [SerializeField] float victimStunSeconds = 0.35f;
-        [Tooltip("攻撃でない接触時に左右へ押し離す速さ")]
-        [SerializeField] float separationSpeed = 4f;
+        [Tooltip("攻撃でない接触時に左右へ押し離す基本の速さ")]
+        [SerializeField] float separationSpeed = 6f;
+        [Tooltip("相対速度に応じて跳ね返りを強める係数（速い者同士の接触ほど大きく弾く）")]
+        [SerializeField] float separationSpeedFactor = 0.5f;
+        [Tooltip("攻撃でない接触時に残す前進速度の割合（1 未満で軽い減速を出す）")]
+        [SerializeField] float separationForwardFactor = 0.9f;
 
         [Header("Trail")]
         [SerializeField] float trailSeconds = 3f;
-        [SerializeField] float trailRecordInterval = 0.05f;
         [SerializeField] float trailHitRangeS = 1.0f;
         [SerializeField] float trailHitRangeT = 1.2f;
         [Tooltip("他機トレイル上を通過中のゲージ回復速度（毎秒）")]
         [SerializeField] float trailRecoverPerSecond = 60f;
-
-        [Header("Trail visual (仮 / 後で VFX に差替)")]
-        [SerializeField] float trailWidth = 0.6f;
 
         struct TrailPoint
         {
@@ -93,23 +96,21 @@ namespace Battrail
         {
             public Racer Racer;
             public readonly List<TrailPoint> Points = new();
-            public float RecordTimer;
-            public LineRenderer Line;
         }
 
         readonly List<RacerTrail> _trails = new();
-        readonly Dictionary<long, float> _pairCooldown = new();
+        readonly Dictionary<(EntityId, EntityId), float> _pairCooldown = new();
         IHitReaction _hitReaction;
 
-        void Start()
+        private void Start()
         {
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
 
-            foreach (var racer in FindObjectsByType<Racer>(FindObjectsSortMode.None))
-                _trails.Add(new RacerTrail { Racer = racer, Line = CreateTrailLine(racer) });
+            foreach (var racer in FindObjectsByType<Racer>())
+                _trails.Add(new RacerTrail { Racer = racer });
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             float now = Time.time;
             float dt = Time.fixedDeltaTime;
@@ -127,20 +128,14 @@ namespace Battrail
                 if (racer == null)
                     continue;
 
-                trail.RecordTimer -= dt;
-                if (trail.RecordTimer <= 0f)
+                trail.Points.Add(new TrailPoint
                 {
-                    trail.RecordTimer = trailRecordInterval;
-                    trail.Points.Add(new TrailPoint
-                    {
-                        S = racer.DistanceAlongCourse,
-                        T = racer.LateralOffset,
-                        ExpireTime = now + trailSeconds,
-                    });
-                }
+                    S = racer.DistanceAlongCourse,
+                    T = racer.LateralOffset,
+                    ExpireTime = now + trailSeconds,
+                });
 
                 trail.Points.RemoveAll(p => p.ExpireTime <= now);
-                UpdateTrailLine(trail);
             }
         }
 
@@ -193,7 +188,7 @@ namespace Battrail
                         Mathf.Abs(a.DistanceAlongCourse - b.DistanceAlongCourse) < hitRangeS &&
                         Mathf.Abs(a.LateralOffset - b.LateralOffset) < hitRangeT;
 
-                    long key = PairKey(a, b);
+                    var key = PairKey(a, b);
                     if (!overlapping)
                     {
                         _pairCooldown.Remove(key);
@@ -211,86 +206,45 @@ namespace Battrail
 
         void Resolve(Racer a, Racer b)
         {
-            // ブースト中の機だけが攻撃判定を持つ。一方だけブースト中ならそれが attacker。
-            if (a.IsAttacking ^ b.IsAttacking)
+            // 前方/後方は s の位置関係で決める（仕様: ブースト中の衝突は「前方プレイヤーが減速+弾き」）。
+            // attacker は「後方にいてブースト中」の機体のみ。前方側のブースト有無は問わない
+            // （XOR で判定すると両者ブースト中に何も起きなくなるバグがあったため）。
+            var front = a.DistanceAlongCourse >= b.DistanceAlongCourse ? a : b;
+            var rear = front == a ? b : a;
+
+            if (rear.IsAttacking)
             {
-                var attacker = a.IsAttacking ? a : b;
-                var victim = a.IsAttacking ? b : a;
-                var ctx = new HitContext(attacker, victim,
-                    attacker.ForwardSpeed - victim.ForwardSpeed, headOn: false);
+                var ctx = new HitContext(rear, front,
+                    rear.ForwardSpeed - front.ForwardSpeed, headOn: false);
                 _hitReaction.OnHit(ctx);
             }
             else
             {
-                // 攻撃でない接触: 左右に軽く押し離すだけ（仕様: 通常衝突は軽い物理反応のみ）。
+                // 攻撃でない接触: スタンは無しだが、相対速度が大きいほど強く弾かれる
+                // （固定値だけだと「当たった感」が薄いため。ぶつかった者同士は少し前進速度も落ちる）。
+                float relativeSpeed = Mathf.Abs(a.ForwardSpeed - b.ForwardSpeed);
+                float bounce = separationSpeed + relativeSpeed * separationSpeedFactor;
+
                 float dir = Mathf.Sign(a.LateralOffset - b.LateralOffset);
                 if (Mathf.Approximately(dir, 0f))
                     dir = 1f;
-                a.ApplyKnockback(1f, dir * separationSpeed);
-                b.ApplyKnockback(1f, -dir * separationSpeed);
+                a.ApplyKnockback(separationForwardFactor, dir * bounce);
+                b.ApplyKnockback(separationForwardFactor, -dir * bounce);
+
+                // 攻撃でなくても接触した以上は「当たった感」を出す。攻撃ヒットと違い
+                // 一方的な被弾ではないので、両者から鳴らす。
+                a.PlayHitEffect();
+                b.PlayHitEffect();
             }
         }
 
-        static long PairKey(Racer a, Racer b)
+        // 順序を揃えてから組にすることで、(a, b) と (b, a) が同じキーになる。
+        // EntityId から int への暗黙変換は非推奨なので、EntityId のまま扱う。
+        static (EntityId, EntityId) PairKey(Racer a, Racer b)
         {
-            int ia = a.GetInstanceID();
-            int ib = b.GetInstanceID();
-            if (ia > ib) (ia, ib) = (ib, ia);
-            return ((long)ia << 32) ^ (uint)ib;
-        }
-
-        LineRenderer CreateTrailLine(Racer racer)
-        {
-            var go = new GameObject($"Trail_{racer.name}");
-            go.transform.SetParent(transform, false);
-            var line = go.AddComponent<LineRenderer>();
-            line.widthMultiplier = trailWidth;
-            line.numCornerVertices = 2;
-            line.numCapVertices = 2;
-            line.useWorldSpace = true;
-            line.positionCount = 0;
-
-            var shader = Shader.Find("Universal Render Pipeline/Unlit");
-            var material = new Material(shader != null ? shader : Shader.Find("Sprites/Default"));
-            var color = ReadRacerColor(racer);
-            if (material.HasProperty("_BaseColor"))
-                material.SetColor("_BaseColor", color);
-            else
-                material.color = color;
-            line.material = material;
-            line.startColor = color;
-            line.endColor = new Color(color.r, color.g, color.b, 0f);
-            return line;
-        }
-
-        void UpdateTrailLine(RacerTrail trail)
-        {
-            if (trail.Line == null || trail.Racer == null)
-                return;
-
-            var course = trail.Racer.Course;
-            if (course == null)
-                return;
-
-            trail.Line.positionCount = trail.Points.Count;
-            for (int i = 0; i < trail.Points.Count; i++)
-            {
-                var p = trail.Points[i];
-                trail.Line.SetPosition(i, course.GetWorldPosition(p.S, p.T));
-            }
-        }
-
-        static Color ReadRacerColor(Racer racer)
-        {
-            var renderer = racer.GetComponent<Renderer>();
-            if (renderer != null && renderer.sharedMaterial != null)
-            {
-                var mat = renderer.sharedMaterial;
-                if (mat.HasProperty("_BaseColor"))
-                    return mat.GetColor("_BaseColor");
-                return mat.color;
-            }
-            return Color.cyan;
+            var ia = a.GetEntityId();
+            var ib = b.GetEntityId();
+            return ia.CompareTo(ib) <= 0 ? (ia, ib) : (ib, ia);
         }
     }
 }
