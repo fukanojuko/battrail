@@ -25,10 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          # 開発の統合先は develop。ここを main にすると bump が develop に
-          # 戻らず、develop の bundleVersion だけが取り残される
-          ref: develop
-          # PR 本文にリリース内容を載せるため main との差分を辿れる深さが要る
+          # PR 本文の変更一覧で origin/main を参照する
           fetch-depth: 0
 
       - name: Compute next version
@@ -81,17 +78,17 @@ jobs:
         run: |
           set -euo pipefail
           {
-            echo "\`bundleVersion\` を $CURRENT から $NEXT に更新します。"
+            echo "\`bundleVersion\` を $CURRENT から $NEXT に更新し、\`${{ github.ref_name }}\` を main に取り込みます。"
             echo
-            echo "このバージョンで出る変更 (main 未取り込み分):"
+            echo "## 含まれる変更"
             echo
             git log --oneline --merges --grep='Merge pull request' origin/main..HEAD \
               | sed -E 's/^[0-9a-f]+ Merge pull request (#[0-9]+) from [^ ]*\/(.*)$/- \1 \2/'
             echo
-            echo "マージ後、develop を main に上げた時点で \`v$NEXT\` のタグと Release が作られます。"
+            echo "マージすると \`v$NEXT\` のタグと Release が作られ、main を develop に戻す追従 PR が立ちます。"
           } > pr-body.md
           gh pr create \
-            --base develop \
+            --base main \
             --head "$BRANCH" \
             --title "Bump version to $NEXT" \
             --body-file pr-body.md
