@@ -2100,13 +2100,13 @@ MonoBehaviour:
   m_Script: {fileID: 77774720}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battrail.CombatManager
-  hitRangeS: 1.2
-  hitRangeT: 1.2
+  hitRangeS: 1.4
+  hitRangeT: 0.9
   hitCooldown: 0.4
   victimForwardSpeedFactor: 0.5
   victimLateralImpulse: 9
   victimStunSeconds: 0.35
-  separationSpeed: 4
+  separationSpeed: 6
   separationSpeedFactor: 0.5
   separationForwardFactor: 0.9
   trailSeconds: 3

@@ -60,9 +60,10 @@ namespace Battrail
     public class CombatManager : MonoBehaviour
     {
         [Header("Player collision (s, t 空間)")]
-        [Tooltip("高速すれ違い時に判定を通過してしまわないよう、当たり判定はモデルの見た目より広めに取る")]
-        [SerializeField] float hitRangeS = 2.0f;
-        [SerializeField] float hitRangeT = 1.2f;
+        [Tooltip("見た目の接触距離（前後 1.09 / 横 0.68）の 1.3 倍程度。" +
+                 "広げすぎると相手の占有ゾーンが増えてコースが狭く感じる")]
+        [SerializeField] float hitRangeS = 1.4f;
+        [SerializeField] float hitRangeT = 0.9f;
         [Tooltip("同一ペアを連続ヒットさせない再判定クールダウン")]
         [SerializeField] float hitCooldown = 0.4f;
         [SerializeField] float victimForwardSpeedFactor = 0.5f;
