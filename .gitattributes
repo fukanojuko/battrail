@@ -14,6 +14,10 @@
 # Optionally collapse Unity YAML files on GitHub diffs
 # [attr]unity-yaml        merge=unityyamlmerge text linguist-language=yaml linguist-generated
 
+# Build Automation は post-build script を Windows ビルダーの Cygwin でも実行するため、
+# CRLF に変換されると壊れる。LF を強制する。
+*.sh                    text eol=lf
+
 # Unity source files
 *.cginc                 text
 *.compute               text linguist-language=hlsl
