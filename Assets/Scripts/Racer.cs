@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Battrail
 {
@@ -61,6 +62,10 @@ namespace Battrail
 
         [Header("Course")]
         [SerializeField] CourseSpline course;
+
+        [Header("Hit effect")]
+        [Tooltip("被弾時に再生する VFX。Initial Event Name を空にしてあり、自動再生はしない")]
+        [SerializeField] VisualEffect hitEffect;
 
         public int PlayerIndex => playerIndex;
         public float DistanceAlongCourse { get; private set; }
@@ -198,6 +203,13 @@ namespace Battrail
         public void RecoverGauge(float amount)
         {
             Gauge = Mathf.Clamp(Gauge + amount, 0f, maxGauge);
+        }
+
+        /// 接触演出を再生する。CombatManager から呼ばれる。
+        public void PlayHitEffect()
+        {
+            if (hitEffect != null)
+                hitEffect.Play();
         }
 
         /// 一定時間操作不能にする（被弾時など）。複数回呼ばれたら長い方を採用。
