@@ -13,17 +13,21 @@ namespace Battrail
         static readonly Color StunColor = new(1f, 0.3f, 0.3f);
 
         Racer[] _racers;
+        RaceManager _raceManager;
         readonly Label[] _info = new Label[2];
         readonly VisualElement[] _fill = new VisualElement[2];
+        VisualElement _resultRoot;
+        Label _resultText;
         bool _bound;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            _racers = FindObjectsByType<Racer>(FindObjectsSortMode.None);
+            _racers = FindObjectsByType<Racer>();
+            _raceManager = FindAnyObjectByType<RaceManager>();
             _bound = false;
         }
 
-        void Update()
+        private void Update()
         {
             if (!_bound && !TryBind())
                 return;
@@ -48,6 +52,25 @@ namespace Battrail
                         racer.IsStunned ? StunColor : racer.IsBoosting ? BoostColor : NormalColor;
                 }
             }
+
+            UpdateResult();
+        }
+
+        void UpdateResult()
+        {
+            if (_resultRoot == null || _raceManager == null)
+                return;
+
+            if (_raceManager.IsFinished)
+            {
+                _resultRoot.RemoveFromClassList("hidden");
+                if (_resultText != null)
+                    _resultText.text = $"P{_raceManager.Winner.PlayerIndex + 1}   WIN";
+            }
+            else
+            {
+                _resultRoot.AddToClassList("hidden");
+            }
         }
 
         bool TryBind()
@@ -62,6 +85,8 @@ namespace Battrail
                 _info[i] = root.Q<Label>($"p{i}-info");
                 _fill[i] = root.Q<VisualElement>($"p{i}-fill");
             }
+            _resultRoot = root.Q<VisualElement>("result");
+            _resultText = root.Q<Label>("result-text");
             _bound = _info[0] != null || _info[1] != null;
             return _bound;
         }
