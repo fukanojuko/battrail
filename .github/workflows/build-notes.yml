@@ -1,0 +1,81 @@
+name: Append build info to release
+
+on:
+  repository_dispatch:
+    types: [unity-build-complete]
+
+# 複数プラットフォームのビルドがほぼ同時に終わると Release 本文の
+# read-modify-write が競合して片方の行が消える。直列化する。
+concurrency: append-build-info
+
+permissions:
+  contents: write
+
+jobs:
+  append:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Append build to release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ github.event.client_payload.version }}
+          BUILD_NUMBER: ${{ github.event.client_payload.build_number }}
+          TARGET: ${{ github.event.client_payload.target }}
+          PLATFORM: ${{ github.event.client_payload.platform }}
+          REVISION: ${{ github.event.client_payload.revision }}
+          ASSET_NAME: ${{ github.event.client_payload.asset_name }}
+          ASSET_URL: ${{ github.event.client_payload.asset_url }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "unexpected version '$VERSION' in payload" >&2
+            exit 1
+          fi
+          tag="v$VERSION"
+
+          if ! gh release view "$tag" > /dev/null 2>&1; then
+            echo "release $tag does not exist yet" >&2
+            exit 1
+          fi
+
+          # 表を壊す文字を落とす。payload はビルドマシン由来で、本文にそのまま入る
+          sanitize() { printf '%s' "$1" | tr -d '\n\r|`' | cut -c1-60; }
+          platform=$(sanitize "$PLATFORM")
+          target=$(sanitize "$TARGET")
+          build=$(sanitize "$BUILD_NUMBER")
+          revision=$(sanitize "$REVISION")
+          if [ ${#revision} -gt 12 ]; then
+            revision=${revision:0:7}
+          fi
+
+          # zip はビルドマシンが添付済み。ここではその Release アセットを指すだけ
+          download="—"
+          if [[ "$ASSET_URL" =~ ^https://github\.com/[A-Za-z0-9._/-]+$ ]]; then
+            download="[$(sanitize "$ASSET_NAME")]($ASSET_URL)"
+          fi
+
+          row="| $platform | $target | #$build | \`$revision\` | $download |"
+
+          body=$(gh release view "$tag" --json body -q .body)
+
+          # 同じビルドが二度通知されても行を増やさない
+          if grep -qF -- "$row" <<< "$body"; then
+            echo "$row is already in $tag" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if grep -qF -- '## Builds' <<< "$body"; then
+            printf '%s\n%s\n' "$body" "$row" > notes.md
+          else
+            {
+              printf '%s\n\n## Builds\n\n' "$body"
+              printf '| Platform | Target | Build | Revision | Download |\n'
+              printf '| --- | --- | --- | --- | --- |\n'
+              printf '%s\n' "$row"
+            } > notes.md
+          fi
+
+          gh release edit "$tag" --notes-file notes.md
+          echo "Added to $tag: $row" >> "$GITHUB_STEP_SUMMARY"
