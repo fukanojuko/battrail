@@ -1,5 +1,7 @@
 # battrail 仕様
 
+> 手触り・見た目を調整したいときの「どこを触るか」は [tuning.md](tuning.md) にまとめてある。
+
 レース＋バトル系。トレイルとブースト中衝突で攻防が成立する **1対1 対戦** ゲーム。
 順位（前後関係）と相手の状態を読みながら、ゲージを管理して攻撃機会を作る。
 
@@ -43,6 +45,32 @@
 - **ブースト中の衝突**:
   - 移動方向が揃っている → **前方プレイヤーが減速＋横方向にはじき出される**（後方ブースター側は速度維持）
   - 向かい合っている → **速度の値を交換**
+
+### ブースト中の演出
+
+**集中線**（`BoostConcentrationLine`）: アーティスト制作の
+`Assets/Contents/Artist/ConcentrationLineEffect/`（ShaderGraph + Material）を貼った RawImage を
+ブースト中だけ出す。濃度はマテリアルの `_Alpha` で制御し、`Racer.IsBoosting` に追従して
+フェードイン（速め）／フェードアウト（緩め）する。prefab は `Assets/Prefabs/ConcentrationLine/`。
+
+- **Canvas はカメラごとに 1 つ持つ**。Canvas は 1 つのカメラにしか紐付かないので、左右分割の
+  2 カメラそれぞれの子に prefab を置く（`Main Camera` = P1 / `Camera 2` = P2）。
+  `worldCamera` はスクリプトが親カメラから自動設定するため、シーン側で参照を刺す必要はない
+- **Screen Space - Overlay ではなく Screen Space - Camera**。マテリアルが HDR の発光色
+  （`_Color` 4.28 / `_BlightColor` (0, 8.4, 19.7)）で Bloom 前提のため、ポストプロセス後に描かれる
+  Overlay では意図した光り方にならない
+- **マテリアルは実行時に複製して使う**。共有インスタンスのままだと 2 画面が同じ濃度で動き、
+  さらにプロジェクトの `.mat` 自体が Play 中に書き換わる
+- **レイヤーで相手カメラから隠す**。Screen Space - Camera の Canvas は「カメラの手前に置かれた板」
+  として実在するので、2 機が接近／前後に並ぶともう一方のカメラに映り込みうる。
+  レイヤー `P1 View`(8) / `P2 View`(9) を用意し、各カメラの Culling Mask で相手側を落としている
+  （集中線 prefab をカメラ配下に増やすときは、この Layer 設定も必要）
+
+**カメラの引き**（`BoostCameraKick`）: ブーストの吹き始めに `CinemachineFollow.FollowOffset` へ
+`kickOffset` を加算してカメラを一度後ろへ引き、`recoverDuration` で元の位置へ戻す。
+`CM Camera` / `CM Camera 2` に付ける。寄り引きの滑らかさは Cinemachine の `PositionDamping` に任せる。
+引きは `kickInDuration` でなまらせる（1 フレームで飛ばすと段付いて見える）。値の更新は `Update` で行い、
+`CinemachineBrain`（LateUpdate 更新）と同じフレーム内で反映させる。
 
 ### 当たった時の効果 (拡張可能な seam)
 
@@ -148,6 +176,11 @@ Racer (ゲームロジック・(s,t) 管理)
 - **1 台 PC ／ コントローラー 2 個 ／ 画面分割** で 1v1 対戦。
 - 入力ペアリング: playerIndex で分岐。`Gamepad.all[index]` があればそれ、無ければ Keyboard（P1=WASD / P2=矢印）。Racer.ReadMove() に集約（オンライン化時はここだけ差替）。
 - カメラ: Cinemachine v3 の `OutputChannel` / `ChannelMask` で 2 個の Unity Camera にそれぞれの追従 vcam を割り振る。3人称チェイスカム（機体の斜め後方・低め、`FollowOffset`(0, 2.2, -8)）。`CinemachineFollow`（Body: `LockToTargetWithWorldUp` で機体の向きに追従）＋`CinemachineRotationComposer`（Aim: 機体を実際に見る）の組み合わせが必須。`CinemachineFollow`単体だとBindingModeを変えても実際の向き（Aim）が更新されない不具合があった。
+  **`CinemachineBrain` の Update Method は `LateUpdate`**。既定の `SmartUpdate` は「ターゲットが
+  FixedUpdate で動いているか」を見て更新タイミングを選ぶため、`Racer`（kinematic Rigidbody を
+  `MovePosition`）に対しては FixedUpdate 更新を選ぶ。すると `RigidbodyInterpolation.Interpolate` で
+  補間される**前**の位置を 50Hz で読むことになり、カメラが機体より粗く動く（ブースト時のカメラ引きで
+  カクつきとして表面化した）。補間を使っている以上 LateUpdate 更新が正しい。
 - 画面分割の向き: **左右分割**（実装済み）。Main Camera が左半分（viewport 0,0,0.5,1）、Camera 2 が右半分（0.5,0,0.5,1）。
 - HUD: 各プレイヤーのビューポート内に独立表示。
 - 衝突・トレイル・ブースト等のゲームルールは **2 機体前提**で実装する。AI は当面入れない（必要になったらダミー入力で代用）。
@@ -187,6 +220,7 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **決着後のフロー** — 決着後 1 秒待ってから、SPACE/Enter/Start ボタンで同シーンをリトライ、ESC/Select ボタンでタイトルへ戻る（PostRaceController）。HUD の勝敗オーバーレイに操作ヒントを表示
 - [x] **outgame の見た目・導線改善** — タイトル画面に宇宙背景（Boot と同じ Skybox）を適用し世界観を統一。レース中は ESC/Start でポーズ（`Time.timeScale = 0`、Resume/Quitオーバーレイ）、ポーズ中に Q/Select でタイトルへ（PauseController）。HUD 上部に常時ヒント表示
 - [x] **トレイル見た目（VFX Graph）** — デザイナーが各 Racer に VFX（`MasterTrail` / `MasterTrail_CaseC`）を実装（`feature/trail-system`）。`CombatManager` の仮 LineRenderer（`TrailVisual`）は撤去し、判定用の (s,t) 位置履歴のみ保持する形に整理
+- [x] **ブースト演出** — ブースト中に集中線（アーティスト制作の ShaderGraph、カメラごとの Canvas に表示）、吹き始めにカメラを後ろへ引いて徐々に戻す（`BoostConcentrationLine` / `BoostCameraKick`）
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 
 ---
@@ -229,6 +263,8 @@ Racer (ゲームロジック・(s,t) 管理)
 - `Assets/Scripts/Racer.cs` — 移動ロジック本体（前進・後退・左右）
 - `Assets/Scripts/RacerInput.cs` — デバイス入力読み取り（Racer から分離。オンライン対応時はここだけ差替）
 - `Assets/Scripts/TrailVisual.cs` — トレイルの見た目（CombatManager から分離。VFX Graph 差替時はここを差し替える）
+- `Assets/Scripts/BoostConcentrationLine.cs` — ブースト中の集中線（カメラごとの Canvas に配置）
+- `Assets/Scripts/BoostCameraKick.cs` — ブースト開始時にカメラを後ろへ引く演出
 - `Assets/InputSystem_Actions.inputactions` + 自動生成 `.cs` — 入力アセット
 - `Assets/Scenes/Boot.unity` — メインシーン
 - `Assets/Materials/{Ground,Player}.mat` — URP/Lit マテリアル

@@ -84,6 +84,15 @@ namespace Battrail
         /// ゴール到達の瞬間に一度だけ発火（RaceManager が毎フレーム HasFinished をポーリングしなくて済むように）。
         public event Action<Racer> Finished;
 
+        /// シーン内から playerIndex 一致の Racer を引く。カメラ・演出側が自分の担当機を見つけるための入口。
+        public static Racer Find(int playerIndex)
+        {
+            foreach (var racer in FindObjectsByType<Racer>())
+                if (racer.playerIndex == playerIndex)
+                    return racer;
+            return null;
+        }
+
         Rigidbody _rigidbody;
         RacerInput _input;
         float _lateralVelocity;
@@ -156,6 +165,7 @@ namespace Battrail
                 DistanceAlongCourse = course.Length;
                 HasFinished = true;
                 ForwardSpeed = 0f;
+                IsBoosting = false;
                 Finished?.Invoke(this);
             }
 
@@ -222,6 +232,9 @@ namespace Battrail
         public void EndRace()
         {
             _raceOver = true;
+            // 以後 FixedUpdate が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
+            // （攻撃判定・ブースト演出が決着後も出たままになる）。
+            IsBoosting = false;
         }
 
         void SnapToCourse()
