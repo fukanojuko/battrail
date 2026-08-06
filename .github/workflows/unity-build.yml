@@ -52,6 +52,7 @@ jobs:
           unity_service_account_secret_key: ${{ secrets.UNITY_SA_SECRET_KEY }}
           branch: ${{ inputs.branch }}
           clean: ${{ inputs.clean }}
+          wait_for_completion: 'true'
 
       - name: Summarize
         env:
