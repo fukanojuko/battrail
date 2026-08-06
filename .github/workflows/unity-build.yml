@@ -1,0 +1,63 @@
+name: Unity Cloud Build
+
+# Release 作成時に tag-release.yml から呼ばれる。Release イベントで直接起動しないのは、
+# tag-release.yml が GITHUB_TOKEN で Release を作っており、その場合 GitHub は
+# 後続の workflow を起動しないため。手動での焼き直し用に workflow_dispatch も残す。
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: false
+        default: main
+      clean:
+        type: boolean
+        required: false
+        default: false
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to build
+        type: string
+        required: false
+        default: main
+      clean:
+        description: Clean build
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      # Build Automation はタグではなくブランチの HEAD を取りに行く。Release 作成から
+      # Unity 側の checkout までに main が進むと、ビルドの revision が
+      # build-notes.yml の記録するタグとずれる。action 側に revision の指定口が無く、
+      # 現状は許容している。
+      #
+      # branch を明示するのは post-build.sh が SCM_BRANCH=main 以外を捨てるため。
+      # ダッシュボード側の設定に任せると Release への添付が黙って行われなくなる。
+      - name: Trigger Unity Build Automation
+        id: unity
+        uses: Matuyuhi/unity-cloud-build-action@v0.4.0
+        with:
+          unity_org_id: ${{ secrets.UNITY_ORG_ID }}
+          unity_project_id: ${{ secrets.UNITY_PROJECT_ID }}
+          build_target_id: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+          unity_service_account_key_id: ${{ secrets.UNITY_SA_KEY_ID }}
+          unity_service_account_secret_key: ${{ secrets.UNITY_SA_SECRET_KEY }}
+          branch: ${{ inputs.branch }}
+          clean: ${{ inputs.clean }}
+
+      - name: Summarize
+        env:
+          BUILD_ID: ${{ steps.unity.outputs.build_id }}
+          PLATFORM: ${{ steps.unity.outputs.platform }}
+          STATUS: ${{ steps.unity.outputs.build_status }}
+        run: |
+          set -euo pipefail
+          echo "Unity build #$BUILD_ID ($PLATFORM) $STATUS" >> "$GITHUB_STEP_SUMMARY"
