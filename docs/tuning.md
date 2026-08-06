@@ -35,6 +35,31 @@
 - `startDashDuration`（1.5）/ `startDashSpeed`（28）/ `startDashAcceleration`（30）—
   被弾スタン明けの救済加速。追い上げのしやすさ
 
+## スタート演出（カウントダウン）
+
+**場所**: `Boot.unity` の `RaceManager`
+
+- `countdownInterval`（1）— "3" "2" "1" を 1 つ出しておく時間（秒）。スタートまでの待ち時間は この 3 倍
+- `goDisplaySeconds`（0.7）— "GO!" を残す時間。**この間もレースは進行している**（操作開始は GO! と同時）
+- 文字の並び自体は `RaceManager.CountLabels` / `GoLabel`（コード側の定数）
+
+**見た目**: `Assets/UI/PlayerHud.uss` の `.countdown-overlay` / `.countdown-text`
+
+- `background-color`（rgba 0,0,0,0.3）— 黒の濃さ。result(0.45) / pause(0.6) より薄くしてある
+- `font-size`（120px）/ `letter-spacing`（8px）— 数字の大きさ
+
+## BGM
+
+**場所**: `Boot.unity` の `RaceManager` に付いた `RaceBgm`
+
+- `clip` — 流す曲。**未設定なら無音のまま何も起きない**。音源は `Assets/Contents/Artist/BGM/` に置いて
+  Unity Editor でインポートしてから、ここに挿す
+- `volume`（0.6）— 音量
+- `fadeOutSeconds`（1.5）— 決着後に消えるまでの時間。0 にすると即停止
+
+`AudioSource` は実行時に `RaceBgm` が生成するので、インスペクタには出ない（loop / 2D 再生は
+コード側で固定）。ポーズ中の停止は `PauseController` の `AudioListener.pause`。
+
 ## 当たり判定・攻防
 
 **場所**: `Boot.unity` の `CombatManager`

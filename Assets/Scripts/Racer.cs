@@ -70,6 +70,10 @@ namespace Battrail
         [SerializeField] VisualEffect hitEffect;
 
         public int PlayerIndex => playerIndex;
+        /// 直近に読んだ移動入力。カウントダウン中も更新されるので、GO 前の入力を使う演出・仕様はここを見る。
+        public Vector2 CurrentMove { get; private set; }
+        /// 直近に読んだブーストボタンの状態。CurrentMove と同じくカウントダウン中も更新される。
+        public bool IsBoostHeld { get; private set; }
         public float DistanceAlongCourse { get; private set; }
         public float LateralOffset { get; private set; }
         public float ForwardSpeed { get; private set; }
@@ -101,7 +105,8 @@ namespace Battrail
         float _stunTimer;
         float _startDashTimer;
         bool _boostDepleted;
-        bool _raceOver;
+        // RaceManager が Running にするまで動かない。開始側が呼び忘れても走り出さない向きに倒しておく。
+        RacePhase _phase = RacePhase.Countdown;
 
         private void Awake()
         {
@@ -128,11 +133,19 @@ namespace Battrail
 
         private void FixedUpdate()
         {
-            if (course == null || HasFinished || _raceOver)
+            if (course == null)
                 return;
 
-            var move = _input.ReadMove();
-            bool boostHeld = _input.ReadBoost();
+            // 入力はカウントダウン中・決着後も読み続ける（GO 前の入力を見る拡張のための seam）。
+            // 反映するのは Running の間だけ。
+            CurrentMove = _input.ReadMove();
+            IsBoostHeld = _input.ReadBoost();
+
+            if (_phase != RacePhase.Running || HasFinished)
+                return;
+
+            var move = CurrentMove;
+            bool boostHeld = IsBoostHeld;
             var dt = Time.fixedDeltaTime;
 
             // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。解除の瞬間にスタートダッシュを付与する。
@@ -241,12 +254,15 @@ namespace Battrail
             _stunTimer = Mathf.Max(_stunTimer, seconds);
         }
 
-        /// 決着がついたら RaceManager から呼ばれ、以後の入力・移動を止める。
-        public void EndRace()
+        /// レース進行フェーズを RaceManager から受け取る。Running 以外では入力を読むだけで動かない。
+        public void SetPhase(RacePhase phase)
         {
-            _raceOver = true;
-            // 以後 FixedUpdate が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
-            // （攻撃判定・ブースト演出が決着後も出たままになる）。
+            _phase = phase;
+            if (phase == RacePhase.Running)
+                return;
+
+            // 移動更新が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
+            // （攻撃判定・ブースト演出がカウントダウン中／決着後も出たままになる）。
             IsBoosting = false;
         }
 
