@@ -43,7 +43,7 @@ jobs:
       # ダッシュボード側の設定に任せると Release への添付が黙って行われなくなる。
       - name: Trigger Unity Build Automation
         id: unity
-        uses: Matuyuhi/unity-cloud-build-action@v0.4.0
+        uses: Matuyuhi/unity-cloud-build-action@v0.4.2
         with:
           unity_org_id: ${{ secrets.UNITY_ORG_ID }}
           unity_project_id: ${{ secrets.UNITY_PROJECT_ID }}
@@ -52,6 +52,7 @@ jobs:
           unity_service_account_secret_key: ${{ secrets.UNITY_SA_SECRET_KEY }}
           branch: ${{ inputs.branch }}
           clean: ${{ inputs.clean }}
+          wait_for_completion: 'true'
 
       - name: Summarize
         env:
