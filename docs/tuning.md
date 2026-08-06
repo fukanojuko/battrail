@@ -28,6 +28,10 @@
 - `overspeedDecay`（12）— ブースト解除後、通常最高速まで落ちる速さ。余韻の長さ
 - `maxGauge`（100）/ `gaugeDrainPerSecond`（35）/ `gaugeRegenPerSecond`（12）—
   ブーストを何秒吹けるか・何秒で戻るか。現在値で連続 約2.9秒、全回復 約8.3秒
+- `boostRestartGauge`（25）— 空になった後、再びブーストできるまでに必要な回復量。
+  現在値で押しっぱなしのまま約 2.1 秒待つと再点火できる。下げると息継ぎが短くなり、
+  0 にすると空ゲージでブーストが永続する不具合が戻る（spec.md「空ゲージでの再点火バグ修正」）。
+  **`maxGauge` より大きくしない**（ロックが解けず二度とブーストできなくなる）
 - `startDashDuration`（1.5）/ `startDashSpeed`（28）/ `startDashAcceleration`（30）—
   被弾スタン明けの救済加速。追い上げのしやすさ
 

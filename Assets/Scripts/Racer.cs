@@ -36,6 +36,8 @@ namespace Battrail
         [SerializeField] float maxGauge = 100f;
         [SerializeField] float gaugeDrainPerSecond = 35f;
         [SerializeField] float gaugeRegenPerSecond = 12f;
+        [Tooltip("ゲージが空になった後、再びブーストできるようになるゲージ量。押しっぱなしでの再点火を防ぐ")]
+        [SerializeField] float boostRestartGauge = 25f;
 
         [Header("Lateral (t)")]
         [Tooltip("左右入力による横加速度（速度ではなく加速度で反応させ、慣性で切り返しにブレを出す）")]
@@ -98,6 +100,7 @@ namespace Battrail
         float _lateralVelocity;
         float _stunTimer;
         float _startDashTimer;
+        bool _boostDepleted;
         bool _raceOver;
 
         private void Awake()
@@ -142,10 +145,20 @@ namespace Battrail
                     _startDashTimer = startDashDuration;
             }
 
-            IsBoosting = boostHeld && Gauge > 0f;
+            // 空になったら boostRestartGauge まで戻るまで再点火させない。
+            // 「Gauge > 0」だけを条件にすると、空のまま押しっぱなしのとき
+            // 「消費できず回復が入るフレーム → 次フレームで再点火」を毎フレーム繰り返し、
+            // 実効 50% のデューティでブーストが永続してしまう（超過した消費量は 0 でクランプされて消える）。
+            if (_boostDepleted && Gauge >= boostRestartGauge)
+                _boostDepleted = false;
+
+            IsBoosting = boostHeld && !_boostDepleted && Gauge > 0f;
             Gauge = Mathf.Clamp(
                 Gauge + (IsBoosting ? -gaugeDrainPerSecond : gaugeRegenPerSecond) * dt,
                 0f, maxGauge);
+
+            if (IsBoosting && Gauge <= 0f)
+                _boostDepleted = true;
 
             ForwardSpeed = StepForward(ForwardSpeed, move.y, IsBoosting, CornerSpeedFactor(), dt);
 
