@@ -87,10 +87,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _Alpha: 0.351
+    - _Alpha: 0.023
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AngleScale: 1
+    - _AngleScale: 4.66
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -107,14 +107,14 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _LineIntensity: 0.76
-    - _LineRate: 240
-    - _LineSpeed: 17.8
+    - _LineIntensity: 0.5
+    - _LineRate: 12
+    - _LineSpeed: 12
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
-    - _Randomness: 49.5
+    - _Randomness: 68
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
