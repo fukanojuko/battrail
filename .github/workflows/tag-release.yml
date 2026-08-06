@@ -12,6 +12,8 @@ permissions:
 jobs:
   tag:
     runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.check.outputs.exists == 'false' }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -55,3 +57,11 @@ jobs:
           git push origin "$TAG"
           gh release create "$TAG" --title "$TAG" --generate-notes
           echo "Released $TAG" >> "$GITHUB_STEP_SUMMARY"
+
+  # このジョブは既存タグへの push でも成功で終わるため、Release を実際に作った時だけ回す。
+  # 呼び出し先には secrets が引き継がれないので inherit が要る。
+  unity:
+    needs: tag
+    if: needs.tag.outputs.released == 'true'
+    uses: ./.github/workflows/unity-build.yml
+    secrets: inherit
