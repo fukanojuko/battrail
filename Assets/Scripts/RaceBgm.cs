@@ -9,7 +9,7 @@ namespace Battrail
     {
         [Tooltip("レース中に流す曲。未設定なら何も再生しない")]
         [SerializeField] AudioClip clip;
-        [SerializeField, Range(0f, 1f)] float volume = 0.6f;
+        [SerializeField, Range(0f, 1f)] float volume = 0.3f;
         [Tooltip("決着後にフェードアウトしきるまでの時間（秒）")]
         [SerializeField] float fadeOutSeconds = 1.5f;
 

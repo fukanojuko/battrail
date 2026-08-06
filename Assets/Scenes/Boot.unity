@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b090cebf5527049c6a5e3ab56d282cbb, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battrail.RaceManager
   countdownInterval: 1
   goDisplaySeconds: 0.7
@@ -1324,10 +1324,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43450bb38bc945128c6e4b302671c6a7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battrail.RaceBgm
-  clip: {fileID: 0}
-  volume: 0.6
+  clip: {fileID: 8300000, guid: d05461ade1512483db9b69e4328afa9a, type: 3}
+  volume: 0.3
   fadeOutSeconds: 1.5
 --- !u!1 &4000020
 GameObject:

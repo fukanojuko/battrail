@@ -54,7 +54,7 @@
 
 - `clip` — 流す曲。**未設定なら無音のまま何も起きない**。音源は `Assets/Contents/Artist/BGM/` に置いて
   Unity Editor でインポートしてから、ここに挿す
-- `volume`（0.6）— 音量
+- `volume`（0.3）— 音量。ゲーム内の効果音より前に出すぎないところから始める
 - `fadeOutSeconds`（1.5）— 決着後に消えるまでの時間。0 にすると即停止
 
 `AudioSource` は実行時に `RaceBgm` が生成するので、インスペクタには出ない（loop / 2D 再生は

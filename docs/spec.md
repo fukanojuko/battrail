@@ -212,6 +212,7 @@ Racer (ゲームロジック・(s,t) 管理)
 - `AudioSource` は実行時に生成して `loop` / `playOnAwake` / `spatialBlend` をコード側で確定させる
   （シーン側の設定ミスで 3D 再生・自動再生にならないように）
 - **`clip` 未設定なら何も再生しない**。音源が入る前でもシーンに置いたままにできる
+- 現在の曲は `sampleBGM_B.wav`（60 秒、ループ前提）。Vorbis で取り込んでいる
 - ポーズ中は `PauseController` が `AudioListener.pause` で止める（`Time.timeScale = 0` では音は止まらない）
 - 音源の置き場所はデザイン作業領域に合わせて `Assets/Contents/Artist/BGM/`。
   `.mp3` / `.wav` / `.ogg` は Git LFS 追跡対象（`.gitattributes`）
@@ -284,7 +285,7 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **スタート演出** — RaceManager が RacePhase を持ち、"3 2 1 GO!" のカウントダウン後に操作開始。
   演出中も入力は読み続ける（`Racer.CurrentMove` / `IsBoostHeld`）。HUD に薄い黒のオーバーレイ
 - [x] **BGM の仕組み** — `RaceBgm` が `RaceStarted` で再生・`RaceFinished` でフェードアウト、
-  ポーズ連動（`AudioListener.pause`）。**音源ファイルは未投入**（clip 未設定でも動く）
+  ポーズ連動（`AudioListener.pause`）。音源は `Assets/Contents/Artist/BGM/sampleBGM_B.wav`
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 
 ---
