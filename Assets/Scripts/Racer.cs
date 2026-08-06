@@ -36,6 +36,8 @@ namespace Battrail
         [SerializeField] float maxGauge = 100f;
         [SerializeField] float gaugeDrainPerSecond = 35f;
         [SerializeField] float gaugeRegenPerSecond = 12f;
+        [Tooltip("ゲージが空になった後、再びブーストできるようになるゲージ量。押しっぱなしでの再点火を防ぐ")]
+        [SerializeField] float boostRestartGauge = 25f;
 
         [Header("Lateral (t)")]
         [Tooltip("左右入力による横加速度（速度ではなく加速度で反応させ、慣性で切り返しにブレを出す）")]
@@ -68,6 +70,10 @@ namespace Battrail
         [SerializeField] VisualEffect hitEffect;
 
         public int PlayerIndex => playerIndex;
+        /// 直近に読んだ移動入力。カウントダウン中も更新されるので、GO 前の入力を使う演出・仕様はここを見る。
+        public Vector2 CurrentMove { get; private set; }
+        /// 直近に読んだブーストボタンの状態。CurrentMove と同じくカウントダウン中も更新される。
+        public bool IsBoostHeld { get; private set; }
         public float DistanceAlongCourse { get; private set; }
         public float LateralOffset { get; private set; }
         public float ForwardSpeed { get; private set; }
@@ -98,7 +104,9 @@ namespace Battrail
         float _lateralVelocity;
         float _stunTimer;
         float _startDashTimer;
-        bool _raceOver;
+        bool _boostDepleted;
+        // RaceManager が Running にするまで動かない。開始側が呼び忘れても走り出さない向きに倒しておく。
+        RacePhase _phase = RacePhase.Countdown;
 
         private void Awake()
         {
@@ -125,11 +133,19 @@ namespace Battrail
 
         private void FixedUpdate()
         {
-            if (course == null || HasFinished || _raceOver)
+            if (course == null)
                 return;
 
-            var move = _input.ReadMove();
-            bool boostHeld = _input.ReadBoost();
+            // 入力はカウントダウン中・決着後も読み続ける（GO 前の入力を見る拡張のための seam）。
+            // 反映するのは Running の間だけ。
+            CurrentMove = _input.ReadMove();
+            IsBoostHeld = _input.ReadBoost();
+
+            if (_phase != RacePhase.Running || HasFinished)
+                return;
+
+            var move = CurrentMove;
+            bool boostHeld = IsBoostHeld;
             var dt = Time.fixedDeltaTime;
 
             // スタン中は操作不能（慣性・弾き・スプライン追従は継続）。解除の瞬間にスタートダッシュを付与する。
@@ -142,10 +158,20 @@ namespace Battrail
                     _startDashTimer = startDashDuration;
             }
 
-            IsBoosting = boostHeld && Gauge > 0f;
+            // 空になったら boostRestartGauge まで戻るまで再点火させない。
+            // 「Gauge > 0」だけを条件にすると、空のまま押しっぱなしのとき
+            // 「消費できず回復が入るフレーム → 次フレームで再点火」を毎フレーム繰り返し、
+            // 実効 50% のデューティでブーストが永続してしまう（超過した消費量は 0 でクランプされて消える）。
+            if (_boostDepleted && Gauge >= boostRestartGauge)
+                _boostDepleted = false;
+
+            IsBoosting = boostHeld && !_boostDepleted && Gauge > 0f;
             Gauge = Mathf.Clamp(
                 Gauge + (IsBoosting ? -gaugeDrainPerSecond : gaugeRegenPerSecond) * dt,
                 0f, maxGauge);
+
+            if (IsBoosting && Gauge <= 0f)
+                _boostDepleted = true;
 
             ForwardSpeed = StepForward(ForwardSpeed, move.y, IsBoosting, CornerSpeedFactor(), dt);
 
@@ -228,12 +254,15 @@ namespace Battrail
             _stunTimer = Mathf.Max(_stunTimer, seconds);
         }
 
-        /// 決着がついたら RaceManager から呼ばれ、以後の入力・移動を止める。
-        public void EndRace()
+        /// レース進行フェーズを RaceManager から受け取る。Running 以外では入力を読むだけで動かない。
+        public void SetPhase(RacePhase phase)
         {
-            _raceOver = true;
-            // 以後 FixedUpdate が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
-            // （攻撃判定・ブースト演出が決着後も出たままになる）。
+            _phase = phase;
+            if (phase == RacePhase.Running)
+                return;
+
+            // 移動更新が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
+            // （攻撃判定・ブースト演出がカウントダウン中／決着後も出たままになる）。
             IsBoosting = false;
         }
 

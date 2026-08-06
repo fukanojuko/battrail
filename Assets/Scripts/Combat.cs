@@ -101,10 +101,12 @@ namespace Battrail
         readonly List<RacerTrail> _trails = new();
         readonly Dictionary<(EntityId, EntityId), float> _pairCooldown = new();
         IHitReaction _hitReaction;
+        RaceManager _raceManager;
 
         private void Start()
         {
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
+            _raceManager = FindAnyObjectByType<RaceManager>();
 
             foreach (var racer in FindObjectsByType<Racer>())
                 _trails.Add(new RacerTrail { Racer = racer });
@@ -112,6 +114,12 @@ namespace Battrail
 
         private void FixedUpdate()
         {
+            // カウントダウン中と決着後は判定しない。特にスタート前は 2 機が静止したまま
+            // 近接判定に入り続けるため、はじきの横速度が溜まって GO の瞬間に吹き飛ぶ
+            // （Racer 側は Running 以外で速度を積分しないので、蓄積だけが残る）。
+            if (_raceManager != null && _raceManager.Phase != RacePhase.Running)
+                return;
+
             float now = Time.time;
             float dt = Time.fixedDeltaTime;
 
