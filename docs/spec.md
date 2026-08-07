@@ -16,7 +16,7 @@
 - **前進**（W / ↑ / ゲームパッド左スティック↑） — 加速
 - **後退**（S / ↓ / 左スティック↓） — 減速（ブレーキのみ、逆走なし）
 - **左右**（A・D / ← → / 左スティック横） — コースの進行方向に対する**横オフセット**移動（コース幅内に収まる）。加速度＋慣性＋中央への弱い引力で反応する
-- **ブースト**（予定: LeftShift / Space / ゲームパッド RT） — 速度限界超え＋攻撃判定発生
+- **ブースト**（LeftShift（P1）/ RightShift（P2）/ ゲームパッド RT・A ボタン） — 速度限界超え＋攻撃判定発生
 
 ### 詳細（コース追従 = スプライン相対モデル）
 
@@ -42,6 +42,8 @@
 - 速度限界を超えた速度域に入り、**攻撃判定**が発生する。
 - 入力モデル: **押下中だけブースト持続**（離すと終了、ゲージが空でも終了）。
 - 保持中はゲージを消費。時間で徐々に回復。**トレイル通過で大幅回復**。
+- **空になった後の再点火にはしきい値がある**（`boostRestartGauge`）。ゲージが 0 になったら、
+  ボタンを押したままでもその量まで回復するまで再点火しない。→「空ゲージでの再点火バグ修正」
 - **ブースト中の衝突**:
   - 移動方向が揃っている → **前方プレイヤーが減速＋横方向にはじき出される**（後方ブースター側は速度維持）
   - 向かい合っている → **速度の値を交換**
@@ -106,6 +108,23 @@
 
 - 旧実装は `a.IsAttacking ^ b.IsAttacking`（XOR）で attacker を決めていたため、**両者ともブースト中に衝突すると何も起きない**不具合があった。前方/後方の位置関係（s の大小）で決め、「後方にいてブースト中」の機体だけを attacker とする形に修正（前方側のブースト有無は問わない）。
 
+### 空ゲージでの再点火バグ修正
+
+旧実装は点火条件が `boostHeld && Gauge > 0` だけだったため、**ゲージが空でもボタンを押し続けている限り
+ブーストが永続する**不具合があった（ゲージ切れの機体が減速せず、後続が追いつけない）。
+
+- 機構: 空のフレームは点火せず回復（+12/s × dt = 0.24）が入る → 次フレームは `Gauge > 0` を満たすので
+  点火する → 消費（35/s × dt = 0.7）は 0 でクランプされ超過分が消える、を毎フレーム繰り返す。
+  結果として**実効 50% のデューティ**でブーストが継続し、ブースト加速（24）が非ブースト時の
+  `overspeedDecay`（12）を上回るため速度が `boostSpeed` に貼り付く。
+  回復量を減らす／消費を増やす方向の調整ではこのループは消えない（クランプで超過が捨てられるため）。
+- 同じ原因で `IsAttacking`（= `IsBoosting`）も半分のフレームで true になり、**攻撃判定が実質出っぱなし**
+  になっていた。こちらの方が実害が大きい。
+- 機構は左右対称で**先頭固有の不具合ではない**（先頭が得をするだけ）。順位に依存する対処は入れていない。
+- 修正: `boostRestartGauge` によるヒステリシス。空になったらロックし、その量まで回復するまで再点火しない。
+  ボタンを離す要求は付けていない（押しっぱなしのプレイヤーが二度とブーストできなくなるため）。
+  トレイル通過の大幅回復はこのロックを解除するので、追い上げ設計とは噛み合う。
+
 ---
 
 ## トレイル
@@ -155,6 +174,48 @@ Racer (ゲームロジック・(s,t) 管理)
 
 - **勝利条件**: **先にゴール（`s >= spline.length`）に到達した方が勝ち**。
 - それ以外のスコア・ラップ・時間制限は当面なし（後付け）。
+
+### レース進行（RacePhase）
+
+`RaceManager` が `RacePhase { Countdown, Running, Finished }` を持ち、`Racer.SetPhase()` で全機に配る。
+`Racer` 側はフェーズ 1 本だけを持ち（ゴール済みかどうかを表す `HasFinished` とは直交）、
+**既定値を `Countdown` にしてある**ので、開始側が呼び忘れても走り出さない側に倒れる。
+
+- `Countdown` — スタート演出中。移動・ゲージ・攻撃判定は止まる
+- `Running` — 操作可能。`RaceStarted` イベントがこの瞬間に一度だけ発火する
+- `Finished` — 決着。`RaceFinished` イベント発火、以後 `PostRaceController` が画面遷移を受け持つ
+
+`CombatManager` も `Running` の間だけ判定を回す。カウントダウン中は 2 機が静止したまま近接判定に
+入り続けるため、はじきの横速度だけが溜まって GO の瞬間に吹き飛ぶ
+（`Racer` は `Running` 以外で速度を積分しないので、蓄積だけが残る）。現在のスタート位置は
+`startLateralOffset` が ±1.5 で差 3.0、`hitRangeT` は 0.9 なので発火はしないが、
+スタート位置を寄せた瞬間に壊れるため位置に依存させない。
+
+### スタート演出（カウントダウン）
+
+`RaceManager` が `Awaitable` で "3" → "2" → "1" → "GO!" を流し、GO! と同時に `Running` へ移す
+（`PostRaceController` と同じ async void + Awaitable のパターン）。
+
+- 見た目は HUD の全画面オーバーレイ（`PlayerHud.uxml` の `countdown`）。既存の `result` / `pause` と
+  同じ「`hidden` クラスを付け外しする」形。黒の濃度は result(0.45) / pause(0.6) より薄い **0.3**
+- UIDocument は画面全体に張られているので、左右分割の中央に 1 つだけ出る（`result` と同じ挙動）
+- **カウントダウン中もボタン入力は読み続ける**。`Racer.FixedUpdate` は早期 return せず、
+  `CurrentMove` / `IsBoostHeld` を毎フレーム更新してから移動側だけをゲートしている。
+  GO 前の入力を使う仕様（ロケットスタート等）はこの 2 つを見れば足りる
+- ただしカウントダウン中はゲージを減らさず `IsBoosting` も立てない（GO 前に攻撃判定が出るため）
+
+## BGM
+
+`RaceBgm`（`RaceManager` と同じ GameObject）が `RaceStarted` で再生し、`RaceFinished` で
+`fadeOutSeconds` かけてフェードアウトする。
+
+- `AudioSource` は実行時に生成して `loop` / `playOnAwake` / `spatialBlend` をコード側で確定させる
+  （シーン側の設定ミスで 3D 再生・自動再生にならないように）
+- **`clip` 未設定なら何も再生しない**。音源が入る前でもシーンに置いたままにできる
+- 現在の曲は `sampleBGM_B.wav`（60 秒、ループ前提）。Vorbis で取り込んでいる
+- ポーズ中は `PauseController` が `AudioListener.pause` で止める（`Time.timeScale = 0` では音は止まらない）
+- 音源の置き場所はデザイン作業領域に合わせて `Assets/Contents/Artist/BGM/`。
+  `.mp3` / `.wav` / `.ogg` は Git LFS 追跡対象（`.gitattributes`）
 
 ---
 
@@ -214,13 +275,17 @@ Racer (ゲームロジック・(s,t) 管理)
 - [x] **プレイヤー衝突** — (s,t) 近接判定。片ブースト=攻撃側が相手を減速＋横はじき＋短スタン、それ以外は左右分離。HitContext/IHitReaction で差替可能
 - [x] **HUD** — UI Toolkit (UXML/USS)。viewport 別（左=P1 / 右=P2）に速度・順位・ゲージバー（`Assets/UI/`, PlayerHudUI）
 - [x] **順位** — s 順で順位算出＋表示（PlayerHudUI.Rank）
-- [x] **勝敗UI** — RaceManager が決着で全 Racer を停止（Racer.EndRace）、HUD に "PX WIN" オーバーレイ表示
+- [x] **勝敗UI** — RaceManager が決着で全 Racer を停止（Racer.SetPhase(Finished)）、HUD に "PX WIN" オーバーレイ表示
 - [x] **左右の挙動差替** — 平行移動から加速度＋慣性＋中央への弱い引力（ばね＋減衰モデル）へ差替（Racer.StepLateral）。数値は暫定、実機プレイで要調整
 - [x] **タイトル画面** — `Assets/Scenes/Title.unity`。ゲームタイトル＋"PRESS START"（点滅）＋操作説明。いずれかのキー/ゲームパッドボタンで Boot へ遷移（TitleScreenController）。Build Settings で Title(0) → Boot(1)
 - [x] **決着後のフロー** — 決着後 1 秒待ってから、SPACE/Enter/Start ボタンで同シーンをリトライ、ESC/Select ボタンでタイトルへ戻る（PostRaceController）。HUD の勝敗オーバーレイに操作ヒントを表示
 - [x] **outgame の見た目・導線改善** — タイトル画面に宇宙背景（Boot と同じ Skybox）を適用し世界観を統一。レース中は ESC/Start でポーズ（`Time.timeScale = 0`、Resume/Quitオーバーレイ）、ポーズ中に Q/Select でタイトルへ（PauseController）。HUD 上部に常時ヒント表示
 - [x] **トレイル見た目（VFX Graph）** — デザイナーが各 Racer に VFX（`MasterTrail` / `MasterTrail_CaseC`）を実装（`feature/trail-system`）。`CombatManager` の仮 LineRenderer（`TrailVisual`）は撤去し、判定用の (s,t) 位置履歴のみ保持する形に整理
 - [x] **ブースト演出** — ブースト中に集中線（アーティスト制作の ShaderGraph、カメラごとの Canvas に表示）、吹き始めにカメラを後ろへ引いて徐々に戻す（`BoostConcentrationLine` / `BoostCameraKick`）
+- [x] **スタート演出** — RaceManager が RacePhase を持ち、"3 2 1 GO!" のカウントダウン後に操作開始。
+  演出中も入力は読み続ける（`Racer.CurrentMove` / `IsBoostHeld`）。HUD に薄い黒のオーバーレイ
+- [x] **BGM の仕組み** — `RaceBgm` が `RaceStarted` で再生・`RaceFinished` でフェードアウト、
+  ポーズ連動（`AudioListener.pause`）。音源は `Assets/Contents/Artist/BGM/sampleBGM_B.wav`
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 
 ---
@@ -252,9 +317,12 @@ Racer (ゲームロジック・(s,t) 管理)
 | 後退（ブレーキ） | S, ↓ | 左スティック↓ |
 | 左 | A, ← | 左スティック← |
 | 右 | D, → | 左スティック→ |
-| ブースト | （未実装） | （未実装） |
+| ブースト | LeftShift（P1）/ RightShift（P2） | RT または A ボタン |
 
-すべて `Assets/InputSystem_Actions.inputactions` の `Player.Move` アクションを経由。
+読み取りは `RacerInput` が `Keyboard.current` / `Gamepad.all` を直接見る形
+（`Assets/InputSystem_Actions.inputactions` はプロジェクトテンプレート由来で、現状どのスクリプトからも参照していない）。
+
+カウントダウン中もこの入力は読まれており、`Racer.CurrentMove` / `Racer.IsBoostHeld` から取れる。
 
 ---
 
@@ -262,6 +330,8 @@ Racer (ゲームロジック・(s,t) 管理)
 
 - `Assets/Scripts/Racer.cs` — 移動ロジック本体（前進・後退・左右）
 - `Assets/Scripts/RacerInput.cs` — デバイス入力読み取り（Racer から分離。オンライン対応時はここだけ差替）
+- `Assets/Scripts/RaceManager.cs` — レース進行（RacePhase・カウントダウン・決着判定）
+- `Assets/Scripts/RaceBgm.cs` — レース BGM の再生／フェードアウト
 - `Assets/Scripts/TrailVisual.cs` — トレイルの見た目（CombatManager から分離。VFX Graph 差替時はここを差し替える）
 - `Assets/Scripts/BoostConcentrationLine.cs` — ブースト中の集中線（カメラごとの Canvas に配置）
 - `Assets/Scripts/BoostCameraKick.cs` — ブースト開始時にカメラを後ろへ引く演出

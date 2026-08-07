@@ -30,8 +30,9 @@ namespace Battrail
 
         private void OnDestroy()
         {
-            // シーン遷移などでこのオブジェクトが消えても timeScale を残さない。
+            // シーン遷移などでこのオブジェクトが消えても timeScale / 音の停止を残さない。
             Time.timeScale = 1f;
+            AudioListener.pause = false;
         }
 
         private void Update()
@@ -56,6 +57,8 @@ namespace Battrail
         {
             _isPaused = paused;
             Time.timeScale = paused ? 0f : 1f;
+            // timeScale = 0 でも音は止まらないので、BGM はここで明示的に止める。
+            AudioListener.pause = paused;
 
             if (_pauseRoot == null)
                 return;

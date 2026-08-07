@@ -18,6 +18,8 @@ namespace Battrail
         readonly VisualElement[] _fill = new VisualElement[2];
         VisualElement _resultRoot;
         Label _resultText;
+        VisualElement _countdownRoot;
+        Label _countdownText;
         bool _bound;
 
         private void OnEnable()
@@ -53,7 +55,25 @@ namespace Battrail
                 }
             }
 
+            UpdateCountdown();
             UpdateResult();
+        }
+
+        void UpdateCountdown()
+        {
+            if (_countdownRoot == null || _raceManager == null)
+                return;
+
+            var label = _raceManager.CountdownLabel;
+            if (label == null)
+            {
+                _countdownRoot.AddToClassList("hidden");
+                return;
+            }
+
+            _countdownRoot.RemoveFromClassList("hidden");
+            if (_countdownText != null)
+                _countdownText.text = label;
         }
 
         void UpdateResult()
@@ -87,6 +107,8 @@ namespace Battrail
             }
             _resultRoot = root.Q<VisualElement>("result");
             _resultText = root.Q<Label>("result-text");
+            _countdownRoot = root.Q<VisualElement>("countdown");
+            _countdownText = root.Q<Label>("countdown-text");
             _bound = _info[0] != null || _info[1] != null;
             return _bound;
         }
