@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1562205014868592539
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
-  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -20,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Course
-  m_Shader: {fileID: -6465566751694194690, guid: 6bbdb9ffb9796a9418be5137ee83ba6e, type: 3}
+  m_Name: standardSurface1
+  m_Shader: {fileID: -6465566751694194690, guid: 33ac4dca9874b9f479fb7493064b2bf1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -96,7 +83,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _Alpha: 0.5
+    - _Alpha: 0.8
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -108,45 +95,55 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _DstBlendAlpha: 0
+    - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _EnvironmentReflections: 1
-    - _FractionSpeed: 0.02
-    - _FresnelPower: 16.99
-    - _GlossMapScale: 0
+    - _FractionSpeed: 0
+    - _FresnelPower: 0.12
+    - _GlossMapScale: 1
     - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _MaskLength: 34.94
-    - _MaskStartDistance: 3
+    - _GlossyReflections: 1
+    - _MaskLength: 48.98
+    - _MaskStartDistance: 26.4
     - _Metallic: 0
+    - _Mode: 3
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
-    - _Period: 0.06
-    - _Power: 0.1
+    - _Parallax: 0.02
+    - _Period: 0.2
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.5
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.15
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _StepRate: 0.6
-    - _Surface: 0
-    - _Width: 0.11
+    - _StepRate: 1.27
+    - _Surface: 1
+    - _UVSec: 0
+    - _Width: 0.24
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0.09411765, b: 0.04684623, a: 1}
-    - _CourseColor: {r: 9.334481, g: 263.69537, b: 445.7219, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LineTiling: {r: 0.008, g: 0.008, b: 0, a: 0}
-    - _SmoothEdge: {r: 1.21, g: 3.8, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CourseColor: {r: 17.148375, g: 8.894634, b: 0.3774771, a: 1}
+    - _EmissionColor: {r: 24.251463, g: 12.866769, b: 0, a: 1}
+    - _LineTiling: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _StageColor: {r: 4.33201, g: 18.806797, b: 25.992073, a: 0.45882353}
-    - _Vector2: {r: 0.008, g: 0.018, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!114 &598226467616824001
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
