@@ -82,28 +82,19 @@ VisualEffect:
           m_Curve:
           - serializedVersion: 3
             time: 0
-            value: 0.15
-            inSlope: 2.8333333
-            outSlope: 2.8333333
+            value: 1
+            inSlope: 0
+            outSlope: 0
             tangentMode: 34
             weightedMode: 0
             inWeight: 0
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.3
-            value: 1
-            inSlope: 1.4166666
-            outSlope: 1.4166666
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
+            outWeight: 0
           - serializedVersion: 3
             time: 1
             value: 1
-            inSlope: -Infinity
-            outSlope: -Infinity
-            tangentMode: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
             weightedMode: 0
             inWeight: 0
             outWeight: 0

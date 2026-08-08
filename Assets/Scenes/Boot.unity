@@ -263,7 +263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018224, y: -0.000000012423642, z: 0.0000000020160795, w: 0.98708755}
+  m_LocalRotation: {x: 0.16018227, y: -1.0294667e-15, z: -5.7654007e-16, w: 0.9870875}
   m_LocalPosition: {x: 0, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -374,9 +374,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  kickOffset: {x: 0, y: 0.5, z: -3}
+  kickOffset: {x: 0, y: 0.5, z: -22}
   kickInDuration: 0.3
-  recoverDuration: 1.2
+  recoverDuration: 1
 --- !u!114 &2000030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1357,7 +1357,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4000020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018224, y: -0.000000012423642, z: 0.0000000020160795, w: 0.98708755}
+  m_LocalRotation: {x: 0.16018227, y: -1.0294667e-15, z: -5.7654007e-16, w: 0.9870875}
   m_LocalPosition: {x: 0, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1468,9 +1468,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 1
-  kickOffset: {x: 0, y: 0.5, z: -3}
+  kickOffset: {x: 0, y: 0.5, z: -22}
   kickInDuration: 0.3
-  recoverDuration: 1.2
+  recoverDuration: 1
 --- !u!1 &4000030
 GameObject:
   m_ObjectHideFlags: 0
@@ -1498,7 +1498,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4000030}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018227, y: -0.000000012423643, z: 0.00000000201608, w: 0.9870875}
+  m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
   m_LocalPosition: {x: 0, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1803,7 +1803,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018227, y: -0.000000012423643, z: 0.00000000201608, w: 0.9870875}
+  m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
   m_LocalPosition: {x: 0, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2189,6 +2189,22 @@ PrefabInstance:
       propertyPath: startLateralOffset
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4150528222797855972, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150528222797855972, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[9].m_Name
+      value: AlphaClip 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150528222797855972, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[9].m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150528222797855972, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[9].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4215692539141614569, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2209,6 +2225,50 @@ PrefabInstance:
       propertyPath: m_Asset
       value: 
       objectReference: {fileID: 8926484042661614526, guid: e44ff084c2550bc4fbabc9c9c76e532f, type: 3}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
+      value: 3.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[0].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[0].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].inWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[0].outWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].outWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2250,8 +2310,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: boostSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: playerIndex
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
+      propertyPath: boostAcceleration
+      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: startLateralOffset
@@ -2363,6 +2431,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2872740454319611770, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
+      value: 3.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4150528222797855972, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
       value: 11
@@ -2438,6 +2510,14 @@ PrefabInstance:
     - target: {fileID: 4215692539141614569, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
+      propertyPath: boostSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
+      propertyPath: boostAcceleration
+      value: 42
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
