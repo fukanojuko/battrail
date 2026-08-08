@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0050100000000000000000000000c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  halfWidth: 6
+  halfWidth: 5
   surfaceLift: 0.5
   curvatureSampleSpacing: 4
   roadSegmentLength: 1.5
