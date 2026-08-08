@@ -44,7 +44,7 @@ namespace Battrail
                     continue;
 
                 if (_info[i] != null)
-                    _info[i].text = $"P{i + 1}   {Rank(racer)}位   {racer.ForwardSpeed:F0}";
+                    _info[i].text = $"{PlayerLabel(i)}   {Rank(racer)}位   {racer.ForwardSpeed:F0}";
 
                 var fill = _fill[i];
                 if (fill != null)
@@ -85,7 +85,7 @@ namespace Battrail
             {
                 _resultRoot.RemoveFromClassList("hidden");
                 if (_resultText != null)
-                    _resultText.text = $"P{_raceManager.Winner.PlayerIndex + 1}   WIN";
+                    _resultText.text = $"{PlayerLabel(_raceManager.Winner.PlayerIndex)}   WIN";
             }
             else
             {
@@ -111,6 +111,14 @@ namespace Battrail
             _countdownText = root.Q<Label>("countdown-text");
             _bound = _info[0] != null || _info[1] != null;
             return _bound;
+        }
+
+        /// 表示名。1 人プレイでは NPC が操作する側を "P2" ではなく "NPC" と出す。
+        static string PlayerLabel(int playerIndex)
+        {
+            return GameMode.VsNpc && playerIndex == GameMode.NpcPlayerIndex
+                ? "NPC"
+                : $"P{playerIndex + 1}";
         }
 
         int Rank(Racer racer)
