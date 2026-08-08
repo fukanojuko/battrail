@@ -52,9 +52,13 @@ if [ -z "$build_dir" ] || [ ! -d "$build_dir" ]; then
   exit 0
 fi
 
-version=$(grep -E '^  bundleVersion: ' "$SETTINGS" 2> /dev/null | head -1 | awk '{print $2}')
-if [ -z "$version" ]; then
-  log "could not read bundleVersion from $SETTINGS, skipping"
+version=$(awk '/^  bundleVersion: /{print $2; exit}' "$SETTINGS" 2> /dev/null | tr -d '\r')
+# このスクリプトは Editor 終了後、つまり Unity が再シリアライズした後の
+# ProjectSettings.asset を読む。過去に空行の混入で bundleVersion が
+# 既定値 1.0 に戻り、存在しない v1.0 を探して黙って skip した。
+# tag-release.yml と同じ形式検証を掛けて、壊れていれば理由を残す
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  log "bundleVersion '$version' in $SETTINGS is not in major.minor.patch form, skipping"
   exit 0
 fi
 tag="v$version"
@@ -63,19 +67,26 @@ platform=${BUILD_PLATFORM:-unknown}
 build_number=${UCB_BUILD_NUMBER:-unknown}
 asset_name="battrail-$version-$platform-build$build_number.zip"
 
+headers=(
+  -H 'Accept: application/vnd.github+json'
+  -H "Authorization: Bearer $GITHUB_RELEASE_TOKEN"
+  -H 'X-GitHub-Api-Version: 2022-11-28'
+)
+
 api() {
   local method=$1 url=$2
   shift 2
-  curl -sSf -X "$method" \
-    -H 'Accept: application/vnd.github+json' \
-    -H "Authorization: Bearer $GITHUB_RELEASE_TOKEN" \
-    -H 'X-GitHub-Api-Version: 2022-11-28' \
-    "$@" "$url"
+  curl -sSf -X "$method" "${headers[@]}" "$@" "$url"
 }
 
-release_json=$(api GET "https://api.github.com/repos/$REPO/releases/tags/$tag" 2>&1)
-if [ $? -ne 0 ]; then
-  log "release $tag not found, skipping"
+# -f だと 404 も 401 もまとめて非ゼロになり原因が分からない。
+# ここは切り分けが要るのでステータスを明示的に取る
+release_res=$(curl -sS -w '\n%{http_code}' "${headers[@]}" \
+  "https://api.github.com/repos/$REPO/releases/tags/$tag")
+release_status=${release_res##*$'\n'}
+release_json=${release_res%$'\n'*}
+if [ "$release_status" != "200" ]; then
+  log "GET release $tag returned HTTP $release_status, skipping"
   exit 0
 fi
 release_id=$(printf '%s' "$release_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' 2> /dev/null)
