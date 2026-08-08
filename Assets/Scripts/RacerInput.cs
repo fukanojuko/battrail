@@ -3,11 +3,19 @@ using UnityEngine.InputSystem;
 
 namespace Battrail
 {
+    /// Racer が毎 FixedUpdate に読む入力源。人間のデバイス入力（RacerInput）と
+    /// NPC の思考（AiRacerInput）を同じ口で扱うための抽象。オンライン化時のリモート入力もここに来る。
+    public interface IRacerInput
+    {
+        Vector2 ReadMove();
+        bool ReadBoost();
+    }
+
     /// プレイヤーのデバイス入力読み取り。playerIndex で使用デバイスを決定する。
     ///   0 → Gamepad.all[0] があればそれ、無ければ Keyboard WASD + LeftShift
     ///   1 → Gamepad.all[1] があればそれ、無ければ Keyboard 矢印 + RightShift
     /// オンライン対応時はこのクラスだけ差し替える想定。
-    public sealed class RacerInput
+    public sealed class RacerInput : IRacerInput
     {
         readonly int _playerIndex;
 
