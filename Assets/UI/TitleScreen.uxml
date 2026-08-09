@@ -2,8 +2,12 @@
     <Style src="project://database/Assets/UI/TitleScreen.uss" />
     <ui:VisualElement name="root" class="title-root">
         <ui:Label name="game-title" text="BATTRAIL" class="game-title" />
-        <ui:Label name="prompt" text="PRESS START" class="prompt" />
+        <ui:VisualElement name="mode-select" class="mode-select">
+            <ui:Label name="mode-1p" text="1P vs NPC" class="mode-option" />
+            <ui:Label name="mode-2p" text="2P LOCAL" class="mode-option" />
+        </ui:VisualElement>
         <ui:VisualElement class="controls-hint">
+            <ui:Label text="↑↓ で選択 / Enter で決定" class="hint" />
             <ui:Label text="P1: WASD + LeftShift" class="hint" />
             <ui:Label text="P2: Arrow Keys + RightShift" class="hint" />
         </ui:VisualElement>

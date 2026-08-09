@@ -15,11 +15,29 @@
     margin-bottom: 32px;
 }
 
-.prompt {
-    color: rgb(255, 220, 90);
+.mode-select {
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.mode-option {
+    color: rgba(255, 255, 255, 0.55);
     font-size: 28px;
     -unity-font-style: bold;
-    margin-bottom: 48px;
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+    padding: 6px 32px;
+    margin-bottom: 8px;
+    /* 選択枠の分の幅を常に確保しておく（選択移動で項目がずれないように） */
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
+    border-radius: 4px;
+}
+
+/* 選択中の項目。色だけだと視認性が弱いので枠も出す */
+.mode-option.selected {
+    color: rgb(255, 220, 90);
+    border-color: rgba(255, 220, 90, 0.7);
 }
 
 .controls-hint {

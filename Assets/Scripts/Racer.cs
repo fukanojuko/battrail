@@ -76,6 +76,8 @@ namespace Battrail
         public bool IsBoostHeld { get; private set; }
         public float DistanceAlongCourse { get; private set; }
         public float LateralOffset { get; private set; }
+        /// 横方向の速度。NPC が目標位置へ寄せるときの制動（D 項）に使う。
+        public float LateralVelocity => _lateralVelocity;
         public float ForwardSpeed { get; private set; }
         public bool HasFinished { get; private set; }
         public bool IsBoosting { get; private set; }
@@ -100,7 +102,7 @@ namespace Battrail
         }
 
         Rigidbody _rigidbody;
-        RacerInput _input;
+        IRacerInput _input;
         float _lateralVelocity;
         float _stunTimer;
         float _startDashTimer;
@@ -116,8 +118,6 @@ namespace Battrail
             _rigidbody.constraints = RigidbodyConstraints.None;
             _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
-            _input = new RacerInput(playerIndex);
-
             if (course == null)
                 course = FindAnyObjectByType<CourseSpline>();
 
@@ -126,9 +126,20 @@ namespace Battrail
 
         private void Start()
         {
+            // 入力源の確定は Start まで遅らせる。Unity は全 Awake を全 Start より先に回すので、
+            // NpcSetup が Awake で SetInput した場合は必ずそちらが勝つ（FixedUpdate は Start の後）。
+            _input ??= new RacerInput(playerIndex);
+
             // Spread starting positions so players don't overlap at the start line.
             LateralOffset = startLateralOffset;
             SnapToCourse();
+        }
+
+        /// 入力源を差し替える。NPC 化・オンラインのリモート入力はここから注入する。
+        /// Start より前（＝Awake）に呼ぶこと。
+        public void SetInput(IRacerInput input)
+        {
+            _input = input;
         }
 
         private void FixedUpdate()

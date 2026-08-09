@@ -152,3 +152,29 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
 
 - ゲージの色は `PlayerHudUI` の `BoostColor` / `NormalColor` / `StunColor`（コード側の定数）
 - 配置・サイズ・フォントは `.uss`
+
+## NPC の強さ
+
+**場所**: `Boot.unity` の `RaceManager` > `NpcSetup` > `Tuning`
+
+**弱くしたいとき効くのは上の 2 つ**（`decisionInterval` を上げる、`targetSpeed` を下げる）。
+
+- `decisionInterval`（0.06）— 判断を更新する間隔。**強さの主軸**。上げるほど反応が鈍くなる。
+  0.2 くらいまで上げると目に見えて隙ができる
+- `targetSpeed`（18）— 巡航で狙う速度。`Racer.maxSpeed`（18）と同値なら常にフルスロットル。
+  下げると人間より遅くなる（コーナーでの減速は `Racer` 側の上限で自動的に掛かるので、ここでは考えなくて良い）
+- `lateralGain`（2.0）/ `lateralDamping`（0.2）— 狙う横位置への PD 制御。
+  **`lateralDamping` を 0 にすると蛇行する**（加速度モデルに対して P 項だけだと振動するため）。
+  `lateralGain` を上げるなら damping も上げる（臨界制動はおよそ `26*damping + 10 = 2*sqrt(26*gain)`）
+- `ramRange`（3.0）— 相手の後方この距離まで詰めたら体当たりを狙う。`CombatManager.hitRangeS` は 1.4
+- `trailFollowRange`（30）— この距離以内なら相手を意識する（後方なら追走、前方ならトレイルを踏ませない
+  ように横をずらす）。これを超えて離れている間だけコース中央を直進する。**下げると直線的な走りが増える**
+- `evadeRange`（5.0）— 前方にいるとき、後ろからこの距離まで迫られたら回避に入る。
+  ブースト有無は問わない（撃たれてから動いても間に合わないため）
+- `evadeGap`（1.3）/ `evadeGapUnderThreat`（2.2）— 相手の横位置から離す量と、相手がブースト中のときの量。
+  **`CombatManager.hitRangeT`（0.9）より大きく保つ**（下回ると避けきれない）。
+  上げるほど横に大きく振れるが、コース幅は ±3 なので 2.5 を超えると壁に張り付きやすくなる
+- `cruiseStartGauge`（60）/ `cruiseStopGauge`（30）— 相手が遠いときのブースト開始・終了ゲージ
+- `aggressiveStartGauge`（15）/ `aggressiveStopGauge`（3）— 追走・体当たり・回避中の開始・終了ゲージ。
+  相手のトレイル上は回復（60/s）が消費（35/s）を上回るので、ここは使い切る側に振ってある。
+  上げると出し惜しみして弱くなる

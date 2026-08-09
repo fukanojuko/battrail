@@ -1251,6 +1251,7 @@ GameObject:
   - component: {fileID: 3000013}
   - component: {fileID: 3000015}
   - component: {fileID: 3000016}
+  - component: {fileID: 3000017}
   m_Layer: 0
   m_Name: RaceManager
   m_TagString: Untagged
@@ -1329,6 +1330,33 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: d05461ade1512483db9b69e4328afa9a, type: 3}
   volume: 0.3
   fadeOutSeconds: 1.5
+--- !u!114 &3000017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e135c724729407e8bdcd89cef7fa07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Battrail.NpcSetup
+  forceNpcInEditor: 0
+  tuning:
+    decisionInterval: 0.06
+    targetSpeed: 18
+    lateralGain: 2
+    lateralDamping: 0.2
+    ramRange: 3
+    trailFollowRange: 30
+    evadeRange: 5
+    evadeGap: 1.3
+    evadeGapUnderThreat: 2.2
+    cruiseStartGauge: 60
+    cruiseStopGauge: 30
+    aggressiveStartGauge: 15
+    aggressiveStopGauge: 3
 --- !u!1 &4000020
 GameObject:
   m_ObjectHideFlags: 0
