@@ -114,3 +114,6 @@ InitTestScene*.unity*
 
 # Unity crash-recovery scene backups (created when the Editor closes without saving)
 /[Aa]ssets/_Recovery/
+
+# macOS が Finder 表示のたびに撒くフォルダ設定ファイル
+.DS_Store
