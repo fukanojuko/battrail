@@ -11,8 +11,19 @@
 # .github/workflows/build-notes.yml に任せる。本文の read-modify-write は
 # 複数プラットフォームが同時に終わると競合するため、直列化できる Actions 側で行う。
 #
+# Web ビルドは Release への zip 添付に加えて GitHub Pages (gh-pages ブランチ) へ公開する。
+# zip を配っても Content-Encoding を返せる置き場が無いと動かないので、URL を開けば
+# 遊べる状態を用意する。Release と同じく main のビルドだけが対象。
+#
+# 事前に必要な設定:
+#   - GitHub 側で Settings > Pages > Source を「Deploy from a branch: gh-pages / (root)」にする
+#     （gh-pages ブランチはこのスクリプトが初回に作る）
+#   - Player Settings の Decompression Fallback を on にしておく
+#     （Pages は .gz に Content-Encoding を付けないため。ProjectSettings に反映済み）
+#
 # 必要な環境変数 (Build Automation の Advanced settings > Environment variables):
 #   GITHUB_RELEASE_TOKEN  このリポジトリの Contents: write のみを持つ fine-grained PAT
+#                         （gh-pages への push にも同じ権限を使う）
 
 # ビルドを落とさないことを最優先にするため -e は付けない
 set -uo pipefail
@@ -21,10 +32,11 @@ REPO=fukanojuko/battrail
 EVENT_TYPE=unity-build-complete
 SETTINGS=ProjectSettings/ProjectSettings.asset
 MAX_ASSET_BYTES=2147483648 # GitHub の Release アセット上限は 1 ファイル 2 GiB
+PAGES_BRANCH=gh-pages
 
 log() { echo "post-build: $*"; }
 
-# post-build script は全ビルドで走る。Release が存在するのは main のみ
+# post-build script は全ビルドで走る。Release も Pages 公開も main のビルドだけが対象
 if [ "${SCM_BRANCH:-}" != "main" ]; then
   log "branch '${SCM_BRANCH:-unknown}' is not main, skipping"
   exit 0
@@ -45,12 +57,59 @@ done
 
 build_dir=${OUTPUT_DIRECTORY:-}
 if [ -z "$build_dir" ] && [ -n "${UNITY_PLAYER_PATH:-}" ]; then
-  build_dir=$(dirname "$UNITY_PLAYER_PATH")
+  # Web は単体の実行ファイルが無く、UNITY_PLAYER_PATH が出力ディレクトリ自体を指す。
+  # 素直に dirname すると親を掴んで無関係なものまで巻き込む
+  if [ -d "$UNITY_PLAYER_PATH" ]; then
+    build_dir=$UNITY_PLAYER_PATH
+  else
+    build_dir=$(dirname "$UNITY_PLAYER_PATH")
+  fi
 fi
 if [ -z "$build_dir" ] || [ ! -d "$build_dir" ]; then
   log "no build output at '${build_dir:-unset}', skipping"
   exit 0
 fi
+
+# BUILD_PLATFORM の綴りは Build Automation 側の設定に依存するので、出力の中身でも判定する
+is_web_build() {
+  case "$(printf '%s' "${BUILD_PLATFORM:-}" | tr 'A-Z' 'a-z')" in
+    *web*) return 0 ;;
+  esac
+  [ -f "$build_dir/index.html" ] && [ -d "$build_dir/Build" ]
+}
+
+# gh-pages は常に「最新の Web ビルドだけ」の 1 コミットに作り直す。履歴を残すと
+# 1 ビルドごとに数十 MB 積み上がるため、clone せず orphan を force push する。
+publish_web() {
+  if ! command -v git > /dev/null 2>&1; then
+    log "git is unavailable, skipping web publish"
+    return 0
+  fi
+
+  local work remote
+  remote="https://x-access-token:$GITHUB_RELEASE_TOKEN@github.com/$REPO.git"
+  work=$(mktemp -d)
+  cp -R "$build_dir/." "$work/"
+
+  # Unity の出力には _ 始まりのファイルが混じるので Jekyll を通さない
+  touch "$work/.nojekyll"
+
+  git -C "$work" init -q
+  git -C "$work" add -A
+  if ! git -C "$work" -c user.name='Unity Build Automation' -c user.email='noreply@github.com' \
+    commit -q -m "Deploy web build #${UCB_BUILD_NUMBER:-unknown} ($tag)"; then
+    log "nothing to publish to $PAGES_BRANCH"
+    rm -rf "$work"
+    return 0
+  fi
+
+  if git -C "$work" push -q --force "$remote" "HEAD:$PAGES_BRANCH" > /dev/null 2>&1; then
+    log "published to https://${REPO%%/*}.github.io/${REPO##*/}/"
+  else
+    log "push to $PAGES_BRANCH failed"
+  fi
+  rm -rf "$work"
+}
 
 version=$(awk '/^  bundleVersion: /{print $2; exit}' "$SETTINGS" 2> /dev/null | tr -d '\r')
 # このスクリプトは Editor 終了後、つまり Unity が再シリアライズした後の
@@ -62,6 +121,11 @@ if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 0
 fi
 tag="v$version"
+
+# Pages 公開は Release への添付とは独立。ここで失敗しても zip の添付は続行する
+if is_web_build; then
+  publish_web
+fi
 
 platform=${BUILD_PLATFORM:-unknown}
 build_number=${UCB_BUILD_NUMBER:-unknown}
