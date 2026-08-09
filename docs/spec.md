@@ -365,6 +365,9 @@ Racer ── IRacerInput ─┬─ RacerInput    (人間。Keyboard / Gamepad)
   ポーズ連動（`AudioListener.pause`）。音源は `Assets/Contents/Artist/BGM/sampleBGM_B.wav`
 - [x] **NPC（1P vs NPC）** — `IRacerInput` で入力源を抽象化し、P2 に `AiRacerInput` を注入（`NpcSetup`）。
   タイトルでモード選択、`GameMode` で Boot へ持ち越し。画面は左右分割のまま
+- [x] **進行バー** — 画面上部にコース全長を 1 本の帯で表し、両者の位置をアイコン（自機=白フチで一回り大きい）で
+  重ねる。帯の右端がゴール、その真上に残距離を数字のみで表示（`PlayerHud.uxml` の `p{i}-progress` / PlayerHudUI）。
+  進捗 fill は敷かない（読み取りたいのが絶対進捗ではなく前後差のため）
 - [ ] **ネットワーク（最終: 1v1 P2P）** — ホスト＝クライアント接続、入力／状態同期、ロビー or 接続 UX
 
 ---
