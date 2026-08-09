@@ -47,7 +47,8 @@ jobs:
         with:
           unity_org_id: ${{ secrets.UNITY_ORG_ID }}
           unity_project_id: ${{ secrets.UNITY_PROJECT_ID }}
-          build_target_id: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+          # build_target_id: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+          build_target_id: '_all'
           unity_service_account_key_id: ${{ secrets.UNITY_SA_KEY_ID }}
           unity_service_account_secret_key: ${{ secrets.UNITY_SA_SECRET_KEY }}
           branch: ${{ inputs.branch }}
