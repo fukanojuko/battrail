@@ -33,6 +33,15 @@ permissions:
 jobs:
   trigger:
     runs-on: ubuntu-latest
+    strategy:
+      # 片方の起動が失敗しても、もう片方は投げる
+      fail-fast: false
+      matrix:
+        target:
+          - name: windows
+            secret: UNITY_BUILD_TARGET_ID_WINDOWS
+          - name: web
+            secret: UNITY_BUILD_TARGET_ID_WEB
     steps:
       # Build Automation はタグではなくブランチの HEAD を取りに行く。Release 作成から
       # Unity 側の checkout までに main が進むと、ビルドの revision が
@@ -41,25 +50,28 @@ jobs:
       #
       # branch を明示するのは post-build.sh が SCM_BRANCH=main 以外を捨てるため。
       # ダッシュボード側の設定に任せると Release への添付が黙って行われなくなる。
-      - name: Trigger Unity Build Automation
+      - name: Trigger Unity Build Automation (${{ matrix.target.name }})
         id: unity
         uses: Matuyuhi/unity-cloud-build-action@v0.4.2
         with:
           unity_org_id: ${{ secrets.UNITY_ORG_ID }}
           unity_project_id: ${{ secrets.UNITY_PROJECT_ID }}
-          # build_target_id: ${{ secrets.UNITY_BUILD_TARGET_ID }}
-          build_target_id: '_all'
+          build_target_id: ${{ secrets[matrix.target.secret] }}
           unity_service_account_key_id: ${{ secrets.UNITY_SA_KEY_ID }}
           unity_service_account_secret_key: ${{ secrets.UNITY_SA_SECRET_KEY }}
           branch: ${{ inputs.branch }}
           clean: ${{ inputs.clean }}
-          wait_for_completion: 'true'
+          # 起動するだけで抜ける。完了を待つと 2 target ぶんの実行時間を Actions 側で
+          # 抱えることになり、Release への添付は post-build.sh → build-notes.yml で
+          # 完結するので待つ意味が無い
+          wait_for_completion: 'false'
 
       - name: Summarize
         env:
+          TARGET: ${{ matrix.target.name }}
           BUILD_ID: ${{ steps.unity.outputs.build_id }}
           PLATFORM: ${{ steps.unity.outputs.platform }}
           STATUS: ${{ steps.unity.outputs.build_status }}
         run: |
           set -euo pipefail
-          echo "Unity build #$BUILD_ID ($PLATFORM) $STATUS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Triggered $TARGET build #$BUILD_ID ($PLATFORM) $STATUS" >> "$GITHUB_STEP_SUMMARY"
