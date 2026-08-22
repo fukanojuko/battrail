@@ -1,8 +1,14 @@
 name: Deploy to GitHub Pages
 
+# CloudBuild/post-build.sh が gh-pages を更新した後に投げる dispatch で起動する。
+# gh-pages への push をトリガーにしないのは、push イベントで使われる workflow ファイルが
+# プッシュ先ブランチのものであり、gh-pages は web ビルドだけの orphan として
+# 作り直されていて .github/ を持たないため（起動しなかった）。
+# repository_dispatch はデフォルトブランチの workflow だけを起動するので、
+# このファイルは main に入って初めて有効になる。
 on:
-  push:
-    branches: [gh-pages]
+  repository_dispatch:
+    types: [web-build-published]
   workflow_dispatch:
 
 permissions:
@@ -10,7 +16,7 @@ permissions:
   pages: write
   id-token: write
 
-# gh-pages への push が複数重なった場合、最新だけデプロイする
+# gh-pages の更新が複数重なった場合、最新だけデプロイする
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -22,7 +28,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # dispatch 起動ではデフォルトブランチが checkout されるので、公開対象を明示する
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: gh-pages
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5.0.0
