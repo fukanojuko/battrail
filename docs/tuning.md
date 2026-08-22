@@ -125,6 +125,8 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
   **`.vfx` 本体ではなくコンポーネント側の override で調整する**（アーティストのアセットは触らない）
 - `MasterTrail_CaseC` の `TriggerTrailRate`（60）/ `TrailLifeTime`（2.8）— トレイルの密度と残る時間。
   見た目だけ。当たり判定は下の `CombatManager` 側
+- トレイルは Soft Particles を使うので、品質レベルの RP アセット（`Mobile_RPAsset` / `PC_RPAsset`）で
+  **Depth Texture が ON** である必要がある。切ると Web・モバイルでトレイルが消える（→ spec.md「Web ビルド（描画バックエンド）」）
 
 ## コース
 

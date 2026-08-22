@@ -381,6 +381,44 @@ Racer ── IRacerInput ─┬─ RacerInput    (人間。Keyboard / Gamepad)
 
 ---
 
+## Web ビルド（描画バックエンド）
+
+Web 版でエフェクトだけが一切出ない、という不具合の原因は 2 つあり、どちらもプラットフォーム差。
+
+### 1. VFX Graph はコンピュートシェーダー必須
+
+トレイル（`MasterTrail`）も被弾エフェクト（`BasicImpacts`）も VFX Graph で作られており、
+VFX Graph は**コンピュートシェーダーが無い環境では一切描画されない**（エラーも出ずに無音で消える）。
+WebGL 2.0 にはコンピュートシェーダーが無いため、Web ビルドではトレイルもヒットエフェクトも
+完全に見えなくなる。コンピュートシェーダーが使えるのは **WebGPU** バックエンドのみ。
+
+そのため Player Settings > Web > Other Settings の Auto Graphics API を切り、
+Graphics API を **WebGPU → WebGL 2.0 の順**にしてある
+（`ProjectSettings.asset` の `m_BuildTargetGraphicsAPIs` / `WebGLSupport`）。
+Unity はリストの先頭から順に試すので、WebGPU 対応ブラウザでは WebGPU、
+非対応ブラウザでは WebGL 2.0 にフォールバックする。
+
+- WebGPU 対応: Chrome / Edge（デスクトップ）、Safari 26+、Firefox（新しめ）
+- **フォールバックした環境では VFX が出ないのは変わらない**。原因を追えるよう、
+  `Assets/Scripts/GraphicsCapabilityLog.cs` が起動時にブラウザコンソールへ警告を出す
+- Unity 側で WebGPU はまだ experimental 扱い。挙動が怪しい場合は Graphics API から
+  WebGPU を外せば従来どおり WebGL 2.0 のみのビルドに戻せる
+
+### 2. Web の品質レベルは Mobile 側を使う
+
+`QualitySettings.asset` の `m_PerPlatformDefaultQuality` で `WebGL: 0`＝**Mobile** 品質のため、
+Web ビルドは `Mobile_RPAsset` を使う（Windows ビルドは PC 品質＝`PC_RPAsset`）。
+`Mobile_RPAsset` は Depth Texture が切られていたが、`MasterTrail` は
+**Soft Particles（`useSoftParticle: 1`）を使っており `_CameraDepthTexture` が必須**。
+深度テクスチャが無いとフェード計算が壊れ、Web・モバイルでだけトレイルが消える。
+このため `Mobile_RPAsset` の Depth Texture を ON にしてある（Opaque Texture は
+参照しているシェーダーが無いので OFF のまま）。
+
+PC と Web で絵が違う、という症状が出たときは、まず
+`PC_RPAsset` と `Mobile_RPAsset` の差分を疑うこと。
+
+---
+
 ## 仕様判断ログ
 
 セッション中に確定した解釈・選択を記録（後でひっくり返すかも前提）。
@@ -417,6 +455,7 @@ Racer ── IRacerInput ─┬─ RacerInput    (人間。Keyboard / Gamepad)
 - `Assets/Scripts/TrailVisual.cs` — トレイルの見た目（CombatManager から分離。VFX Graph 差替時はここを差し替える）
 - `Assets/Scripts/BoostConcentrationLine.cs` — ブースト中の集中線（カメラごとの Canvas に配置）
 - `Assets/Scripts/BoostCameraKick.cs` — ブースト開始時にカメラを後ろへ引く演出
+- `Assets/Scripts/GraphicsCapabilityLog.cs` — 起動時にコンピュートシェーダー非対応を警告（Web の VFX 不可視対策）
 - `Assets/InputSystem_Actions.inputactions` + 自動生成 `.cs` — 入力アセット
 - `Assets/Scenes/Boot.unity` — メインシーン
 - `Assets/Materials/{Ground,Player}.mat` — URP/Lit マテリアル
