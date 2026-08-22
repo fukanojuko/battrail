@@ -49,3 +49,15 @@
     font-size: 16px;
     margin-bottom: 4px;
 }
+
+/* バージョン。中央のメニューに干渉しないよう右下に絶対配置する。
+   文字は Application.version から流すので UXML では空にしてある（ProjectSettings と二重管理しない）。 */
+.version {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

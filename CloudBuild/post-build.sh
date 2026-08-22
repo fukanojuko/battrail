@@ -14,10 +14,11 @@
 # Web ビルドは Release への zip 添付に加えて GitHub Pages (gh-pages ブランチ) へ公開する。
 # zip を配っても Content-Encoding を返せる置き場が無いと動かないので、URL を開けば
 # 遊べる状態を用意する。Release と同じく main のビルドだけが対象。
+# gh-pages へ push した後、deploy-pages.yml を repository_dispatch で起動する。
 #
 # 事前に必要な設定:
-#   - GitHub 側で Settings > Pages > Source を「Deploy from a branch: gh-pages / (root)」にする
-#     （gh-pages ブランチはこのスクリプトが初回に作る）
+#   - GitHub 側で Settings > Pages > Source を「GitHub Actions」にする
+#     （gh-pages ブランチはこのスクリプトが初回に作る。公開は deploy-pages.yml が行う）
 #   - Player Settings の Decompression Fallback を on にしておく
 #     （Pages は .gz に Content-Encoding を付けないため。ProjectSettings に反映済み）
 #
@@ -30,6 +31,7 @@ set -uo pipefail
 
 REPO=fukanojuko/battrail
 EVENT_TYPE=unity-build-complete
+PAGES_EVENT_TYPE=web-build-published
 SETTINGS=ProjectSettings/ProjectSettings.asset
 MAX_ASSET_BYTES=2147483648 # GitHub の Release アセット上限は 1 ファイル 2 GiB
 PAGES_BRANCH=gh-pages
@@ -54,6 +56,18 @@ for cmd in curl python3; do
     exit 0
   fi
 done
+
+headers=(
+  -H 'Accept: application/vnd.github+json'
+  -H "Authorization: Bearer $GITHUB_RELEASE_TOKEN"
+  -H 'X-GitHub-Api-Version: 2022-11-28'
+)
+
+api() {
+  local method=$1 url=$2
+  shift 2
+  curl -sSf -X "$method" "${headers[@]}" "$@" "$url"
+}
 
 build_dir=${OUTPUT_DIRECTORY:-}
 if [ -z "$build_dir" ] && [ -n "${UNITY_PLAYER_PATH:-}" ]; then
@@ -104,11 +118,28 @@ publish_web() {
   fi
 
   if git -C "$work" push -q --force "$remote" "HEAD:$PAGES_BRANCH" > /dev/null 2>&1; then
-    log "published to https://${REPO%%/*}.github.io/${REPO##*/}/"
+    log "pushed to $PAGES_BRANCH"
+    request_pages_deploy
   else
     log "push to $PAGES_BRANCH failed"
   fi
   rm -rf "$work"
+}
+
+# gh-pages への push では deploy-pages.yml は起動しない。push イベントで使われる
+# workflow ファイルはプッシュ先ブランチのものであり、gh-pages は web ビルドだけの
+# orphan として作り直しているので .github/ を持たない。
+# repository_dispatch ならデフォルトブランチ側の workflow が動くので、そちらを叩く。
+request_pages_deploy() {
+  local payload
+  payload=$(printf '{"event_type":"%s","client_payload":{"version":"%s","build_number":"%s"}}' \
+    "$PAGES_EVENT_TYPE" "$version" "${UCB_BUILD_NUMBER:-unknown}")
+
+  if api POST "https://api.github.com/repos/$REPO/dispatches" -d "$payload" > /dev/null 2>&1; then
+    log "requested Pages deploy -> https://${REPO%%/*}.github.io/${REPO##*/}/"
+  else
+    log "Pages deploy dispatch failed. $PAGES_BRANCH is updated, so re-run deploy-pages.yml manually"
+  fi
 }
 
 version=$(awk '/^  bundleVersion: /{print $2; exit}' "$SETTINGS" 2> /dev/null | tr -d '\r')
@@ -130,18 +161,6 @@ fi
 platform=${BUILD_PLATFORM:-unknown}
 build_number=${UCB_BUILD_NUMBER:-unknown}
 asset_name="battrail-$version-$platform-build$build_number.zip"
-
-headers=(
-  -H 'Accept: application/vnd.github+json'
-  -H "Authorization: Bearer $GITHUB_RELEASE_TOKEN"
-  -H 'X-GitHub-Api-Version: 2022-11-28'
-)
-
-api() {
-  local method=$1 url=$2
-  shift 2
-  curl -sSf -X "$method" "${headers[@]}" "$@" "$url"
-}
 
 # -f だと 404 も 401 もまとめて非ゼロになり原因が分からない。
 # ここは切り分けが要るのでステータスを明示的に取る

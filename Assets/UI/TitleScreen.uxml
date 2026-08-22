@@ -11,5 +11,6 @@
             <ui:Label text="P1: WASD + LeftShift" class="hint" />
             <ui:Label text="P2: Arrow Keys + RightShift" class="hint" />
         </ui:VisualElement>
+        <ui:Label name="version" text="" class="version" />
     </ui:VisualElement>
 </ui:UXML>
