@@ -23,6 +23,12 @@ namespace Battrail
             var root = GetComponent<UIDocument>().rootVisualElement;
             _options[0] = root.Q<Label>("mode-1p");
             _options[1] = root.Q<Label>("mode-2p");
+
+            // ビルドの取り違えを防ぐため、Release と同じ bundleVersion をそのまま出す。
+            var version = root.Q<Label>("version");
+            if (version != null)
+                version.text = $"v{Application.version}";
+
             _selected = 0;
             ApplySelection();
         }
