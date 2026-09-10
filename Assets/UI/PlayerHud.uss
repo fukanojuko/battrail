@@ -21,12 +21,12 @@
 }
 
 /* ミニマップの置き場所。中身（コース線・走者アイコン）は MinimapElement が組み立てる。
-   パネル内の隅に置くのは、走行中に見る画面中央を塞がないため。 */
+   2P共通の1枚なので root 直下に置き、画面下中央（各パネルの info/gauge より上）に固定する。 */
 .minimap-host {
     position: absolute;
-    /* 上のポーズヒントを避けた位置 */
-    top: 34px;
-    left: 24px;
+    left: 50%;
+    margin-left: -70px;
+    bottom: 96px;
     width: 140px;
     height: 180px;
 }

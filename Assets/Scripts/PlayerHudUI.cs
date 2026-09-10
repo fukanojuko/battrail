@@ -16,7 +16,8 @@ namespace Battrail
         RaceManager _raceManager;
         readonly Label[] _info = new Label[2];
         readonly VisualElement[] _fill = new VisualElement[2];
-        readonly MinimapElement[] _minimap = new MinimapElement[2];
+        /// 2P共通の1枚。左右パネル別ではなく画面下中央に置くため、自機ハイライトは持たない。
+        MinimapElement _minimap;
         /// 非表示にした距離バー。UXML に要素が無い間は何もしない（復活時にここを消さずに済むよう呼び続ける）。
         readonly HudProgressBar _progressBar = new();
         VisualElement _resultRoot;
@@ -30,8 +31,7 @@ namespace Battrail
             _racers = FindObjectsByType<Racer>();
             _raceManager = FindAnyObjectByType<RaceManager>();
             // UIDocument のツリーは作り直されるので、前回作ったミニマップは捨てて貼り直す。
-            for (int i = 0; i < _minimap.Length; i++)
-                _minimap[i] = null;
+            _minimap = null;
             _bound = false;
         }
 
@@ -41,8 +41,7 @@ namespace Battrail
                 return;
 
             _progressBar.BeginFrame();
-            foreach (var minimap in _minimap)
-                minimap?.BeginFrame();
+            _minimap?.BeginFrame();
 
             foreach (var racer in _racers)
             {
@@ -69,29 +68,22 @@ namespace Battrail
             }
 
             _progressBar.Apply();
-            foreach (var minimap in _minimap)
-                minimap?.Apply();
+            _minimap?.Apply();
 
             UpdateCountdown();
             UpdateResult();
         }
 
-        /// 両パネルのミニマップに 2 人ぶんのアイコンを流す。自分だけでなく相手も出すのは、
+        /// 共通の1枚のミニマップに2人ぶんのアイコンを流す。自分だけでなく相手も出すのは、
         /// 勝敗に効くのが絶対進捗ではなく前後差だから（後ろに付けているかを一目で読ませる）。
         void UpdateMinimaps(int racerIndex, Racer racer)
         {
             var course = racer.Course;
-            if (course == null || course.Length <= 0f)
+            if (course == null || course.Length <= 0f || _minimap == null)
                 return;
 
-            foreach (var minimap in _minimap)
-            {
-                if (minimap == null)
-                    continue;
-
-                minimap.SetCourse(course);
-                minimap.SetRacer(racerIndex, course, racer.DistanceAlongCourse);
-            }
+            _minimap.SetCourse(course);
+            _minimap.SetRacer(racerIndex, course, racer.DistanceAlongCourse);
         }
 
         void UpdateCountdown()
@@ -139,15 +131,15 @@ namespace Battrail
             {
                 _info[i] = root.Q<Label>($"p{i}-info");
                 _fill[i] = root.Q<VisualElement>($"p{i}-fill");
+            }
 
-                // ミニマップは中身を C# で組み立てるので、UXML 側は置き場所だけ用意してある。
-                // TryBind は成功するまで毎フレーム呼ばれるので、二重に足さないよう既存を見る。
-                var host = root.Q<VisualElement>($"p{i}-minimap");
-                if (host != null && _minimap[i] == null)
-                {
-                    _minimap[i] = new MinimapElement(i);
-                    host.Add(_minimap[i]);
-                }
+            // ミニマップは中身を C# で組み立てるので、UXML 側は置き場所だけ用意してある。
+            // TryBind は成功するまで毎フレーム呼ばれるので、二重に足さないよう既存を見る。
+            var minimapHost = root.Q<VisualElement>("minimap");
+            if (minimapHost != null && _minimap == null)
+            {
+                _minimap = new MinimapElement(-1);
+                minimapHost.Add(_minimap);
             }
             _progressBar.Bind(root);
             _resultRoot = root.Q<VisualElement>("result");

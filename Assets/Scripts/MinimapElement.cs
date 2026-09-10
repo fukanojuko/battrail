@@ -32,7 +32,7 @@ namespace Battrail
         readonly Vector2[] _racerWorld = new Vector2[2];
         readonly bool[] _racerVisible = new bool[2];
 
-        /// selfIndex: このミニマップを表示するパネルの持ち主。そのアイコンだけ大きく描く。
+        /// selfIndex: そのアイコンだけ大きく描く走者。2P共通の1枚では自機の区別が無いため -1 を渡す。
         public MinimapElement(int selfIndex)
         {
             _selfIndex = selfIndex;

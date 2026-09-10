@@ -3,19 +3,18 @@
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
         <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" />
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
-            <ui:VisualElement name="p0-minimap" picking-mode="Ignore" class="minimap-host" />
             <ui:Label name="p0-info" text="P1" class="info" />
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p0-fill" class="gauge-fill" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="right" picking-mode="Ignore" class="player-panel">
-            <ui:VisualElement name="p1-minimap" picking-mode="Ignore" class="minimap-host" />
             <ui:Label name="p1-info" text="P2" class="info" />
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p1-fill" class="gauge-fill" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="minimap" picking-mode="Ignore" class="minimap-host" />
         <ui:VisualElement name="countdown" picking-mode="Ignore" class="countdown-overlay hidden">
             <ui:Label name="countdown-text" text="" class="countdown-text" />
         </ui:VisualElement>
