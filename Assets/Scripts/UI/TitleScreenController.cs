@@ -1,6 +1,5 @@
 using Battrail.Core;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -75,38 +74,21 @@ namespace Battrail.UI
         /// 下方向で +1、上方向で -1。スティックは押した瞬間だけを拾う。
         int ReadVerticalStep()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null)
-            {
-                if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
-                    return 1;
-                if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
-                    return -1;
-            }
+            if (MenuInput.KeyPressed(k => k.downArrowKey) || MenuInput.KeyPressed(k => k.sKey) ||
+                MenuInput.GamepadPressed(g => g.dpad.down) || MenuInput.GamepadPressed(g => g.leftStick.down))
+                return 1;
 
-            foreach (var gamepad in Gamepad.all)
-            {
-                if (gamepad.dpad.down.wasPressedThisFrame || gamepad.leftStick.down.wasPressedThisFrame)
-                    return 1;
-                if (gamepad.dpad.up.wasPressedThisFrame || gamepad.leftStick.up.wasPressedThisFrame)
-                    return -1;
-            }
+            if (MenuInput.KeyPressed(k => k.upArrowKey) || MenuInput.KeyPressed(k => k.wKey) ||
+                MenuInput.GamepadPressed(g => g.dpad.up) || MenuInput.GamepadPressed(g => g.leftStick.up))
+                return -1;
 
             return 0;
         }
 
         bool ConfirmPressed()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null &&
-                (keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame))
-                return true;
-
-            foreach (var gamepad in Gamepad.all)
-                if (gamepad.buttonSouth.wasPressedThisFrame || gamepad.startButton.wasPressedThisFrame)
-                    return true;
-
-            return false;
+            return MenuInput.KeyPressed(k => k.enterKey) || MenuInput.KeyPressed(k => k.spaceKey) ||
+                   MenuInput.GamepadPressed(g => g.buttonSouth) || MenuInput.GamepadPressed(g => g.startButton);
         }
     }
 }

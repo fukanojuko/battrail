@@ -1,6 +1,5 @@
 using Battrail.Racing;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace Battrail.UI
@@ -48,28 +47,13 @@ namespace Battrail.UI
 
         bool RetryPressed()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null && (keyboard.spaceKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame))
-                return true;
-
-            foreach (var gamepad in Gamepad.all)
-                if (gamepad.startButton.wasPressedThisFrame)
-                    return true;
-
-            return false;
+            return MenuInput.KeyPressed(k => k.spaceKey) || MenuInput.KeyPressed(k => k.enterKey) ||
+                   MenuInput.GamepadPressed(g => g.startButton);
         }
 
         bool TitlePressed()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
-                return true;
-
-            foreach (var gamepad in Gamepad.all)
-                if (gamepad.selectButton.wasPressedThisFrame)
-                    return true;
-
-            return false;
+            return MenuInput.KeyPressed(k => k.escapeKey) || MenuInput.GamepadPressed(g => g.selectButton);
         }
     }
 }

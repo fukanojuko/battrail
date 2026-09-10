@@ -71,15 +71,6 @@
     background-color: rgb(255, 138, 64);
 }
 
-/* 自機は一回り大きく白フチにして、視線を止めずに自分の位置を拾えるようにする */
-.minimap-dot--self {
-    width: 12px;
-    height: 12px;
-    border-radius: 6px;
-    border-width: 2px;
-    border-color: rgb(255, 255, 255);
-}
-
 .gauge-bg {
     width: 240px;
     height: 22px;

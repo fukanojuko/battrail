@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Battrail.Core;
 using Battrail.Racing;
 using UnityEngine;
@@ -14,7 +16,6 @@ namespace Battrail.UI
         static readonly Color NormalColor = new(0.25f, 0.7f, 1f);
         static readonly Color StunColor = new(1f, 0.3f, 0.3f);
 
-        Racer[] _racers;
         RaceManager _raceManager;
         readonly Label[] _info = new Label[2];
         readonly VisualElement[] _fill = new VisualElement[2];
@@ -28,9 +29,11 @@ namespace Battrail.UI
         Label _countdownText;
         bool _bound;
 
+        /// 走者は RaceManager が持つ一覧をそのまま使う（HUD 側で数え直すと食い違うため）。
+        IReadOnlyList<Racer> Racers => _raceManager != null ? _raceManager.Racers : Array.Empty<Racer>();
+
         private void OnEnable()
         {
-            _racers = FindObjectsByType<Racer>();
             _raceManager = FindAnyObjectByType<RaceManager>();
             // UIDocument のツリーは作り直されるので、前回作ったミニマップは捨てて貼り直す。
             _minimap = null;
@@ -45,7 +48,7 @@ namespace Battrail.UI
             _progressBar.BeginFrame();
             _minimap?.BeginFrame();
 
-            foreach (var racer in _racers)
+            foreach (var racer in Racers)
             {
                 if (racer == null)
                     continue;
@@ -140,7 +143,7 @@ namespace Battrail.UI
             var minimapHost = root.Q<VisualElement>("minimap");
             if (minimapHost != null && _minimap == null)
             {
-                _minimap = new MinimapElement(-1);
+                _minimap = new MinimapElement();
                 minimapHost.Add(_minimap);
             }
             _progressBar.Bind(root);
@@ -163,7 +166,7 @@ namespace Battrail.UI
         int Rank(Racer racer)
         {
             int rank = 1;
-            foreach (var other in _racers)
+            foreach (var other in Racers)
             {
                 if (other != null && other != racer &&
                     other.DistanceAlongCourse > racer.DistanceAlongCourse)
