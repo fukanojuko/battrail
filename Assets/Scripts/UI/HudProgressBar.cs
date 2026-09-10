@@ -1,7 +1,8 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// 旧「ゴールまでの距離バー」。ミニマップに置き換えたため現在 PlayerHud.uxml から外してあり、
     /// Bind しても要素が見つからず何もしない状態になっている。

@@ -1,9 +1,9 @@
+using Battrail.Racing;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// レース中の一時停止。ESC / ゲームパッド Start でポーズをトグルし、
     /// ポーズ中は Q / ゲームパッド Select でタイトルへ戻る。
@@ -71,28 +71,13 @@ namespace Battrail
 
         bool TogglePressed()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
-                return true;
-
-            foreach (var gamepad in Gamepad.all)
-                if (gamepad.startButton.wasPressedThisFrame)
-                    return true;
-
-            return false;
+            return MenuInput.KeyPressed(k => k.escapeKey) || MenuInput.GamepadPressed(g => g.startButton);
         }
 
+        /// ポーズ解除に ESC を使うため、タイトルへ戻す側は Q を割り当てている。
         bool QuitPressed()
         {
-            var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.qKey.wasPressedThisFrame)
-                return true;
-
-            foreach (var gamepad in Gamepad.all)
-                if (gamepad.selectButton.wasPressedThisFrame)
-                    return true;
-
-            return false;
+            return MenuInput.KeyPressed(k => k.qKey) || MenuInput.GamepadPressed(g => g.selectButton);
         }
     }
 }

@@ -1,7 +1,8 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// コース全体を真上から見た形で描くミニマップ。
     /// コース線は Painter2D で描き、走者アイコンは通常の VisualElement を動かす。
@@ -13,11 +14,9 @@ namespace Battrail
         /// 線幅ぶん端が切れないよう内側に取る余白。
         const float Padding = 8f;
         const float DotSize = 8f;
-        const float SelfDotSize = 12f;
 
         readonly VisualElement _track;
         readonly VisualElement[] _dots = new VisualElement[2];
-        readonly int _selfIndex;
 
         /// コース中心線のワールド XZ。null ならコース未解決。
         Vector2[] _points;
@@ -32,10 +31,8 @@ namespace Battrail
         readonly Vector2[] _racerWorld = new Vector2[2];
         readonly bool[] _racerVisible = new bool[2];
 
-        /// selfIndex: そのアイコンだけ大きく描く走者。2P共通の1枚では自機の区別が無いため -1 を渡す。
-        public MinimapElement(int selfIndex)
+        public MinimapElement()
         {
-            _selfIndex = selfIndex;
             pickingMode = PickingMode.Ignore;
             AddToClassList("minimap");
 
@@ -49,8 +46,6 @@ namespace Battrail
                 var dot = new VisualElement { pickingMode = PickingMode.Ignore };
                 dot.AddToClassList("minimap-dot");
                 dot.AddToClassList(i == 0 ? "minimap-dot--p1" : "minimap-dot--p2");
-                if (i == selfIndex)
-                    dot.AddToClassList("minimap-dot--self");
                 dot.AddToClassList("hidden");
                 _dots[i] = dot;
                 Add(dot);
@@ -130,9 +125,8 @@ namespace Battrail
 
                 _dots[i].RemoveFromClassList("hidden");
                 var local = WorldToLocal2D(_racerWorld[i]);
-                float size = i == _selfIndex ? SelfDotSize : DotSize;
-                _dots[i].style.left = local.x - size * 0.5f;
-                _dots[i].style.top = local.y - size * 0.5f;
+                _dots[i].style.left = local.x - DotSize * 0.5f;
+                _dots[i].style.top = local.y - DotSize * 0.5f;
             }
         }
 
