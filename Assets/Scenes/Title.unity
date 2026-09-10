@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6570ee61172f04e418200554a32b7240, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.UI.TitleScreenController
+  m_EditorClassIdentifier: Battrail.UI::Battrail.UI.TitleScreenController
   nextScene: Boot
   promptPulseSpeed: 3
 --- !u!114 &492128100

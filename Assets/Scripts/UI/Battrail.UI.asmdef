@@ -1,0 +1,18 @@
+{
+    "name": "Battrail.UI",
+    "rootNamespace": "Battrail.UI",
+    "references": [
+        "Battrail.Core",
+        "Battrail.Racing",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

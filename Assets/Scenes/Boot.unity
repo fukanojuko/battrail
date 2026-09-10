@@ -1285,7 +1285,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b090cebf5527049c6a5e3ab56d282cbb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.Racing.RaceManager
+  m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.RaceManager
   countdownInterval: 1
   goDisplaySeconds: 0.7
 --- !u!114 &3000013
@@ -1299,7 +1299,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81fe1fff57aba4ee79a4ca597e3140f9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.UI.PostRaceController
+  m_EditorClassIdentifier: Battrail.UI::Battrail.UI.PostRaceController
   titleScene: Title
   inputDelay: 1
 --- !u!114 &3000015
@@ -1313,7 +1313,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67120672d4b134dc8ab3a187a66b42a3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.UI.PauseController
+  m_EditorClassIdentifier: Battrail.UI::Battrail.UI.PauseController
   titleScene: Title
 --- !u!114 &3000016
 MonoBehaviour:
@@ -1326,7 +1326,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43450bb38bc945128c6e4b302671c6a7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.Presentation.RaceBgm
+  m_EditorClassIdentifier: Battrail.Presentation::Battrail.Presentation.RaceBgm
   clip: {fileID: 8300000, guid: d05461ade1512483db9b69e4328afa9a, type: 3}
   volume: 0.3
   fadeOutSeconds: 1.5
@@ -1341,7 +1341,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70e135c724729407e8bdcd89cef7fa07, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.Racing.Input.NpcSetup
+  m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.Input.NpcSetup
   forceNpcInEditor: 0
   tuning:
     decisionInterval: 0.06
@@ -1690,7 +1690,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b27bb328334448c3ad76287c9052013, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.UI.PlayerHudUI
+  m_EditorClassIdentifier: Battrail.UI::Battrail.UI.PlayerHudUI
 --- !u!114 &50211830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1743,7 +1743,7 @@ MonoScript:
   m_ExecutionOrder: 0
   m_ClassName: CombatManager
   m_Namespace: Battrail.Racing
-  m_AssemblyName: Assembly-CSharp
+  m_AssemblyName: Battrail.Racing
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2422,7 +2422,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 77774720}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Battrail.Racing.CombatManager
+  m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.CombatManager
   hitRangeS: 1.4
   hitRangeT: 0.9
   hitCooldown: 0.4
