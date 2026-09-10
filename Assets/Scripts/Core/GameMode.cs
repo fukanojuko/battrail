@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Core
 {
     /// タイトルで選んだ対戦形式を Boot シーンへ持ち越すための入れ物。
     /// PostRaceController のリトライは同じシーンの再ロードなので、static に置けばリトライ後も保たれる。

@@ -1,6 +1,7 @@
+using Battrail.Racing;
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Presentation
 {
     /// レース BGM。カウントダウン明け（RaceManager.RaceStarted）で再生し、決着でフェードアウトする。
     /// clip 未設定なら何も再生しないだけなので、音源が入る前からシーンに置いておける。

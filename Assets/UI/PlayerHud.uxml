@@ -3,29 +3,18 @@
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
         <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" />
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
-            <ui:VisualElement name="p0-progress" picking-mode="Ignore" class="progress-track">
-                <ui:VisualElement class="progress-goal" />
-                <ui:VisualElement name="p0-mark1" class="progress-marker mark-p2" />
-                <ui:VisualElement name="p0-mark0" class="progress-marker mark-p1 self" />
-                <ui:Label name="p0-distance" text="--" class="distance" />
-            </ui:VisualElement>
             <ui:Label name="p0-info" text="P1" class="info" />
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p0-fill" class="gauge-fill" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="right" picking-mode="Ignore" class="player-panel">
-            <ui:VisualElement name="p1-progress" picking-mode="Ignore" class="progress-track">
-                <ui:VisualElement class="progress-goal" />
-                <ui:VisualElement name="p1-mark0" class="progress-marker mark-p1" />
-                <ui:VisualElement name="p1-mark1" class="progress-marker mark-p2 self" />
-                <ui:Label name="p1-distance" text="--" class="distance" />
-            </ui:VisualElement>
             <ui:Label name="p1-info" text="P2" class="info" />
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p1-fill" class="gauge-fill" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="minimap" picking-mode="Ignore" class="minimap-host" />
         <ui:VisualElement name="countdown" picking-mode="Ignore" class="countdown-overlay hidden">
             <ui:Label name="countdown-text" text="" class="countdown-text" />
         </ui:VisualElement>

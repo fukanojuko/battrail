@@ -1,8 +1,9 @@
 using System;
+using Battrail.Racing.Input;
 using UnityEngine;
 using UnityEngine.VFX;
 
-namespace Battrail
+namespace Battrail.Racing
 {
     /// プレイヤー機の移動本体。スプライン相対の (s, t) を内部状態として持ち、
     /// 入力に応じて s を加減速、t を左右移動させる。ワールド変換はコース（CourseSpline）から計算する。
