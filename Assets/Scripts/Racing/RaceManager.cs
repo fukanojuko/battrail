@@ -2,16 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Racing
 {
-    /// レース全体の進行フェーズ。Racer / CombatManager はこれを見て動作を止める。
-    public enum RacePhase
-    {
-        Countdown,
-        Running,
-        Finished,
-    }
-
     /// 試合の進行管理。スタートのカウントダウンと終了判定（先にゴールした Racer が勝ち）を持つ。
     /// Awake でシーン内 Racer を集め、各 Racer.Finished を購読するイベント駆動。
     /// 順位や時間制限などは後付け予定。

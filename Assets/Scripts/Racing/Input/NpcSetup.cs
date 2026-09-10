@@ -1,6 +1,7 @@
+using Battrail.Core;
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Racing.Input
 {
     /// 1 人プレイ（GameMode.VsNpc）のとき、対象 Racer の入力源を AI に差し替える。
     /// Racer が Start で既定の RacerInput を作る前に注入したいので、処理は Awake で行う。

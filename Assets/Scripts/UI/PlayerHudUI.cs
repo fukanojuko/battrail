@@ -1,7 +1,9 @@
+using Battrail.Core;
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// UI Toolkit (UXML/USS) ベースの HUD バインダ。UIDocument のツリーを取得し、
     /// playerIndex 0 = 左パネル / 1 = 右パネル に各 Racer の速度・順位・ゲージを反映する。

@@ -1,9 +1,10 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// レース中の一時停止。ESC / ゲームパッド Start でポーズをトグルし、
     /// ポーズ中は Q / ゲームパッド Select でタイトルへ戻る。

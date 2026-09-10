@@ -1,59 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Racing
 {
-    /// 攻撃ヒットの状況。被弾側の挙動を差し替えやすくするための値。
-    public readonly struct HitContext
-    {
-        public readonly Racer Attacker;
-        public readonly Racer Victim;
-        /// s 方向の相対速度（attacker - victim）。
-        public readonly float RelativeSpeed;
-        /// 向かい合いの衝突か。現状の一方通行コースでは常に false（将来用）。
-        public readonly bool HeadOn;
-
-        public HitContext(Racer attacker, Racer victim, float relativeSpeed, bool headOn)
-        {
-            Attacker = attacker;
-            Victim = victim;
-            RelativeSpeed = relativeSpeed;
-            HeadOn = headOn;
-        }
-    }
-
-    /// 攻撃ヒット時の被弾側リアクション。演出強化や挙動変更はこの実装を差し替える。
-    public interface IHitReaction
-    {
-        void OnHit(in HitContext ctx);
-    }
-
-    /// 既定リアクション: 被弾側を減速＋攻撃側から離れる方向（横）へ弾き、短時間スタンさせる。
-    public sealed class DefaultHitReaction : IHitReaction
-    {
-        readonly float _forwardSpeedFactor;
-        readonly float _lateralImpulse;
-        readonly float _stunSeconds;
-
-        public DefaultHitReaction(float forwardSpeedFactor, float lateralImpulse, float stunSeconds)
-        {
-            _forwardSpeedFactor = forwardSpeedFactor;
-            _lateralImpulse = lateralImpulse;
-            _stunSeconds = stunSeconds;
-        }
-
-        public void OnHit(in HitContext ctx)
-        {
-            float dir = Mathf.Sign(ctx.Victim.LateralOffset - ctx.Attacker.LateralOffset);
-            if (Mathf.Approximately(dir, 0f))
-                dir = 1f;
-            ctx.Victim.ApplyKnockback(_forwardSpeedFactor, dir * _lateralImpulse);
-            if (_stunSeconds > 0f)
-                ctx.Victim.Stun(_stunSeconds);
-            ctx.Victim.PlayHitEffect();
-        }
-    }
-
     /// プレイヤー同士／トレイルの当たり判定を (s, t) 空間でまとめて解決する。
     /// 各 Racer の (s, t) 履歴をトレイルとして保持し、他機の近接通過でゲージを回復させる。
     /// トレイルの見た目は各 Racer に付いた VFX Graph（MasterTrail 等）が担当。ここでは判定用の位置履歴のみ扱う。

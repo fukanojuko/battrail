@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Core
 {
     /// 起動時に描画バックエンドの能力をログに出す。
     /// VFX Graph（MasterTrail / BasicImpacts）はコンピュートシェーダー必須で、

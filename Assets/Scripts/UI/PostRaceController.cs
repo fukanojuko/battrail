@@ -1,8 +1,9 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// レース終了後、「もう一度」「タイトルへ戻る」の入力を受け付ける。
     /// RaceManager.RaceFinished をトリガーに一度だけ起動する Awaitable フロー（Update() ポーリングはしない）。

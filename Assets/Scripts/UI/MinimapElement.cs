@@ -1,7 +1,8 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Battrail
+namespace Battrail.UI
 {
     /// コース全体を真上から見た形で描くミニマップ。
     /// コース線は Painter2D で描き、走者アイコンは通常の VisualElement を動かす。

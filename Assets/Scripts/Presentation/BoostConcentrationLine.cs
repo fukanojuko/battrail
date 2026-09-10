@@ -1,7 +1,8 @@
+using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Battrail
+namespace Battrail.Presentation
 {
     /// ブースト中だけ集中線を出す。マテリアルの _Alpha を出し入れして濃度を制御する。
     /// 分割画面なので Canvas は Screen Space - Camera で親カメラのビューポートにだけ描画する

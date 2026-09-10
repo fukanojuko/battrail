@@ -1,7 +1,8 @@
+using Battrail.Racing;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Battrail
+namespace Battrail.Presentation
 {
     /// ブーストの吹き始めにカメラを一度後ろへ引き、徐々に元の位置へ戻す。
     /// CinemachineFollow の FollowOffset を動かすだけで、寄り引きの滑らかさは

@@ -2,7 +2,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Battrail
+namespace Battrail.Racing
 {
     /// コース定義。SplineContainer をラップし、(s, t) → ワールド位置／回転を提供する。
     /// SplineContainer が空のときは簡易 S 字を埋める。Editor で knot を編集すればそれが優先される。
