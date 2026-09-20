@@ -27,6 +27,15 @@ namespace Battrail.Racing
         [Tooltip("攻撃でない接触時に残す前進速度の割合（1 未満で軽い減速を出す）")]
         [SerializeField] float separationForwardFactor = 0.9f;
 
+        [Header("Side boost hit (横ブーストの突進)")]
+        [Tooltip("横ブーストで当てられた側が残す前進速度の割合。通常ヒット（0.5）より重い")]
+        [SerializeField] float sideBoostForwardSpeedFactor = 0.25f;
+        [Tooltip("横ブーストで当てられた側が横に弾かれる強さ。Racer.maxLateralSpeed（9）を超える分は" +
+                 "sideBoostDecay で減衰しながら残る")]
+        [SerializeField] float sideBoostLateralImpulse = 16f;
+        [Tooltip("横ブーストで当てられた側の操作不能時間。通常ヒット（0.35）より長い")]
+        [SerializeField] float sideBoostStunSeconds = 0.8f;
+
         [Header("Trail")]
         [SerializeField] float trailSeconds = 3f;
         [SerializeField] float trailHitRangeS = 1.0f;
@@ -50,11 +59,14 @@ namespace Battrail.Racing
         readonly List<RacerTrail> _trails = new();
         readonly Dictionary<(EntityId, EntityId), float> _pairCooldown = new();
         IHitReaction _hitReaction;
+        IHitReaction _sideBoostHitReaction;
         RaceManager _raceManager;
 
         private void Start()
         {
             _hitReaction = new DefaultHitReaction(victimForwardSpeedFactor, victimLateralImpulse, victimStunSeconds);
+            _sideBoostHitReaction = new DefaultHitReaction(
+                sideBoostForwardSpeedFactor, sideBoostLateralImpulse, sideBoostStunSeconds);
             _raceManager = FindAnyObjectByType<RaceManager>();
 
             foreach (var racer in FindObjectsByType<Racer>())
@@ -169,7 +181,19 @@ namespace Battrail.Racing
             var front = a.DistanceAlongCourse >= b.DistanceAlongCourse ? a : b;
             var rear = front == a ? b : a;
 
-            if (rear.IsAttacking)
+            // 横ブーストの突進だけは s の前後を見ない。横から当てに行く技なので、
+            // 前後関係で攻守を決めると「当てに行った側が被弾する」ことが起きる。
+            bool aSideRams = IsSideRamming(a, b);
+            bool bSideRams = IsSideRamming(b, a);
+
+            if (aSideRams != bSideRams)
+            {
+                var attacker = aSideRams ? a : b;
+                var victim = aSideRams ? b : a;
+                _sideBoostHitReaction.OnHit(new HitContext(attacker, victim,
+                    attacker.ForwardSpeed - victim.ForwardSpeed, headOn: false));
+            }
+            else if (!aSideRams && rear.IsAttacking)
             {
                 var ctx = new HitContext(rear, front,
                     rear.ForwardSpeed - front.ForwardSpeed, headOn: false);
@@ -177,7 +201,8 @@ namespace Battrail.Racing
             }
             else
             {
-                // 攻撃でない接触: スタンは無しだが、相対速度が大きいほど強く弾かれる
+                // 攻撃でない接触（両者が横ブーストでぶつかり合った相打ちも含む）: スタンは無いが、
+                // 相対速度が大きいほど強く弾かれる
                 // （固定値だけだと「当たった感」が薄いため。ぶつかった者同士は少し前進速度も落ちる）。
                 float relativeSpeed = Mathf.Abs(a.ForwardSpeed - b.ForwardSpeed);
                 float bounce = separationSpeed + relativeSpeed * separationSpeedFactor;
@@ -193,6 +218,14 @@ namespace Battrail.Racing
                 a.PlayHitEffect();
                 b.PlayHitEffect();
             }
+        }
+
+        /// attacker が victim の居る側へ横ブーストで突っ込んでいるか。
+        /// 反対側へ吹かした（避けた先でたまたま触れた）場合は攻撃にしない。
+        static bool IsSideRamming(Racer attacker, Racer victim)
+        {
+            return attacker.IsSideBoosting &&
+                   attacker.SideBoostDirection * (victim.LateralOffset - attacker.LateralOffset) > 0f;
         }
 
         // 順序を揃えてから組にすることで、(a, b) と (b, a) が同じキーになる。
