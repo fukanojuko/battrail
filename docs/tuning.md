@@ -35,6 +35,24 @@
 - `startDashDuration`（1.5）/ `startDashSpeed`（28）/ `startDashAcceleration`（30）—
   被弾スタン明けの救済加速。追い上げのしやすさ
 
+## 横ブースト（点火時に左右を入れた突進）
+
+**場所**: 同上（`Racer`）
+
+- `sideBoostInputThreshold`（0.5）— 点火時にこの大きさ以上の横入力で横ブーストになる。
+  下げるとスティックを少し倒しただけで暴発し、上げると出しにくくなる（キーボードは常に 1 なので無関係）
+- `sideBoostDuration`（0.25）— 横へ吹かす時間。**伸ばすほど遠くまで届く**（現在値でコース中央から
+  端まで約 0.1 秒）。この時間が過ぎると RT を押している限り通常ブーストに戻る
+- `sideBoostLateralSpeed`（18）— 突進中の横最高速。`maxLateralSpeed`（9）の 2 倍。
+  「急加速で当てに行く」感の主軸
+- `sideBoostAcceleration`（120）— 立ち上がりの鋭さ。下げるとタメのある突進になる
+- `sideBoostDecay`（24）— 突進後に `maxLateralSpeed` まで戻る減速。突進の余韻の長さ。
+  **被弾側の吹き飛び（`sideBoostLateralImpulse` = 16）が残る時間もここで決まる**。
+  極端に上げると上限超えが一瞬で消え、弾きが効かなくなる
+- `sideBoostGaugeCost`（20）— 点火時の追加消費。**連発の制限はこれだけ**なので、
+  撒き散らされるなら上げる。`NpcSetup > Tuning > aggressiveStartGauge`（15）を上回っている間は
+  NPC が攻め中に横ブーストを出さない
+
 ## スタート演出（カウントダウン）
 
 **場所**: `Boot.unity` の `RaceManager`
@@ -70,6 +88,9 @@
 - `victimForwardSpeedFactor`（0.5）— 被弾側がどれだけ減速するか
 - `victimLateralImpulse`（9）— 被弾側が横に弾かれる強さ
 - `victimStunSeconds`（0.35）— 被弾側の操作不能時間
+- `sideBoostForwardSpeedFactor`（0.25）/ `sideBoostLateralImpulse`（16）/ `sideBoostStunSeconds`（0.8）—
+  **横ブーストで当てられた側**のデメリット。通常ヒット（0.5 / 9 / 0.35）より重くしてある。
+  横の弾きは `Racer.maxLateralSpeed`（9）を超える分が `sideBoostDecay` で減衰しながら残る
 - `separationSpeed`（6）— 非ブースト同士の接触で左右に分離する強さ
 
 ## カメラ
