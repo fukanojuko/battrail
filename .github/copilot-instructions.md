@@ -50,9 +50,12 @@ CI (`.github/workflows/`) handles versioning/release/deploy plumbing only, not b
 
 ## Architecture
 
-Two scenes only: `Title.unity` (menu, mode select) and `Boot.unity` (the race). Scene names are
-passed as serialized string fields (`nextScene`, `titleScene`), not hardcoded — check the Inspector
-fields when changing scene flow.
+`Title.unity` (menu, mode select) and race scenes `Race01.unity` / `Race02.unity`. Everything a
+race needs (RaceManager, CombatManager, HUD, the four cameras, Player1/2) lives in
+`Assets/Prefabs/Race/Race.prefab` with all cross-references internal; a race scene is just that
+prefab plus a `Course` (`CourseSpline`), light and Global Volume. Do not override `Race.prefab` in
+scenes. Scene names are passed as serialized string fields (`nextScene` → `Race01`, `titleScene`),
+not hardcoded — check the Inspector fields when changing scene flow.
 
 ### Assembly / namespace layout
 
@@ -102,7 +105,7 @@ geometry.
   Racer. HUD, `RaceBgm`, and `PostRaceController` subscribe to `RaceStarted`/`RaceFinished` rather
   than polling; new phase-dependent behavior should subscribe the same way. `CombatManager` only
   resolves during `Running`. `Racer`'s phase defaults to `Countdown` so a forgotten call fails safe.
-- `GameMode` (Core): `static` carrier of the 1P-vs-NPC / 2P choice from Title to Boot. Because
+- `GameMode` (Core): `static` carrier of the 1P-vs-NPC / 2P choice from Title to the race scene. Because
   domain reload can be disabled, it is force-reset via
   `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]` — follow this
   for any other cross-scene static state.
@@ -142,8 +145,8 @@ Symptoms that only appear on Web usually come from these two, both documented in
 - No new external dependencies — event/`Awaitable` instead of Reactive libraries, by policy.
 - Player prefabs: `Assets/Prefabs/Players/Player.prefab` is the base holding logic and shared
   structure; `Player1.prefab`/`Player2.prefab` are Prefab Variants differing only in materials.
-  `playerIndex` and `startLateralOffset` are scene-instance overrides in `Boot.unity`, deliberately
-  not in the Variants. Artist-owned assets live under `Assets/Contents/Artist/` — adjust VFX size
+  Tuning values belong on the base. `playerIndex` and `startLateralOffset` are instance overrides
+  inside `Race.prefab`, deliberately not in the Variants. Artist-owned assets live under `Assets/Contents/Artist/` — adjust VFX size
   and lifetime on the component override rather than editing the `.vfx`.
 - HUD is UI Toolkit (`Assets/UI/*.uxml` / `*.uss`). Overlays (`countdown`, `result`, `pause`) are
   shown by adding/removing the `hidden` class.

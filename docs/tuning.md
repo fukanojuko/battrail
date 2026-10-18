@@ -5,7 +5,7 @@
 ## 走り・操作感
 
 **場所**: `Assets/Prefabs/Players/Player.prefab` の `Racer`（P1/P2 共通。ここを直せば両方に効く）
-※ `playerIndex` と `startLateralOffset` だけは `Boot.unity` のインスタンス側 override
+※ `playerIndex` と `startLateralOffset` だけは `Assets/Prefabs/Race/Race.prefab` 内のインスタンス側 override
 
 - `maxSpeed`（18）— 通常時の最高速。上げるとレース全体が短くなる
 - `acceleration`（14）— 前進入力の伸び。「もっさりする」ならここ
@@ -23,8 +23,8 @@
 
 **場所**: 同上（`Racer`）
 
-- `boostSpeed`（28）— ブースト中の最高速。`maxSpeed` との差が「速くなった感」
-- `boostAcceleration`（24）— ブーストの伸び
+- `boostSpeed`（50）— ブースト中の最高速。`maxSpeed` との差が「速くなった感」
+- `boostAcceleration`（42）— ブーストの伸び
 - `overspeedDecay`（12）— ブースト解除後、通常最高速まで落ちる速さ。余韻の長さ
 - `maxGauge`（100）/ `gaugeDrainPerSecond`（35）/ `gaugeRegenPerSecond`（12）—
   ブーストを何秒吹けるか・何秒で戻るか。現在値で連続 約2.9秒、全回復 約8.3秒
@@ -55,7 +55,7 @@
 
 ## スタート演出（カウントダウン）
 
-**場所**: `Boot.unity` の `RaceManager`
+**場所**: `Race.prefab` の `RaceManager`
 
 - `countdownInterval`（1）— "3" "2" "1" を 1 つ出しておく時間（秒）。スタートまでの待ち時間は この 3 倍
 - `goDisplaySeconds`（0.7）— "GO!" を残す時間。**この間もレースは進行している**（操作開始は GO! と同時）
@@ -68,7 +68,7 @@
 
 ## BGM
 
-**場所**: `Boot.unity` の `RaceManager` に付いた `RaceBgm`
+**場所**: `Race.prefab` の `RaceManager` に付いた `RaceBgm`
 
 - `clip` — 流す曲。**未設定なら無音のまま何も起きない**。音源は `Assets/Contents/Artist/BGM/` に置いて
   Unity Editor でインポートしてから、ここに挿す
@@ -80,7 +80,7 @@
 
 ## 当たり判定・攻防
 
-**場所**: `Boot.unity` の `CombatManager`
+**場所**: `Race.prefab` の `CombatManager`
 
 - `hitRangeS`（1.4）— 前後方向の判定距離。機体の全長 1.09 の約 1.3 倍
 - `hitRangeT`（0.9）— 横方向の判定距離。**広げすぎるとコースが狭く感じる**（コース幅 6 に対し 0.9 で 30% 占有）
@@ -95,7 +95,7 @@
 
 ## カメラ
 
-**場所**: `Boot.unity` の `CM Camera`（P1）/ `CM Camera 2`（P2）。**2 つとも同じ値にすること**
+**場所**: `Race.prefab` の `CM Camera`（P1）/ `CM Camera 2`（P2）。**2 つとも同じ値にすること**
 
 - `CinemachineFollow > FollowOffset`（0, 3, -9）— 3人称視点の位置。z が引きの距離、y が高さ
 - `CinemachineFollow > PositionDamping`（0.2）— 追従の遅れ。上げるとカメラがゆったり、下げると張り付く
@@ -151,7 +151,7 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
 
 ## コース
 
-**場所**: `Boot.unity` の `Course`（`CourseSpline` + `SplineContainer`）
+**場所**: 各レースシーン（`Race01.unity` 等）の `Course`（`CourseSpline` + `SplineContainer`）。コースはシーンごとに持つ
 
 - `halfWidth`（3）— コース幅の半分。走れる横幅。当たり判定の体感にも直結
 - `roadSegmentLength`（1.5）— 路面メッシュの分割の細かさ（見た目のみ）
@@ -161,7 +161,7 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
 
 ## 画面全体の絵作り
 
-**場所**: `Assets/Settings/SampleSceneProfile.asset`（`Boot.unity` の `Global Volume` が参照）
+**場所**: `Assets/Settings/SampleSceneProfile.asset`（各レースシーンの `Global Volume` が参照）
 
 - `Bloom > Intensity`（1）/ `Threshold`（0）/ `Scatter`（0.25）— 光の滲み。集中線・トレイルの光り方が変わる
 - `Tonemapping`（Neutral）— 全体の色の出方
@@ -178,7 +178,7 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
 
 ## NPC の強さ
 
-**場所**: `Boot.unity` の `RaceManager` > `NpcSetup` > `Tuning`
+**場所**: `Race.prefab` の `RaceManager` > `NpcSetup` > `Tuning`
 
 **弱くしたいとき効くのは上の 2 つ**（`decisionInterval` を上げる、`targetSpeed` を下げる）。
 

@@ -6,11 +6,11 @@ using UnityEngine.UIElements;
 namespace Battrail.UI
 {
     /// タイトル画面。対戦形式（1P vs NPC / 2P ローカル）を選んで次のシーン（レース）に進む。
-    /// 選んだ結果は GameMode に載せて Boot へ持ち越す。
+    /// 選んだ結果は GameMode に載せてレースシーンへ持ち越す。
     [RequireComponent(typeof(UIDocument))]
     public class TitleScreenController : MonoBehaviour
     {
-        [SerializeField] string nextScene = "Boot";
+        [SerializeField] string nextScene = "Race01";
         [SerializeField] float promptPulseSpeed = 3f;
 
         const string SelectedClass = "selected";

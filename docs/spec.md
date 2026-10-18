@@ -352,11 +352,11 @@ Racer ── IRacerInput ─┬─ RacerInput    (人間。Keyboard / Gamepad)
 
 - タイトル画面で「1P vs NPC / 2P LOCAL」を選ぶ（`TitleScreenController`）。
   **旧来の「どのキーでも開始」は廃止** — 残すと選択操作そのものが決定として食われる
-- 選択結果は `static` の `GameMode.VsNpc` で Boot へ持ち越す。`PostRaceController` の
+- 選択結果は `static` の `GameMode.VsNpc` でレースシーンへ持ち越す。`PostRaceController` の
   リトライは同じシーンの再ロードなので、これでリトライ後もモードが保たれる。
   ドメインリロード無効時に前回の Play が残らないよう `RuntimeInitializeOnLoadMethod` で初期化する
-- `NpcSetup`（`Boot.unity` の `RaceManager` に付ける）が `Awake` で P2 の `Racer` に
-  `AiRacerInput` を差す。`forceNpcInEditor` を立てると、タイトルを経由せず Boot を直接 Play
+- `NpcSetup`（`Race.prefab` の `RaceManager` に付いている）が `Awake` で P2 の `Racer` に
+  `AiRacerInput` を差す。`forceNpcInEditor` を立てると、タイトルを経由せずレースシーンを直接 Play
   したときも NPC になる（Editor 専用のデバッグ用）
 - HUD は 1P モードのとき P2 側の表記を **"NPC"** にする（勝敗オーバーレイも `NPC WIN`）
 
@@ -414,7 +414,8 @@ Racer ── IRacerInput ─┬─ RacerInput    (人間。Keyboard / Gamepad)
 ## プロジェクト運用 / チーム
 
 - **作業ブランチ**: `develop`（main は安定版。機能は `feature/*` → `develop`、区切りで `develop` → `main`）。
-- **プレイヤーのプレハブ構成**: `Assets/Prefabs/Players/Player.prefab` がロジック・共通構造を持つ base。`Player1.prefab` / `Player2.prefab` はその **Prefab Variant** で、見た目（マテリアル）だけを差し替えている。モデル・共通ロジックの変更は base の `Player.prefab` を編集すれば両方に伝播する。`playerIndex` / `startLateralOffset` はシーン（Boot.unity）側のインスタンス override（ゲームプレイ上のデータなので見た目の差分＝Variantには含めない）。
+- **プレイヤーのプレハブ構成**: `Assets/Prefabs/Players/Player.prefab` がロジック・共通構造を持つ base。`Player1.prefab` / `Player2.prefab` はその **Prefab Variant** で、見た目（マテリアル）だけを差し替えている。モデル・共通ロジックの変更は base の `Player.prefab` を編集すれば両方に伝播する。走りの調整値（`boostSpeed` 等）は base に持ち、シーンやインスタンスでは上書きしない。`playerIndex` / `startLateralOffset` は `Race.prefab` 内のインスタンス override（ゲームプレイ上のデータなので見た目の差分＝Variantには含めない）。
+- **レースシーンの構成**: レースに必要な一式（RaceManager・CombatManager・HUD・カメラ 4 台・Player1/2）は `Assets/Prefabs/Race/Race.prefab` にまとめてあり、相互参照（CM Camera の追従先など）は prefab の中で閉じている。各レースシーン（`Race01.unity` / `Race02.unity`）は「`Race.prefab` + コース（`CourseSpline`）+ ライト・Global Volume」だけで成り立つ。新しいコースを足すときは既存のレースシーンを複製して `Course` の knot を編集する。`Race.prefab` のインスタンスはシーン側で上書きしない（調整値がシーンごとに分岐するため）。タイトルからの遷移先は `TitleScreenController.nextScene`（現在 `Race01`）。
 - **デザイン作業領域**: `Assets/Contents/Artist/`（例: `TestMech/`＝ロボ機体 FBX＋マテリアル）。デザイナーがここで素材を管理。
 - 機体モデルの差し替え（cube → `TestMech` の FBX）は base `Player.prefab` の MeshFilter/Renderer を差し替えれば両プレイヤーに反映される。プレイヤーごとの色だけ変えたい場合は各 Variant（`Player1.prefab` / `Player2.prefab`）側で差し替える。
 
@@ -496,7 +497,8 @@ PC と Web で絵が違う、という症状が出たときは、まず
 - `Assets/Scripts/BoostCameraKick.cs` — ブースト開始時にカメラを後ろへ引く演出
 - `Assets/Scripts/GraphicsCapabilityLog.cs` — 起動時にコンピュートシェーダー非対応を警告（Web の VFX 不可視対策）
 - `Assets/InputSystem_Actions.inputactions` + 自動生成 `.cs` — 入力アセット
-- `Assets/Scenes/Boot.unity` — メインシーン
+- `Assets/Scenes/Race01.unity` / `Race02.unity` — レースシーン（`Race.prefab` + コース）
+- `Assets/Prefabs/Race/Race.prefab` — レース一式
 - `Assets/Materials/{Ground,Player}.mat` — URP/Lit マテリアル
 
 ## アーキテクチャ方針
