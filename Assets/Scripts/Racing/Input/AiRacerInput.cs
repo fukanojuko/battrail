@@ -31,15 +31,36 @@ namespace Battrail.Racing.Input
         readonly Racer _rival;
         readonly NpcTuning _tuning;
 
+        // 強さで Tuning の値（＝強さ 5）から緩めたもの。
+        readonly float _reactionTime;
+        readonly float _blockRange;
+        readonly float _cruiseStartGauge;
+        readonly float _cruiseStopGauge;
+
         float _nextDecisionTime;
         Vector2 _move;
         bool _boost;
+
+        // 最後に見た相手の状態。_reactionTime ごとにしか更新しない。
+        float _nextPerceiveTime;
+        float _seenDs;
+        float _seenRivalLateral;
+        bool _seenRivalBoosting;
 
         public AiRacerInput(Racer self, Racer rival, NpcTuning tuning)
         {
             _self = self;
             _rival = rival;
             _tuning = tuning;
+
+            float t = Mathf.InverseLerp(1f, 5f, tuning.strength);
+            _reactionTime = Mathf.Lerp(tuning.weakReactionTime, 0f, t);
+            // Block の横ずらしは trailHitRangeT(1.2) を超えて初めて効くので、ずらす幅ではなく
+            // 始める距離で緩める。強さ 1 で evadeRange まで縮み、Block は出なくなる。
+            _blockRange = Mathf.Lerp(tuning.evadeRange, tuning.trailFollowRange, t);
+            // 弱いほど巡航でも使い切り側の閾値に寄せ、ゲージを温存しない。
+            _cruiseStartGauge = Mathf.Lerp(tuning.aggressiveStartGauge, tuning.cruiseStartGauge, t);
+            _cruiseStopGauge = Mathf.Lerp(tuning.aggressiveStopGauge, tuning.cruiseStopGauge, t);
         }
 
         // ReadMove / ReadBoost は同じフレームに続けて呼ばれるので、判断は時間で 1 回に絞る。
@@ -61,9 +82,22 @@ namespace Battrail.Racing.Input
                 return;
             _nextDecisionTime = Time.time + Mathf.Max(0f, _tuning.decisionInterval);
 
+            Perceive();
             var intent = DecideIntent();
             _boost = DecideBoost(intent);
             _move = new Vector2(SteerTo(TargetLateral(intent)), DecideForward());
+        }
+
+        /// 人間の反応の遅れの代わり。弱いほど古い相手の状態で動く。
+        void Perceive()
+        {
+            if (!HasRival() || Time.time < _nextPerceiveTime)
+                return;
+            _nextPerceiveTime = Time.time + _reactionTime;
+
+            _seenDs = _rival.DistanceAlongCourse - _self.DistanceAlongCourse;
+            _seenRivalLateral = _rival.LateralOffset;
+            _seenRivalBoosting = _rival.IsBoosting;
         }
 
         Intent DecideIntent()
@@ -73,7 +107,7 @@ namespace Battrail.Racing.Input
 
             // 正なら相手が前。攻撃判定は「後方にいてブースト中」の機体にしか出ないので、
             // 前後関係がそのまま攻めと守りの分かれ目になる。
-            float ds = _rival.DistanceAlongCourse - _self.DistanceAlongCourse;
+            float ds = _seenDs;
 
             if (ds >= 0f)
             {
@@ -87,7 +121,7 @@ namespace Battrail.Racing.Input
             float behind = -ds;
             if (behind < _tuning.evadeRange)
                 return Intent.Evade;
-            return behind < _tuning.trailFollowRange ? Intent.Block : Intent.Cruise;
+            return behind < _blockRange ? Intent.Block : Intent.Cruise;
         }
 
         /// 狙う横位置。追走・体当たりは相手に重ね、回避は相手から離す。
@@ -100,21 +134,21 @@ namespace Battrail.Racing.Input
             {
                 case Intent.Chase:
                 case Intent.Ram:
-                    target = _rival.LateralOffset;
+                    target = _seenRivalLateral;
                     break;
 
                 case Intent.Evade:
                 case Intent.Block:
                     // 相手がブースト中はより大きく離す（撃たれてから動いても間に合わない）。
-                    float gap = intent == Intent.Evade && _rival.IsBoosting
+                    float gap = intent == Intent.Evade && _seenRivalBoosting
                         ? _tuning.evadeGapUnderThreat
                         : _tuning.evadeGap;
 
                     // 既に居る側へ逃げる。そちらが壁で詰まっているなら反対側へ回す。
-                    float side = _self.LateralOffset >= _rival.LateralOffset ? 1f : -1f;
-                    target = _rival.LateralOffset + side * gap;
+                    float side = _self.LateralOffset >= _seenRivalLateral ? 1f : -1f;
+                    target = _seenRivalLateral + side * gap;
                     if (Mathf.Abs(target) > halfWidth)
-                        target = _rival.LateralOffset - side * gap;
+                        target = _seenRivalLateral - side * gap;
                     break;
 
                 default:
@@ -147,8 +181,8 @@ namespace Battrail.Racing.Input
         bool DecideBoost(Intent intent)
         {
             bool aggressive = intent is Intent.Chase or Intent.Ram or Intent.Evade;
-            float start = aggressive ? _tuning.aggressiveStartGauge : _tuning.cruiseStartGauge;
-            float stop = aggressive ? _tuning.aggressiveStopGauge : _tuning.cruiseStopGauge;
+            float start = aggressive ? _tuning.aggressiveStartGauge : _cruiseStartGauge;
+            float stop = aggressive ? _tuning.aggressiveStopGauge : _cruiseStopGauge;
 
             return _boost ? _self.Gauge > stop : _self.Gauge >= start;
         }

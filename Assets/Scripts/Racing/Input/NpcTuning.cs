@@ -7,6 +7,13 @@ namespace Battrail.Racing.Input
     [Serializable]
     public sealed class NpcTuning
     {
+        [Tooltip("強さ。5 で下の各値をそのまま使い（最強）、1 に近づくほど反応が遅れ、" +
+                 "先行時にトレイルを踏ませない動き（Block）とゲージの温存をやめる")]
+        [Range(1f, 5f)] public float strength = 5f;
+
+        [Tooltip("強さ 1 のとき相手の状態を見直す間隔（秒）。強さ 5 で 0（毎判断で見る）")]
+        public float weakReactionTime = 0.4f;
+
         [Tooltip("判断を更新する間隔（秒）。上げるほど反応が鈍く、結果として弱くなる")]
         public float decisionInterval = 0.06f;
 

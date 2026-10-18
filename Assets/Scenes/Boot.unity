@@ -1344,6 +1344,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.Input.NpcSetup
   forceNpcInEditor: 0
   tuning:
+    strength: 3
+    weakReactionTime: 0.4
     decisionInterval: 0.06
     targetSpeed: 18
     lateralGain: 2
@@ -2432,6 +2434,9 @@ MonoBehaviour:
   separationSpeed: 6
   separationSpeedFactor: 0.5
   separationForwardFactor: 0.9
+  sideBoostForwardSpeedFactor: 0.25
+  sideBoostLateralImpulse: 16
+  sideBoostStunSeconds: 0.8
   trailSeconds: 3
   trailHitRangeS: 1
   trailHitRangeT: 1.2
