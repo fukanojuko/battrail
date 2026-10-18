@@ -193,7 +193,8 @@ namespace Battrail.Racing
                 _sideBoostHitReaction.OnHit(new HitContext(attacker, victim,
                     attacker.ForwardSpeed - victim.ForwardSpeed, headOn: false));
             }
-            else if (!aSideRams && rear.IsAttacking)
+            // 相手と反対側へ吹かしている横ブースト中は、後方でブースト中でも攻撃にしない（回避の跳ね）。
+            else if (!aSideRams && rear.IsAttacking && !rear.IsSideBoosting)
             {
                 var ctx = new HitContext(rear, front,
                     rear.ForwardSpeed - front.ForwardSpeed, headOn: false);
