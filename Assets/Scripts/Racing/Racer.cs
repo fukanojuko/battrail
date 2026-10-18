@@ -40,6 +40,20 @@ namespace Battrail.Racing
         [Tooltip("ゲージが空になった後、再びブーストできるようになるゲージ量。押しっぱなしでの再点火を防ぐ")]
         [SerializeField] float boostRestartGauge = 25f;
 
+        [Header("Side Boost")]
+        [Tooltip("ブースト点火の瞬間に横入力がこの大きさ以上なら、前ではなく左右へ吹かす（スティックの遊び対策）")]
+        [SerializeField] float sideBoostInputThreshold = 0.5f;
+        [Tooltip("横へ吹かし続ける時間（秒）。この間は中央への引力も摩擦も掛からない")]
+        [SerializeField] float sideBoostDuration = 0.25f;
+        [Tooltip("横ブースト中の横最高速。maxLateralSpeed（9）の 2 倍にして「急加速で当てに行く」挙動を出す")]
+        [SerializeField] float sideBoostLateralSpeed = 18f;
+        [Tooltip("横ブーストの立ち上がり加速度。大きいほど点火の瞬間に鋭く飛ぶ")]
+        [SerializeField] float sideBoostAcceleration = 120f;
+        [Tooltip("横ブースト終了後、maxLateralSpeed まで戻る減速（前進側の overspeedDecay と同じ役目）")]
+        [SerializeField] float sideBoostDecay = 24f;
+        [Tooltip("横ブースト点火時の追加ゲージ消費。連打で撒き散らせないための唯一の制限")]
+        [SerializeField] float sideBoostGaugeCost = 20f;
+
         [Header("Lateral (t)")]
         [Tooltip("左右入力による横加速度（速度ではなく加速度で反応させ、慣性で切り返しにブレを出す）")]
         [SerializeField] float strafeAcceleration = 26f;
@@ -84,6 +98,11 @@ namespace Battrail.Racing
         public bool IsBoosting { get; private set; }
         /// ブースト中は攻撃判定が有効。
         public bool IsAttacking => IsBoosting;
+        /// 点火時に左右入力を添えて出した横ブースト（サイドダッシュ）の最中か。
+        /// CombatManager はこの間だけ前後関係を無視して攻撃側として扱う。
+        public bool IsSideBoosting => _sideBoostTimer > 0f;
+        /// 横ブーストの向き（+1 = t が増える側 / -1 = 減る側）。出ていない間は 0。
+        public float SideBoostDirection => IsSideBoosting ? _sideBoostDirection : 0f;
         public bool IsStunned => _stunTimer > 0f;
         public float Gauge { get; private set; }
         public float MaxGauge => maxGauge;
@@ -107,6 +126,9 @@ namespace Battrail.Racing
         float _lateralVelocity;
         float _stunTimer;
         float _startDashTimer;
+        float _sideBoostTimer;
+        float _sideBoostDirection;
+        bool _wasBoosting;
         bool _boostDepleted;
         // RaceManager が Running にするまで動かない。開始側が呼び忘れても走り出さない向きに倒しておく。
         RacePhase _phase = RacePhase.Countdown;
@@ -182,6 +204,12 @@ namespace Battrail.Racing
                 Gauge + (IsBoosting ? -gaugeDrainPerSecond : gaugeRegenPerSecond) * dt,
                 0f, maxGauge);
 
+            // 点火の瞬間だけ左右入力を見る。前（または無入力）なら従来どおりのブースト、
+            // 左右が入っていればその方向へ横ブーストを足す（押し続ければ通常ブーストへ推移する）。
+            if (IsBoosting && !_wasBoosting)
+                TryIgniteSideBoost(move.x);
+            _wasBoosting = IsBoosting;
+
             if (IsBoosting && Gauge <= 0f)
                 _boostDepleted = true;
 
@@ -204,20 +232,52 @@ namespace Battrail.Racing
                 HasFinished = true;
                 ForwardSpeed = 0f;
                 IsBoosting = false;
+                _sideBoostTimer = 0f;
                 Finished?.Invoke(this);
             }
 
             SnapToCourse();
         }
 
+        /// ブースト点火時の横入力を横ブーストに変える。ゲージが追加消費分に足りなければ点火しない
+        /// （通常ブースト自体は成立するので、そのまま前方向のブーストになる）。
+        void TryIgniteSideBoost(float lateralInput)
+        {
+            if (Mathf.Abs(lateralInput) < sideBoostInputThreshold || Gauge < sideBoostGaugeCost)
+                return;
+
+            _sideBoostDirection = Mathf.Sign(lateralInput);
+            _sideBoostTimer = sideBoostDuration;
+            Gauge = Mathf.Clamp(Gauge - sideBoostGaugeCost, 0f, maxGauge);
+        }
+
         void StepLateral(float input, float dt)
         {
-            // 入力による加速 + コース中央への弱い引力。速度に摩擦をかけて自然に収束させる
-            // （ばね＋減衰のような挙動。中央保持ではなく慣性でブレを出す）。
-            float accel = input * strafeAcceleration - LateralOffset * centerPullStrength;
-            _lateralVelocity += accel * dt;
-            _lateralVelocity = Mathf.MoveTowards(_lateralVelocity, 0f, lateralDamping * dt);
-            _lateralVelocity = Mathf.Clamp(_lateralVelocity, -maxLateralSpeed, maxLateralSpeed);
+            if (_sideBoostTimer > 0f)
+            {
+                // 横ブースト中は中央への引力も摩擦も掛けず、点火方向へ一気に加速する。
+                // 入力を見ないのは、点火後に手を戻しても突進が止まらないようにするため。
+                _sideBoostTimer -= dt;
+                _lateralVelocity = Mathf.MoveTowards(
+                    _lateralVelocity, _sideBoostDirection * sideBoostLateralSpeed, sideBoostAcceleration * dt);
+            }
+            else if (Mathf.Abs(_lateralVelocity) > maxLateralSpeed)
+            {
+                // 横ブースト直後・強い被弾直後の上限超え。前進側の overspeedDecay と同じ考え方で、
+                // 入力では増やさず上限へ戻す。ここで即クランプすると横移動が段付き、
+                // maxLateralSpeed を超える弾き（横ブーストの被弾）も一瞬で消えてしまう。
+                _lateralVelocity = Mathf.MoveTowards(
+                    _lateralVelocity, Mathf.Sign(_lateralVelocity) * maxLateralSpeed, sideBoostDecay * dt);
+            }
+            else
+            {
+                // 入力による加速 + コース中央への弱い引力。速度に摩擦をかけて自然に収束させる
+                // （ばね＋減衰のような挙動。中央保持ではなく慣性でブレを出す）。
+                float accel = input * strafeAcceleration - LateralOffset * centerPullStrength;
+                _lateralVelocity += accel * dt;
+                _lateralVelocity = Mathf.MoveTowards(_lateralVelocity, 0f, lateralDamping * dt);
+                _lateralVelocity = Mathf.Clamp(_lateralVelocity, -maxLateralSpeed, maxLateralSpeed);
+            }
 
             LateralOffset += _lateralVelocity * dt;
 
@@ -236,6 +296,9 @@ namespace Battrail.Racing
 
         void HitWall(float inwardSign)
         {
+            // 壁に当たった時点で横ブーストは終わり。続けていると跳ね返り速度が
+            // 毎フレーム壁向きに上書きされ、壁に張り付いたままになる。
+            _sideBoostTimer = 0f;
             _lateralVelocity = inwardSign * wallBounce;
             ForwardSpeed *= wallSpeedRetain;
         }
@@ -263,6 +326,8 @@ namespace Battrail.Racing
         /// 一定時間操作不能にする（被弾時など）。複数回呼ばれたら長い方を採用。
         public void Stun(float seconds)
         {
+            // 突進の最中に撃ち落とされたらそこで止める（スタン中も慣性と弾きは残る）。
+            _sideBoostTimer = 0f;
             _stunTimer = Mathf.Max(_stunTimer, seconds);
         }
 
@@ -276,6 +341,8 @@ namespace Battrail.Racing
             // 移動更新が止まるので、押しっぱなしのブースト状態が残らないようここで落とす
             // （攻撃判定・ブースト演出がカウントダウン中／決着後も出たままになる）。
             IsBoosting = false;
+            _wasBoosting = false;
+            _sideBoostTimer = 0f;
         }
 
         void SnapToCourse()
