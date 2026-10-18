@@ -42,23 +42,29 @@ namespace Battrail.Racing
                 racer.Finished += OnRacerFinished;
         }
 
-        // Awaitable は MonoBehaviour の破棄／シーン遷移で自動キャンセルされるため、
-        // async void で起動しっぱなしにして問題ない（PostRaceController と同じパターン）。
+        // Awaitable は破棄されても自動では止まらない。カウントダウン中にポーズからタイトルへ戻ると
+        // 破棄済みのシーンで RaceStarted が発火してしまうので、destroyCancellationToken で打ち切る。
         private async void Start()
         {
-            foreach (var label in CountLabels)
+            try
             {
-                CountdownLabel = label;
-                await Awaitable.WaitForSecondsAsync(countdownInterval);
+                foreach (var label in CountLabels)
+                {
+                    CountdownLabel = label;
+                    await Awaitable.WaitForSecondsAsync(countdownInterval, destroyCancellationToken);
+                }
+
+                CountdownLabel = GoLabel;
+                SetPhase(RacePhase.Running);
+                RaceStarted?.Invoke();
+
+                // GO! は操作開始と同時に出し、少し残してから消す。
+                await Awaitable.WaitForSecondsAsync(goDisplaySeconds, destroyCancellationToken);
+                CountdownLabel = null;
             }
-
-            CountdownLabel = GoLabel;
-            SetPhase(RacePhase.Running);
-            RaceStarted?.Invoke();
-
-            // GO! は操作開始と同時に出し、少し残してから消す。
-            await Awaitable.WaitForSecondsAsync(goDisplaySeconds);
-            CountdownLabel = null;
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         void OnRacerFinished(Racer racer)

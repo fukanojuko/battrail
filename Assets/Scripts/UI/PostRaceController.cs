@@ -1,3 +1,4 @@
+using System;
 using Battrail.Racing;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,27 +22,33 @@ namespace Battrail.UI
             _raceManager.RaceFinished += OnRaceFinished;
         }
 
-        // Awaitable は MonoBehaviour の破棄／シーン遷移で自動キャンセルされるため、
-        // async void で起動しっぱなしにして問題ない（Unity 推奨パターン）。
+        // Awaitable は破棄されても自動では止まらない。ここ以外の経路でシーンを抜けたとき、
+        // 遷移先のシーンで入力を拾い続けないよう destroyCancellationToken で打ち切る。
         async void OnRaceFinished(Racer winner)
         {
-            await Awaitable.WaitForSecondsAsync(inputDelay);
-
-            while (true)
+            try
             {
-                if (RetryPressed())
-                {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                    return;
-                }
+                await Awaitable.WaitForSecondsAsync(inputDelay, destroyCancellationToken);
 
-                if (TitlePressed())
+                while (true)
                 {
-                    SceneManager.LoadScene(titleScene);
-                    return;
-                }
+                    if (RetryPressed())
+                    {
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        return;
+                    }
 
-                await Awaitable.NextFrameAsync();
+                    if (TitlePressed())
+                    {
+                        SceneManager.LoadScene(titleScene);
+                        return;
+                    }
+
+                    await Awaitable.NextFrameAsync(destroyCancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
 
