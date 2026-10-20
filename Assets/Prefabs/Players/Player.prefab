@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  maxSpeed: 18
-  acceleration: 14
-  brakeDeceleration: 26
-  coastDeceleration: 7
+  maxSpeed: 20
+  acceleration: 16
+  brakeDeceleration: 27
+  coastDeceleration: 5
   cornerSpeedFactorMin: 0.85
   cornerFullEffectCurvature: 0.05
   boostSpeed: 28
@@ -111,6 +111,12 @@ MonoBehaviour:
   gaugeDrainPerSecond: 35
   gaugeRegenPerSecond: 12
   boostRestartGauge: 25
+  sideBoostInputThreshold: 0.5
+  sideBoostDuration: 0.25
+  sideBoostLateralSpeed: 18
+  sideBoostAcceleration: 120
+  sideBoostDecay: 24
+  sideBoostGaugeCost: 20
   strafeAcceleration: 26
   lateralDamping: 10
   centerPullStrength: 1.2
