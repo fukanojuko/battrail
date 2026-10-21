@@ -374,8 +374,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  kickOffset: {x: 0, y: 0.5, z: -16}
-  kickInDuration: 0.1
+  kickOffset: {x: 0, y: 0.5, z: -22}
+  kickInDuration: 0.35
   recoverDuration: 1
 --- !u!114 &2000030
 MonoBehaviour:
@@ -1498,8 +1498,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 1
-  kickOffset: {x: 0, y: 0.5, z: -16}
-  kickInDuration: 0.1
+  kickOffset: {x: 0, y: 0.5, z: -22}
+  kickInDuration: 0.35
   recoverDuration: 1
 --- !u!1 &4000030
 GameObject:
