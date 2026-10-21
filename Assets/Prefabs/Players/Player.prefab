@@ -110,17 +110,17 @@ MonoBehaviour:
   maxGauge: 100
   gaugeDrainPerSecond: 20
   gaugeRegenPerSecond: 25
-  boostRestartGauge: 15
-  sideBoostInputThreshold: 0.45
-  sideBoostDuration: 0.25
-  sideBoostLateralSpeed: 18
-  sideBoostAcceleration: 120
-  sideBoostDecay: 24
-  sideBoostGaugeCost: 20
+  boostRestartGauge: 23
+  sideBoostInputThreshold: 0.4
+  sideBoostDuration: 0.23
+  sideBoostLateralSpeed: 36
+  sideBoostAcceleration: 150
+  sideBoostDecay: 22
+  sideBoostGaugeCost: 30
   strafeAcceleration: 26
   lateralDamping: 10
   centerPullStrength: 1.2
-  maxLateralSpeed: 9
+  maxLateralSpeed: 12
   startLateralOffset: -1.5
   startDashDuration: 1.5
   startDashSpeed: 28
