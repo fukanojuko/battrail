@@ -98,13 +98,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  maxSpeed: 20
+  maxSpeed: 40
   acceleration: 14
   brakeDeceleration: 26
   coastDeceleration: 7
   cornerSpeedFactorMin: 0.7
   cornerFullEffectCurvature: 0.05
-  boostSpeed: 80
+  boostSpeed: 70
   boostAcceleration: 42
   overspeedDecay: 24
   maxGauge: 100
@@ -125,7 +125,7 @@ MonoBehaviour:
   startDashDuration: 1.5
   startDashSpeed: 28
   startDashAcceleration: 30
-  wallBounce: 15
+  wallBounce: 3
   wallSpeedRetain: 0.7
   course: {fileID: 0}
   hitEffect: {fileID: 7735975383878489924}

@@ -1344,9 +1344,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.Input.NpcSetup
   forceNpcInEditor: 0
   tuning:
-    strength: 3
-    weakReactionTime: 0.4
-    decisionInterval: 0.06
+    strength: 1.64
+    weakReactionTime: 0.3
+    decisionInterval: 0.3
     targetSpeed: 18
     lateralGain: 2
     lateralDamping: 0.2
@@ -2340,16 +2340,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: boostSpeed
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: playerIndex
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: boostAcceleration
-      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: startLateralOffset
@@ -2543,14 +2535,6 @@ PrefabInstance:
     - target: {fileID: 4215692539141614569, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
-      propertyPath: boostSpeed
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
-      propertyPath: boostAcceleration
-      value: 42
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
