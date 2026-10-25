@@ -1,3 +1,4 @@
+using System;
 using Battrail.Racing;
 using UnityEngine;
 
@@ -40,8 +41,8 @@ namespace Battrail.Presentation
             _source.Play();
         }
 
-        // Awaitable は MonoBehaviour の破棄／シーン遷移で自動キャンセルされるため、
-        // async void で起動しっぱなしにして問題ない（PostRaceController と同じパターン）。
+        // Awaitable は破棄されても自動では止まらない。フェード中にリトライ／タイトル遷移すると
+        // 破棄済みの AudioSource を触り続けるので、destroyCancellationToken で打ち切る。
         async void OnRaceFinished(Racer winner)
         {
             if (!_source.isPlaying)
@@ -53,14 +54,20 @@ namespace Battrail.Presentation
                 return;
             }
 
-            float from = _source.volume;
-            for (float elapsed = 0f; elapsed < fadeOutSeconds; elapsed += Time.deltaTime)
+            try
             {
-                _source.volume = Mathf.Lerp(from, 0f, elapsed / fadeOutSeconds);
-                await Awaitable.NextFrameAsync();
-            }
+                float from = _source.volume;
+                for (float elapsed = 0f; elapsed < fadeOutSeconds; elapsed += Time.deltaTime)
+                {
+                    _source.volume = Mathf.Lerp(from, 0f, elapsed / fadeOutSeconds);
+                    await Awaitable.NextFrameAsync(destroyCancellationToken);
+                }
 
-            _source.Stop();
+                _source.Stop();
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
     }
 }

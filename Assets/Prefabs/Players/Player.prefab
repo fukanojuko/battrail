@@ -104,13 +104,19 @@ MonoBehaviour:
   coastDeceleration: 7
   cornerSpeedFactorMin: 0.85
   cornerFullEffectCurvature: 0.05
-  boostSpeed: 28
-  boostAcceleration: 24
+  boostSpeed: 50
+  boostAcceleration: 42
   overspeedDecay: 12
   maxGauge: 100
   gaugeDrainPerSecond: 35
   gaugeRegenPerSecond: 12
   boostRestartGauge: 25
+  sideBoostInputThreshold: 0.5
+  sideBoostDuration: 0.25
+  sideBoostLateralSpeed: 18
+  sideBoostAcceleration: 120
+  sideBoostDecay: 24
+  sideBoostGaugeCost: 20
   strafeAcceleration: 26
   lateralDamping: 10
   centerPullStrength: 1.2

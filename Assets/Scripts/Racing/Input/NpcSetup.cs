@@ -7,7 +7,7 @@ namespace Battrail.Racing.Input
     /// Racer が Start で既定の RacerInput を作る前に注入したいので、処理は Awake で行う。
     public class NpcSetup : MonoBehaviour
     {
-        [Tooltip("タイトルを経由せず Boot を直接 Play したときも NPC にする（Editor 専用のデバッグ用）")]
+        [Tooltip("タイトルを経由せずレースシーンを直接 Play したときも NPC にする（Editor 専用のデバッグ用）")]
         [SerializeField] bool forceNpcInEditor = false;
 
         [SerializeField] NpcTuning tuning = new();

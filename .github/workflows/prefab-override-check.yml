@@ -1,0 +1,25 @@
+name: Prefab override check
+
+# 調整値が Player1/Player2 の Variant・Race.prefab・レースシーンで上書きされていないかを検査する。
+# ルールと許可リストは .github/scripts/check-prefab-overrides.sh の RULES にある。
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - "Assets/Prefabs/**"
+      - "Assets/Scenes/**"
+      - ".github/scripts/check-prefab-overrides.sh"
+      - ".github/workflows/prefab-override-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # prefab / scene / .meta は LFS 対象外なので lfs: true は要らない
+      - uses: actions/checkout@v7.0.1
+
+      - name: Check prefab overrides
+        run: sh .github/scripts/check-prefab-overrides.sh

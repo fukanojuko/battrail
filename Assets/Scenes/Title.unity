@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6570ee61172f04e418200554a32b7240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Battrail.UI::Battrail.UI.TitleScreenController
-  nextScene: Boot
+  nextScene: Race01
   promptPulseSpeed: 3
 --- !u!114 &492128100
 MonoBehaviour:
