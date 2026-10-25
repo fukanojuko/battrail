@@ -123,9 +123,9 @@ MonoBehaviour:
   maxLateralSpeed: 18
   startLateralOffset: -1.5
   startDashDuration: 1.5
-  startDashSpeed: 28
-  startDashAcceleration: 30
-  wallBounce: 3
+  startDashSpeed: 50
+  startDashAcceleration: 37
+  wallBounce: 2
   wallSpeedRetain: 0.7
   course: {fileID: 0}
   hitEffect: {fileID: 7735975383878489924}
@@ -183,7 +183,7 @@ VisualEffect:
       - m_Value: 60
         m_Name: TriggerTrailRate
         m_Overridden: 1
-      - m_Value: 2.8
+      - m_Value: 3.2
         m_Name: TrailLifeTime
         m_Overridden: 1
       - m_Value: 0.8
