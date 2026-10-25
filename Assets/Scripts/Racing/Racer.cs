@@ -251,7 +251,9 @@ namespace Battrail.Racing
             }
             else
             {
-                _forwardBoostExcess = Mathf.MoveTowards(_forwardBoostExcess, 0f, overspeedDecay * dt);
+                // ブレーキ・壁・被弾で失った分は戻さない。実際に上限を超えている分までしか残さない
+                _forwardBoostExcess = Mathf.Min(
+                    _forwardBoostExcess, Mathf.Max(0f, ForwardSpeed - boostSpeed * cornerFactor));
             }
 
             DistanceAlongCourse += ForwardSpeed * dt;
