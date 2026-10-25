@@ -1,5 +1,10 @@
 # 調整ポイント早見表
 
+調整値は下に書いた「場所」でだけ変える。Player1/Player2 の Variant・`Race.prefab`・レースシーンで
+スクリプトの値を上書きすると、PR の CI（`.github/workflows/prefab-override-check.yml`）が落ちる。
+許可している上書きは `.github/scripts/check-prefab-overrides.sh` の `RULES` にある。
+ローカルでは `sh .github/scripts/check-prefab-overrides.sh` で同じ検査ができる。
+
 ---
 
 ## 走り・操作感
@@ -118,9 +123,10 @@
 
 ## ブースト演出（集中線）
 
-**場所A**: `Main Camera` / `Camera 2` の子 `ConcentrationLine` の `BoostConcentrationLine`
+**場所A**: `Assets/Prefabs/ConcentrationLine/ConcentrationLine.prefab` の `BoostConcentrationLine`（P1/P2 共通）。
+`Race.prefab` 側で上書きできるのは `playerIndex` だけ
 
-- `maxAlpha`（0.35）— ブースト中の濃さ。まず触るならここ
+- `maxAlpha`（0.023）— ブースト中の濃さ。まず触るならここ
 - `fadeInDuration`（0.12）— 出るまでの時間
 - `fadeOutDuration`（0.3）— 消えるまでの時間
 

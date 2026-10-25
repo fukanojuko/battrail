@@ -922,74 +922,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Name
-      value: Target_angles
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Name
-      value: Target_position
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[2].m_Name
-      value: Target_scale
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
-      value: -0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.y
-      value: -0.115639985
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.z
-      value: -0.338
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[2].m_Value.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[2].m_Value.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[2].m_Value.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Overridden
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Overridden
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 782531682478332680, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[2].m_Overridden
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005257206113459635, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_Name
-      value: Player2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4102034055367155269, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: playerIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4102034055367155269, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: startLateralOffset
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 4150528222797855972, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
       value: 10
@@ -1030,10 +962,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 5420526857649847507, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 9a11000000000000000000000000a003, type: 2}
     - target: {fileID: 6654927781427304038, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: m_Asset
       value: 
@@ -1082,46 +1010,6 @@ PrefabInstance:
       propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[0].m_Value.m_Curve.Array.data[1].outWeight
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7512903532273188937, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: playerIndex
       value: 1
@@ -1148,10 +1036,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7456307040564785196}
     m_Modifications:
-    - target: {fileID: 2872740454319611770, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
-      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
-      value: 3.2
-      objectReference: {fileID: 0}
     - target: {fileID: 4150528222797855972, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
       value: 11
@@ -1267,10 +1151,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 744567891499113949}
     - target: {fileID: 1122334455667788005, guid: 37ada046a202ca6449ff7ee6176ff063, type: 3}
-      propertyPath: maxAlpha
-      value: 0.023
-      objectReference: {fileID: 0}
-    - target: {fileID: 1122334455667788005, guid: 37ada046a202ca6449ff7ee6176ff063, type: 3}
       propertyPath: playerIndex
       value: 0
       objectReference: {fileID: 0}
@@ -1324,10 +1204,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 3862376909140856268}
-    - target: {fileID: 1122334455667788005, guid: 37ada046a202ca6449ff7ee6176ff063, type: 3}
-      propertyPath: maxAlpha
-      value: 0.023
-      objectReference: {fileID: 0}
     - target: {fileID: 1122334455667788005, guid: 37ada046a202ca6449ff7ee6176ff063, type: 3}
       propertyPath: playerIndex
       value: 1

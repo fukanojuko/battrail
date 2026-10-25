@@ -146,7 +146,9 @@ Symptoms that only appear on Web usually come from these two, both documented in
 - Player prefabs: `Assets/Prefabs/Players/Player.prefab` is the base holding logic and shared
   structure; `Player1.prefab`/`Player2.prefab` are Prefab Variants differing only in materials.
   Tuning values belong on the base. `playerIndex` and `startLateralOffset` are instance overrides
-  inside `Race.prefab`, deliberately not in the Variants. Artist-owned assets live under `Assets/Contents/Artist/` — adjust VFX size
+  inside `Race.prefab`, deliberately not in the Variants. `prefab-override-check.yml` enforces this
+  on PRs: script (`Assets/Scripts`) property overrides in the Variants, `Race.prefab` and race
+  scenes fail unless allowlisted in `RULES` of `.github/scripts/check-prefab-overrides.sh`. Artist-owned assets live under `Assets/Contents/Artist/` — adjust VFX size
   and lifetime on the component override rather than editing the `.vfx`.
 - HUD is UI Toolkit (`Assets/UI/*.uxml` / `*.uss`). Overlays (`countdown`, `result`, `pause`) are
   shown by adding/removing the `hidden` class.
