@@ -139,8 +139,8 @@ namespace Battrail.Racing
         float _sideBoostTimer;
         float _sideBoostDirection;
         float _forwardBoostTimer;
-        // 前ブーストの急加速で boostSpeed を超えている間。ブースト中でも即クランプせず減衰させる
-        bool _forwardBoostOverspeed;
+        // 前ブーストの急加速で boostSpeed を超えた分。ブースト中でもこの分だけは即クランプせず減衰させる
+        float _forwardBoostExcess;
         bool _wasBoosting;
         bool _boostDepleted;
         // RaceManager が Running にするまで動かない。開始側が呼び忘れても走り出さない向きに倒しておく。
@@ -232,7 +232,7 @@ namespace Battrail.Racing
                 _boostDepleted = true;
 
             float cornerFactor = CornerSpeedFactor();
-            ForwardSpeed = StepForward(ForwardSpeed, move.y, IsBoosting, _forwardBoostOverspeed, cornerFactor, dt);
+            ForwardSpeed = StepForward(ForwardSpeed, move.y, IsBoosting, _forwardBoostExcess, cornerFactor, dt);
 
             // スタートダッシュ中は攻撃判定を持たせず（IsBoosting はそのまま）、速度だけ強制的に持ち上げる。
             if (_startDashTimer > 0f)
@@ -247,11 +247,11 @@ namespace Battrail.Racing
                 _forwardBoostTimer -= dt;
                 ForwardSpeed = Mathf.MoveTowards(
                     ForwardSpeed, forwardBoostSpeed * cornerFactor, forwardBoostAcceleration * dt);
-                _forwardBoostOverspeed = true;
+                _forwardBoostExcess = Mathf.Max(0f, ForwardSpeed - boostSpeed * cornerFactor);
             }
-            else if (ForwardSpeed <= boostSpeed * cornerFactor)
+            else
             {
-                _forwardBoostOverspeed = false;
+                _forwardBoostExcess = Mathf.MoveTowards(_forwardBoostExcess, 0f, overspeedDecay * dt);
             }
 
             DistanceAlongCourse += ForwardSpeed * dt;
@@ -279,6 +279,8 @@ namespace Battrail.Racing
             if (Gauge < sideBoostGaugeCost)
                 return;
 
+            // 直前のタップで出た前の急加速が残っていても、横ブーストには重ねない
+            _forwardBoostTimer = 0f;
             _sideBoostDirection = Mathf.Sign(lateralInput);
             _sideBoostTimer = sideBoostDuration;
             Gauge = Mathf.Clamp(Gauge - sideBoostGaugeCost, 0f, maxGauge);
@@ -291,6 +293,7 @@ namespace Battrail.Racing
             if (Gauge < forwardBoostGaugeCost)
                 return;
 
+            _sideBoostTimer = 0f;
             _forwardBoostTimer = forwardBoostDuration;
             Gauge = Mathf.Clamp(Gauge - forwardBoostGaugeCost, 0f, maxGauge);
         }
@@ -412,16 +415,16 @@ namespace Battrail.Racing
             return Mathf.Lerp(1f, cornerSpeedFactorMin, t);
         }
 
-        float StepForward(float current, float input, bool boosting, bool decayBoostOverspeed, float cornerFactor,
-            float dt)
+        float StepForward(float current, float input, bool boosting, float boostExcess, float cornerFactor, float dt)
         {
             float speedCap = maxSpeed * cornerFactor;
 
             if (boosting)
             {
+                // 急加速の超過分だけを減衰で残し、カーブで下がった上限への超過は即クランプする。
                 float boostCap = boostSpeed * cornerFactor;
-                if (decayBoostOverspeed && current > boostCap)
-                    return DecayOverspeed(current, boostCap, input, dt);
+                if (boostExcess > 0f && current > boostCap)
+                    return Mathf.Min(DecayOverspeed(current, boostCap, input, dt), boostCap + boostExcess);
 
                 if (input > 0f)
                     current += boostAcceleration * input * dt;
