@@ -349,14 +349,22 @@ namespace Battrail.Racing
             // 毎フレーム壁向きに上書きされ、壁に張り付いたままになる。
             _sideBoostTimer = 0f;
             _lateralVelocity = inwardSign * wallBounce;
-            ForwardSpeed *= wallSpeedRetain;
+            ScaleForwardSpeed(wallSpeedRetain);
         }
 
         /// CombatManager から攻撃ヒット結果を適用する。前進減速＋横方向の弾き。
         public void ApplyKnockback(float forwardSpeedFactor, float lateralImpulse)
         {
-            ForwardSpeed *= forwardSpeedFactor;
+            ScaleForwardSpeed(forwardSpeedFactor);
             _lateralVelocity += lateralImpulse;
+        }
+
+        // 失った速度は急加速の超過分から先に削る。次のフレームのカーブ上限が、もう無い超過分で緩まないように
+        void ScaleForwardSpeed(float factor)
+        {
+            float lost = ForwardSpeed * (1f - factor);
+            ForwardSpeed *= factor;
+            _forwardBoostExcess = Mathf.Max(0f, _forwardBoostExcess - lost);
         }
 
         /// トレイル通過などでゲージを回復する。
