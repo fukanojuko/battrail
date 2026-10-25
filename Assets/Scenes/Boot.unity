@@ -263,8 +263,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018227, y: -1.0294667e-15, z: -5.7654007e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalRotation: {x: 0.15538883, y: -0.000000014720156, z: 0.0000000023154727, w: 0.9878534}
+  m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -327,11 +327,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 1
-    PositionDamping: {x: 0.2, y: 0.2, z: 0.2}
+    PositionDamping: {x: 0.1, y: 0.15, z: 0.25}
     AngularDampingMode: 0
     RotationDamping: {x: 0.2, y: 0.2, z: 0.2}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -9}
+  FollowOffset: {x: 0, y: 3, z: -9.3}
 --- !u!114 &2000024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,8 +374,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  kickOffset: {x: 0, y: 0.5, z: -22}
-  kickInDuration: 0.3
+  kickOffset: {x: 0, y: 0.5, z: -18}
+  kickInDuration: 0.18
   recoverDuration: 1
 --- !u!114 &2000030
 MonoBehaviour:
@@ -1286,7 +1286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b090cebf5527049c6a5e3ab56d282cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.RaceManager
-  countdownInterval: 1
+  countdownInterval: 1.2
   goDisplaySeconds: 0.7
 --- !u!114 &3000013
 MonoBehaviour:
@@ -1344,9 +1344,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.Input.NpcSetup
   forceNpcInEditor: 0
   tuning:
-    strength: 3
-    weakReactionTime: 0.4
-    decisionInterval: 0.06
+    strength: 1.64
+    weakReactionTime: 0.3
+    decisionInterval: 0.3
     targetSpeed: 18
     lateralGain: 2
     lateralDamping: 0.2
@@ -1387,8 +1387,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4000020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16018227, y: -1.0294667e-15, z: -5.7654007e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalRotation: {x: 0.15538883, y: -0.000000014720156, z: 0.0000000023154727, w: 0.9878534}
+  m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1451,11 +1451,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 1
-    PositionDamping: {x: 0.2, y: 0.2, z: 0.2}
+    PositionDamping: {x: 0.1, y: 0.15, z: 0.25}
     AngularDampingMode: 0
     RotationDamping: {x: 0.2, y: 0.2, z: 0.2}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -9}
+  FollowOffset: {x: 0, y: 3, z: -9.3}
 --- !u!114 &4000024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1498,8 +1498,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 1
-  kickOffset: {x: 0, y: 0.5, z: -22}
-  kickInDuration: 0.3
+  kickOffset: {x: 0, y: 0.5, z: -18}
+  kickInDuration: 0.18
   recoverDuration: 1
 --- !u!1 &4000030
 GameObject:
@@ -1528,8 +1528,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4000030}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalRotation: {x: 0.15538885, y: -0.0000000147201575, z: 0.0000000023154734, w: 0.9878534}
+  m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1833,8 +1833,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalRotation: {x: 0.15538885, y: -0.0000000147201575, z: 0.0000000023154734, w: 0.9878534}
+  m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2340,16 +2340,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: boostSpeed
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: playerIndex
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
-      propertyPath: boostAcceleration
-      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: startLateralOffset
@@ -2426,18 +2418,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.CombatManager
   hitRangeS: 1.4
-  hitRangeT: 0.9
-  hitCooldown: 0.4
-  victimForwardSpeedFactor: 0.5
-  victimLateralImpulse: 9
-  victimStunSeconds: 0.35
-  separationSpeed: 6
-  separationSpeedFactor: 0.5
+  hitRangeT: 1.3
+  hitCooldown: 0.5
+  victimForwardSpeedFactor: 0.4
+  victimLateralImpulse: 24
+  victimStunSeconds: 0.3
+  separationSpeed: 12
+  separationSpeedFactor: 0.7
   separationForwardFactor: 0.9
-  sideBoostForwardSpeedFactor: 0.25
-  sideBoostLateralImpulse: 16
-  sideBoostStunSeconds: 0.8
-  trailSeconds: 3
+  sideBoostForwardSpeedFactor: 0.2
+  sideBoostLateralImpulse: 32
+  sideBoostStunSeconds: 0.85
+  trailSeconds: 3.4
   trailHitRangeS: 1
   trailHitRangeT: 1.2
   trailRecoverPerSecond: 60
@@ -2543,14 +2535,6 @@ PrefabInstance:
     - target: {fileID: 4215692539141614569, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
-      propertyPath: boostSpeed
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651419843707663845, guid: c91a0f8fd24f3394fab052d3fe37e117, type: 3}
-      propertyPath: boostAcceleration
-      value: 42
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
