@@ -40,6 +40,17 @@
 - `startDashDuration`（1.5）/ `startDashSpeed`（28）/ `startDashAcceleration`（30）—
   被弾スタン明けの救済加速。追い上げのしやすさ
 
+## 前ブーストの点火（急加速）
+
+**場所**: 同上（`Racer`）
+
+- `forwardBoostGaugeCost`（8）— 点火した瞬間の消費。**連打したときのガス欠の早さ**はここで決まる。
+  `NpcSetup > Tuning > aggressiveStartGauge`（15）で点火する NPC は、追走中に吹ける時間がこの分短くなる
+- `forwardBoostDuration`（0.3）— 急加速の時間。**伸ばすほど遠くまで飛ぶ**。タップで離しても最後まで続く
+- `forwardBoostSpeed`（65）— 急加速中の最高速。`boostSpeed` との差が「キノコ感」。
+  超えた分は `overspeedDecay` で `boostSpeed` まで戻るので、余韻の長さは `overspeedDecay` 側で決まる
+- `forwardBoostAcceleration`（150）— 立ち上がりの鋭さ。下げるとタメのある加速になる
+
 ## 横ブースト（点火時に左右を入れた突進）
 
 **場所**: 同上（`Racer`）
