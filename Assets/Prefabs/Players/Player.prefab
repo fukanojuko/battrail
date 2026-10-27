@@ -98,35 +98,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  maxSpeed: 18
+  maxSpeed: 40
   acceleration: 14
   brakeDeceleration: 26
   coastDeceleration: 7
-  cornerSpeedFactorMin: 0.85
+  cornerSpeedFactorMin: 0.7
   cornerFullEffectCurvature: 0.05
-  boostSpeed: 50
+  boostSpeed: 70
   boostAcceleration: 42
-  overspeedDecay: 12
+  overspeedDecay: 24
   maxGauge: 100
   gaugeDrainPerSecond: 35
-  gaugeRegenPerSecond: 12
-  boostRestartGauge: 25
-  sideBoostInputThreshold: 0.5
-  sideBoostDuration: 0.25
-  sideBoostLateralSpeed: 18
+  gaugeRegenPerSecond: 20
+  boostRestartGauge: 40
+  forwardBoostGaugeCost: 8
+  forwardBoostDuration: 0.3
+  forwardBoostSpeed: 65
+  forwardBoostAcceleration: 150
+  sideBoostInputThreshold: 0.4
+  sideBoostDuration: 0.3
+  sideBoostLateralSpeed: 72
   sideBoostAcceleration: 120
   sideBoostDecay: 24
-  sideBoostGaugeCost: 20
+  sideBoostGaugeCost: 40
   strafeAcceleration: 26
   lateralDamping: 10
   centerPullStrength: 1.2
-  maxLateralSpeed: 9
-  startLateralOffset: -1.5
+  maxLateralSpeed: 18
+  startLateralOffset: 1.5
   startDashDuration: 1.5
-  startDashSpeed: 28
-  startDashAcceleration: 30
-  wallBounce: 6
-  wallSpeedRetain: 0.8
+  startDashSpeed: 50
+  startDashAcceleration: 37
+  wallBounce: 2
+  wallSpeedRetain: 0.7
   course: {fileID: 0}
   hitEffect: {fileID: 7735975383878489924}
 --- !u!1 &5199284608664995119
