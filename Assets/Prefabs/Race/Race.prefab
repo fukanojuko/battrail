@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43450bb38bc945128c6e4b302671c6a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Battrail.Presentation::Battrail.Presentation.RaceBgm
-  clip: {fileID: 8300000, guid: d05461ade1512483db9b69e4328afa9a, type: 3}
+  clip: {fileID: 8300000, guid: 9efa5278f52da2b4d977336ef079328c, type: 3}
   volume: 0.3
   fadeOutSeconds: 1.5
 --- !u!114 &3398680593088681017
