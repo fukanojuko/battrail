@@ -3,12 +3,14 @@
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
         <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;);"/>
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
+            <ui:Image source="project://database/Assets/Contents/Artist/UI/BattrailRingUI.png?fileID=2800000&amp;guid=831ddc0773f4b614c8712170a62fd1b9&amp;type=3#BattrailRingUI" style="opacity: 0.5;"/>
             <ui:Label name="p0-info" text="P1" class="info" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;); -unity-font-style: bold; font-size: 27px;"/>
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p0-fill" class="gauge-fill"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="right" picking-mode="Ignore" class="player-panel">
+            <ui:Image source="project://database/Assets/Contents/Artist/UI/BattrailRingUI.png?fileID=2800000&amp;guid=831ddc0773f4b614c8712170a62fd1b9&amp;type=3#BattrailRingUI"/>
             <ui:Label name="p1-info" text="P2" class="info" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;); -unity-font-style: bold; font-size: 27px;"/>
             <ui:VisualElement class="gauge-bg">
                 <ui:VisualElement name="p1-fill" class="gauge-fill"/>
