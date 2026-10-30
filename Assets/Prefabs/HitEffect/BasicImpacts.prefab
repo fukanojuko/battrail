@@ -72,7 +72,7 @@ VisualEffect:
       - m_Value: 0.35
         m_Name: ImpactRingLifeTime 1
         m_Overridden: 1
-      - m_Value: 8
+      - m_Value: 5.5
         m_Name: ImpactRingSize 1
         m_Overridden: 1
       - m_Value: 0.3
@@ -96,7 +96,7 @@ VisualEffect:
       - m_Value: {x: 191.74898, y: 79.29825, z: 0, w: 0}
         m_Name: BColor 1
         m_Overridden: 1
-      - m_Value: {x: 123.117424, y: 123.117424, z: 123.117424, w: 0}
+      - m_Value: {x: 120.83746, y: 120.83746, z: 120.83746, w: 0}
         m_Name: GColor 1
         m_Overridden: 1
       - m_Value: {x: 33.896763, y: 7.273682, z: 0, w: 0}

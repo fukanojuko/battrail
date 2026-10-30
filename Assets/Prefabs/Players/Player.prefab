@@ -473,10 +473,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4734714140816641387, guid: a253a916bad1a704daaa15e74e89772f, type: 3}
-      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734714140816641387, guid: a253a916bad1a704daaa15e74e89772f, type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.x
       value: 29.857056
       objectReference: {fileID: 0}
