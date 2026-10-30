@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player1
       objectReference: {fileID: 0}
+    - target: {fileID: 4102034055367155269, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
+      propertyPath: startLateralOffset
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 7512903532273188937, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

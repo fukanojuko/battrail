@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70e135c724729407e8bdcd89cef7fa07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Battrail.Racing::Battrail.Racing.Input.NpcSetup
-  forceNpcInEditor: 1
+  forceNpcInEditor: 0
   tuning:
     strength: 1.64
     weakReactionTime: 0.3
@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3974387344560514678}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15538883, y: 0.00000003291528, z: -0.000000005177557, w: 0.9878534}
+  m_LocalRotation: {x: 0.15538883, y: -0, z: -0, w: 0.9878534}
   m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 0.99999994, z: 0.99999994}
   m_ConstrainProportionsScale: 0
@@ -291,7 +291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4094987295356794897}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15538883, y: 0.00000003291528, z: -0.000000005177557, w: 0.9878534}
+  m_LocalRotation: {x: 0.15538883, y: -0, z: -0, w: 0.9878534}
   m_LocalPosition: {x: 0, y: 3.5, z: -9.3}
   m_LocalScale: {x: 1, y: 0.99999994, z: 0.99999994}
   m_ConstrainProportionsScale: 0
@@ -494,7 +494,7 @@ Transform:
   m_GameObject: {fileID: 5676507777634036665}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalPosition: {x: 0.5, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -732,7 +732,7 @@ Transform:
   m_GameObject: {fileID: 6890604649557589423}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1601823, y: -1.1534001e-15, z: 1.8717112e-16, w: 0.9870875}
-  m_LocalPosition: {x: 0, y: 3.5, z: -9}
+  m_LocalPosition: {x: -2, y: 3.5, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1000,7 +1000,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7651419843707663845, guid: 5e86ebd336acc45ddbcf82e22c131cd3, type: 3}
       propertyPath: startLateralOffset
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
