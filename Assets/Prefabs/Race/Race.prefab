@@ -462,7 +462,7 @@ MonoBehaviour:
   sideBoostForwardSpeedFactor: 0.2
   sideBoostLateralImpulse: 32
   sideBoostStunSeconds: 0.85
-  trailSeconds: 3.4
+  trailSeconds: 4
   trailHitRangeS: 1
   trailHitRangeT: 1.2
   trailRecoverPerSecond: 60
