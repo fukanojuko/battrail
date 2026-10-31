@@ -17,6 +17,7 @@
         <ui:VisualElement name="minimap" picking-mode="Ignore" class="minimap-host"/>
         <ui:VisualElement name="countdown" picking-mode="Ignore" class="countdown-overlay hidden">
             <ui:Label name="countdown-text" text="" class="countdown-text" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-ExtraBoldItalic.ttf?fileID=12800000&amp;guid=75dcf51b4c6931747ae1ea3eff5e500b&amp;type=3#Montserrat-ExtraBoldItalic&quot;);"/>
+            <ui:Label text="Aボタン・RTをおせ！" name="Label" style="color: rgb(255, 255, 255); -unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Bold.ttf?fileID=12800000&amp;guid=fd8da404d45a0b44f8aeba164f145b93&amp;type=3#NotoSansCJKjp-Bold&quot;); font-size: 34px;"/>
         </ui:VisualElement>
         <ui:VisualElement name="result" picking-mode="Ignore" class="result-overlay hidden">
             <ui:Label name="result-text" text="" class="result-text"/>
