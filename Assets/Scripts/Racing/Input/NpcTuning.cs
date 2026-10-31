@@ -28,6 +28,9 @@ namespace Battrail.Racing.Input
         public float lateralDamping = 0.2f;
 
         [Header("Tactics")]
+        [Tooltip("GO から何秒間、相手へ寄せず今の横位置を保つか。2 機が並ぶスタートで相手へ寄せながら" +
+                 "ブーストを点火すると、横ブーストの突進になって GO と同時に当ててしまう")]
+        public float startGraceSeconds = 1.5f;
         [Tooltip("相手の後方このΔs以内に入ったらブースト体当たりを狙う。CombatManager の hitRangeS は 1.4")]
         public float ramRange = 3f;
         [Tooltip("相手の後方このΔs以内なら追走（トレイル）が成立しているとみなす。CombatManager の trailSeconds 3 秒ぶんの距離")]

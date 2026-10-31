@@ -125,7 +125,7 @@ MonoBehaviour:
   lateralDamping: 10
   centerPullStrength: 1.2
   maxLateralSpeed: 18
-  startLateralOffset: 2
+  startLateralOffset: -1.5
   startDashDuration: 1.5
   startDashSpeed: 50
   startDashAcceleration: 37

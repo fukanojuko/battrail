@@ -206,6 +206,8 @@ Play では効かない。濃さは `maxAlpha` で調整する（マテリアル
 - `lateralGain`（2.0）/ `lateralDamping`（0.2）— 狙う横位置への PD 制御。
   **`lateralDamping` を 0 にすると蛇行する**（加速度モデルに対して P 項だけだと振動するため）。
   `lateralGain` を上げるなら damping も上げる（臨界制動はおよそ `26*damping + 10 = 2*sqrt(26*gain)`）
+- `startGraceSeconds`（1.5）— GO からこの秒数は相手へ寄せず、今の横位置を保つ。
+  0 にすると GO と同時に横ブーストで相手へ突っ込む（横並びのスタートで `Ram` が選ばれるため）
 - `ramRange`（3.0）— 相手の後方この距離まで詰めたら体当たりを狙う。`CombatManager.hitRangeS` は 1.4
 - `trailFollowRange`（30）— この距離以内なら相手を意識する（後方なら追走、前方ならトレイルを踏ませない
   ように横をずらす）。これを超えて離れている間だけコース中央を直進する。**下げると直線的な走りが増える**
