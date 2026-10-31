@@ -118,6 +118,7 @@ namespace Battrail.Racing
         public float MaxGauge => maxGauge;
         public float GaugeRatio => maxGauge > 0f ? Gauge / maxGauge : 0f;
         public CourseSpline Course => course;
+        public RacePhase Phase => _phase;
 
         /// ゴール到達の瞬間に一度だけ発火（RaceManager が毎フレーム HasFinished をポーリングしなくて済むように）。
         public event Action<Racer> Finished;

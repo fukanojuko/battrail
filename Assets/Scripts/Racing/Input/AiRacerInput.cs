@@ -15,6 +15,8 @@ namespace Battrail.Racing.Input
         /// 今フレームの狙い。横位置とブーストの出し方がこれで決まる。
         enum Intent
         {
+            /// GO 前と直後。相手へ寄せず今の横位置を保つ
+            Launch,
             /// 相手が居ない・遠い。最短距離（コース中央）を走る
             Cruise,
             /// 相手が前方。トレイルに乗ってゲージを回しながら詰める
@@ -38,6 +40,8 @@ namespace Battrail.Racing.Input
         readonly float _cruiseStopGauge;
 
         float _nextDecisionTime;
+        // 初めて Running を見たときから決める。負の間はまだ GO 前。
+        float _launchEndTime = -1f;
         Vector2 _move;
         bool _boost;
 
@@ -102,6 +106,9 @@ namespace Battrail.Racing.Input
 
         Intent DecideIntent()
         {
+            if (IsLaunching())
+                return Intent.Launch;
+
             if (!HasRival())
                 return Intent.Cruise;
 
@@ -132,6 +139,11 @@ namespace Battrail.Racing.Input
             float target;
             switch (intent)
             {
+                case Intent.Launch:
+                    // 中央へ寄せるだけでも、横入力が残ったまま点火すれば横ブーストが相手のラインまで届く。
+                    target = _self.LateralOffset;
+                    break;
+
                 case Intent.Chase:
                 case Intent.Ram:
                     target = _seenRivalLateral;
@@ -185,6 +197,18 @@ namespace Battrail.Racing.Input
             float stop = aggressive ? _tuning.aggressiveStopGauge : _cruiseStopGauge;
 
             return _boost ? _self.Gauge > stop : _self.Gauge >= start;
+        }
+
+        /// スタートは 2 機が並んで Δs = 0 なので、放っておくと Ram を選んでカウントダウン中から相手へ横入力を入れ続ける。
+        /// Racer は点火の瞬間の横入力で横ブーストを出すため、そのまま GO で突進になる。
+        bool IsLaunching()
+        {
+            if (_self.Phase != RacePhase.Running)
+                return true;
+
+            if (_launchEndTime < 0f)
+                _launchEndTime = Time.time + _tuning.startGraceSeconds;
+            return Time.time < _launchEndTime;
         }
 
         bool HasRival()
