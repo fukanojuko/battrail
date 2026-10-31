@@ -1,16 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/TitleScreen.uss" />
+    <Style src="project://database/Assets/UI/TitleScreen.uss?fileID=7433441132597879392&amp;guid=72718171b107046cdbd8bb79b6b05afc&amp;type=3#TitleScreen"/>
     <ui:VisualElement name="root" class="title-root">
-        <ui:Label name="game-title" text="BATTRAIL" class="game-title" />
+        <ui:Image source="project://database/Assets/Contents/Artist/TitleLogo/Battrail.png?fileID=2800000&amp;guid=0870f19c593310848b4a40b76e93a898&amp;type=3#Battrail" scale-mode="ScaleToFit" style="opacity: 1; scale: 1.25 1.25; translate: 0 -17px;"/>
         <ui:VisualElement name="mode-select" class="mode-select">
-            <ui:Label name="mode-1p" text="1P vs NPC" class="mode-option" />
-            <ui:Label name="mode-2p" text="2P LOCAL" class="mode-option" />
+            <ui:Label name="mode-1p" text="1P vs NPC" class="mode-option" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Bold.ttf?fileID=12800000&amp;guid=fd8da404d45a0b44f8aeba164f145b93&amp;type=3#NotoSansCJKjp-Bold&quot;); font-size: 31px;"/>
+            <ui:Label name="mode-2p" text="2P LOCAL" class="mode-option" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Bold.ttf?fileID=12800000&amp;guid=fd8da404d45a0b44f8aeba164f145b93&amp;type=3#NotoSansCJKjp-Bold&quot;); font-size: 31px; color: rgba(255, 255, 255, 0.675);"/>
         </ui:VisualElement>
         <ui:VisualElement class="controls-hint">
-            <ui:Label text="↑↓ で選択 / Enter で決定" class="hint" />
-            <ui:Label text="P1: WASD + LeftShift" class="hint" />
-            <ui:Label text="P2: Arrow Keys + RightShift" class="hint" />
+            <ui:Label text="↑↓ で選択 / Enter で決定" class="hint" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Medium.ttf?fileID=12800000&amp;guid=904b4159ed4ed5e41a6525ce7c81d067&amp;type=3#NotoSansCJKjp-Medium&quot;);"/>
+            <ui:Label text="P1: WASD + LeftShift" class="hint" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Medium.ttf?fileID=12800000&amp;guid=904b4159ed4ed5e41a6525ce7c81d067&amp;type=3#NotoSansCJKjp-Medium&quot;);"/>
+            <ui:Label text="P2: Arrow Keys + RightShift" class="hint" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/NotoSansCJKjp-Medium.ttf?fileID=12800000&amp;guid=904b4159ed4ed5e41a6525ce7c81d067&amp;type=3#NotoSansCJKjp-Medium&quot;);"/>
         </ui:VisualElement>
-        <ui:Label name="version" text="" class="version" />
+        <ui:Label name="version" text="" class="version"/>
     </ui:VisualElement>
 </ui:UXML>

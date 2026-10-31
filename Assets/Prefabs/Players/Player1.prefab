@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player1
       objectReference: {fileID: 0}
+    - target: {fileID: 4102034055367155269, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
+      propertyPath: startLateralOffset
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 7512903532273188937, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -51,6 +55,18 @@ PrefabInstance:
     - target: {fileID: 7512903532273188937, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7735975383878489924, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.x
+      value: 148.40538
+      objectReference: {fileID: 0}
+    - target: {fileID: 7735975383878489924, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7735975383878489924, guid: cebcaa1f7b2e4453f9ccaff4ea991aaa, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.z
+      value: 181.01927
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

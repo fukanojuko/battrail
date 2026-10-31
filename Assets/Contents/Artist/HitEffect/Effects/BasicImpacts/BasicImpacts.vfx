@@ -189,9 +189,9 @@ MonoBehaviour:
   stickyNoteInfos: []
   categories:
   - name: MainImpactPropaties
-    collapsed: 1
+    collapsed: 0
   - name: BackImpactPropaties
-    collapsed: 1
+    collapsed: 0
   - name: ImpactRingPropaties
     collapsed: 1
   - name: FresnelRingPropaties
@@ -202,8 +202,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 851
     y: 168
-    width: 5626
-    height: 3022
+    width: 5625
+    height: 3036
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -386,18 +386,18 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: BColor 1
-    path: BColor 1
+  - name: RGBTexture 1
+    path: RGBTexture 1
     tooltip: 
     space: -1
     spaceable: 0
-    sheetType: m_Vector4f
-    realType: Color
+    sheetType: m_NamedObject
+    realType: Texture2D
     defaultValue:
       m_Type:
-        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+        m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"r":1.0,"g":0.20283019542694093,"b":0.20283019542694093,"a":0.0}'
+      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"d6d5247753643964da15509aca9bdcad","type":3}}'
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -418,22 +418,6 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: RGBTexture 1
-    path: RGBTexture 1
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_NamedObject
-    realType: Texture2D
-    defaultValue:
-      m_Type:
-        m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"d6d5247753643964da15509aca9bdcad","type":3}}'
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
   - name: GColor 1
     path: GColor 1
     tooltip: 
@@ -446,6 +430,22 @@ MonoBehaviour:
         m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
       m_SerializableObject: '{"r":11.984312057495118,"g":1.9723201990127564,"b":1.5686274766921998,"a":0.0}'
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: BColor 1
+    path: BColor 1
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Vector4f
+    realType: Color
+    defaultValue:
+      m_Type:
+        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"r":1.0,"g":0.20283019542694093,"b":0.20283019542694093,"a":0.0}'
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -466,8 +466,8 @@ MonoBehaviour:
     max: 1
     enumValues: []
     descendantCount: 0
-  - name: BAlpha 2
-    path: BAlpha 2
+  - name: RAlpha 1
+    path: RAlpha 1
     tooltip: 
     space: -1
     spaceable: 0
@@ -477,7 +477,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.8
+      m_SerializableObject: 1
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -498,8 +498,8 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: RAlpha 1
-    path: RAlpha 1
+  - name: BAlpha 2
+    path: BAlpha 2
     tooltip: 
     space: -1
     spaceable: 0
@@ -509,7 +509,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
+      m_SerializableObject: 0.8
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -577,24 +577,24 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: RColor
-    path: RColor
+  - name: RGBTexture
+    path: RGBTexture
     tooltip: 
     space: -1
     spaceable: 0
-    sheetType: m_Vector4f
-    realType: Color
+    sheetType: m_NamedObject
+    realType: Texture2D
     defaultValue:
       m_Type:
-        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+        m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"r":0.0,"g":0.0,"b":0.0,"a":0.0}'
+      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"86f8fc6089c33874dabc4130836135b5","type":3}}'
     min: -Infinity
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: BColor
-    path: BColor
+  - name: RColor
+    path: RColor
     tooltip: 
     space: -1
     spaceable: 0
@@ -625,18 +625,18 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: RGBTexture
-    path: RGBTexture
+  - name: BColor
+    path: BColor
     tooltip: 
     space: -1
     spaceable: 0
-    sheetType: m_NamedObject
-    realType: Texture2D
+    sheetType: m_Vector4f
+    realType: Color
     defaultValue:
       m_Type:
-        m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"86f8fc6089c33874dabc4130836135b5","type":3}}'
+      m_SerializableObject: '{"r":0.0,"g":0.0,"b":0.0,"a":0.0}'
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -11644,7 +11644,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615939}
   m_ExposedName: BackImpactLifeTime
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 0
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -11864,7 +11864,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615945}
   m_ExposedName: BackImpactAnimationCurve
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 1
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -11948,7 +11948,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615947}
   m_ExposedName: BackImpactSize
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 2
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -12213,7 +12213,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615961}
   m_ExposedName: RColor
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 4
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -12647,7 +12647,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615979}
   m_ExposedName: GColor
   m_Exposed: 1
-  m_Order: 7
+  m_Order: 5
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -12857,14 +12857,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615985}
   m_ExposedName: RGBTexture
   m_Exposed: 1
-  m_Order: 8
+  m_Order: 3
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -12945,7 +12945,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615987}
   m_ExposedName: MainImpactLifeTime 1
   m_Exposed: 1
-  m_Order: 9
+  m_Order: 0
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13029,7 +13029,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615989}
   m_ExposedName: MainImpactAnimationCurve 1
   m_Exposed: 1
-  m_Order: 10
+  m_Order: 1
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13106,14 +13106,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615991}
   m_ExposedName: MainImpactSize 1
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 2
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13187,14 +13187,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615993}
   m_ExposedName: BColor 1
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 6
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13404,14 +13404,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615999}
   m_ExposedName: RColor 2
   m_Exposed: 1
-  m_Order: 13
+  m_Order: 4
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13621,14 +13621,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661616005}
   m_ExposedName: RGBTexture 1
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 3
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -13709,7 +13709,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616007}
   m_ExposedName: GColor 1
   m_Exposed: 1
-  m_Order: 15
+  m_Order: 5
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -14246,7 +14246,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616023}
   m_ExposedName: RAlpha
   m_Exposed: 1
-  m_Order: 16
+  m_Order: 7
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -14327,7 +14327,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616025}
   m_ExposedName: GAlpha
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 8
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -14408,7 +14408,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616027}
   m_ExposedName: BAlpha 1
   m_Exposed: 1
-  m_Order: 18
+  m_Order: 9
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -14489,7 +14489,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616029}
   m_ExposedName: AlphaClip
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 10
   m_Category: BackImpactPropaties
   m_Min:
     m_Type:
@@ -14572,7 +14572,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616031}
   m_ExposedName: AlphaClip 1
   m_Exposed: 1
-  m_Order: 20
+  m_Order: 7
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -14655,7 +14655,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616033}
   m_ExposedName: BAlpha 2
   m_Exposed: 1
-  m_Order: 21
+  m_Order: 10
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -14736,7 +14736,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616035}
   m_ExposedName: GAlpha 1
   m_Exposed: 1
-  m_Order: 22
+  m_Order: 9
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:
@@ -14817,7 +14817,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616037}
   m_ExposedName: RAlpha 1
   m_Exposed: 1
-  m_Order: 23
+  m_Order: 8
   m_Category: MainImpactPropaties
   m_Min:
     m_Type:

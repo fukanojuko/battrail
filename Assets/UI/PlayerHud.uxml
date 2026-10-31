@@ -1,30 +1,30 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/PlayerHud.uss" />
+    <Style src="project://database/Assets/UI/PlayerHud.uss?fileID=7433441132597879392&amp;guid=e52b4c62da420453f9b289a1716aa143&amp;type=3#PlayerHud"/>
     <ui:VisualElement name="root" picking-mode="Ignore" class="root">
-        <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" />
+        <ui:Label name="quit-hint" text="ESC / Start ボタン: ポーズ" class="quit-hint" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;);"/>
         <ui:VisualElement name="left" picking-mode="Ignore" class="player-panel">
-            <ui:Label name="p0-info" text="P1" class="info" />
+            <ui:Label name="p0-info" text="P1" class="info" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;); -unity-font-style: bold; font-size: 27px;"/>
             <ui:VisualElement class="gauge-bg">
-                <ui:VisualElement name="p0-fill" class="gauge-fill" />
+                <ui:VisualElement name="p0-fill" class="gauge-fill"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="right" picking-mode="Ignore" class="player-panel">
-            <ui:Label name="p1-info" text="P2" class="info" />
+            <ui:Label name="p1-info" text="P2" class="info" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-SemiBoldItalic.ttf?fileID=12800000&amp;guid=a6354d4f5a890a649b8e4e747e8aaf56&amp;type=3#Montserrat-SemiBoldItalic&quot;); -unity-font-style: bold; font-size: 27px;"/>
             <ui:VisualElement class="gauge-bg">
-                <ui:VisualElement name="p1-fill" class="gauge-fill" />
+                <ui:VisualElement name="p1-fill" class="gauge-fill"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="minimap" picking-mode="Ignore" class="minimap-host" />
+        <ui:VisualElement name="minimap" picking-mode="Ignore" class="minimap-host"/>
         <ui:VisualElement name="countdown" picking-mode="Ignore" class="countdown-overlay hidden">
-            <ui:Label name="countdown-text" text="" class="countdown-text" />
+            <ui:Label name="countdown-text" text="" class="countdown-text" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-ExtraBoldItalic.ttf?fileID=12800000&amp;guid=75dcf51b4c6931747ae1ea3eff5e500b&amp;type=3#Montserrat-ExtraBoldItalic&quot;);"/>
         </ui:VisualElement>
         <ui:VisualElement name="result" picking-mode="Ignore" class="result-overlay hidden">
-            <ui:Label name="result-text" text="" class="result-text" />
-            <ui:Label name="result-hint" text="SPACE / Start ボタン: もう一度　　ESC / Select ボタン: タイトルへ" class="result-hint" />
+            <ui:Label name="result-text" text="" class="result-text"/>
+            <ui:Label name="result-hint" text="SPACE / Start ボタン: もう一度　　ESC / Select ボタン: タイトルへ" class="result-hint"/>
         </ui:VisualElement>
-        <ui:VisualElement name="pause" picking-mode="Ignore" class="pause-overlay hidden">
-            <ui:Label text="PAUSED" class="pause-title" />
-            <ui:Label text="ESC / Start ボタン: 再開　　Q / Select ボタン: タイトルへ" class="pause-hint" />
+        <ui:VisualElement name="pause" picking-mode="Ignore" class="pause-overlay hidden" style="-unity-font-definition: url(&quot;project://database/Assets/Contents/Artist/Fonts/Montserrat-BoldItalic.ttf?fileID=12800000&amp;guid=6fe63e3514d556d4db5432a2ab475791&amp;type=3#Montserrat-BoldItalic&quot;);">
+            <ui:Label text="PAUSED" class="pause-title"/>
+            <ui:Label text="ESC / Start ボタン: 再開　　Q / Select ボタン: タイトルへ" class="pause-hint"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
