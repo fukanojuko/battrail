@@ -115,15 +115,15 @@ MonoBehaviour:
   forwardBoostDuration: 0.3
   forwardBoostSpeed: 65
   forwardBoostAcceleration: 150
-  sideBoostInputThreshold: 0.4
+  sideBoostInputThreshold: 0.45
   sideBoostDuration: 0.3
   sideBoostLateralSpeed: 72
   sideBoostAcceleration: 120
   sideBoostDecay: 24
   sideBoostGaugeCost: 40
-  strafeAcceleration: 26
-  lateralDamping: 10
-  centerPullStrength: 1.2
+  strafeAcceleration: 42
+  lateralDamping: 7.5
+  centerPullStrength: 0.8
   maxLateralSpeed: 18
   startLateralOffset: -1.5
   startDashDuration: 1.5
