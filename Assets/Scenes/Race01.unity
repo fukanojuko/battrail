@@ -1516,10 +1516,6 @@ PrefabInstance:
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.z
       value: 123.117424
       objectReference: {fileID: 0}
-    - target: {fileID: 3398680593088681017, guid: 77c6b87666cdd4598865aaf606a3d93b, type: 3}
-      propertyPath: forceNpcInEditor
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4454225503614210118, guid: 77c6b87666cdd4598865aaf606a3d93b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
