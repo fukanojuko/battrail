@@ -98,14 +98,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
-  maxSpeed: 40
-  acceleration: 14
+  maxSpeed: 70
+  acceleration: 28
   brakeDeceleration: 26
   coastDeceleration: 7
   cornerSpeedFactorMin: 0.7
   cornerFullEffectCurvature: 0.05
-  boostSpeed: 70
-  boostAcceleration: 42
+  boostSpeed: 100
+  boostAcceleration: 68
   overspeedDecay: 24
   maxGauge: 100
   gaugeDrainPerSecond: 35
@@ -115,15 +115,15 @@ MonoBehaviour:
   forwardBoostDuration: 0.3
   forwardBoostSpeed: 65
   forwardBoostAcceleration: 150
-  sideBoostInputThreshold: 0.4
+  sideBoostInputThreshold: 0.45
   sideBoostDuration: 0.3
   sideBoostLateralSpeed: 72
   sideBoostAcceleration: 120
   sideBoostDecay: 24
   sideBoostGaugeCost: 40
-  strafeAcceleration: 26
-  lateralDamping: 10
-  centerPullStrength: 1.2
+  strafeAcceleration: 42
+  lateralDamping: 7.5
+  centerPullStrength: 0.8
   maxLateralSpeed: 18
   startLateralOffset: -1.5
   startDashDuration: 1.5
@@ -187,7 +187,7 @@ VisualEffect:
       - m_Value: 60
         m_Name: TriggerTrailRate
         m_Overridden: 1
-      - m_Value: 2.8
+      - m_Value: 3
         m_Name: TrailLifeTime
         m_Overridden: 1
       - m_Value: 0.8
